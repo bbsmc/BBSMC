@@ -293,6 +293,8 @@ def sharedDeps = {
     installer "org.apache.logging.log4j:log4j-slf4j-impl:${LOG4J_VERSION}" // Bumped for CoreMods
     installer "org.apache.logging.log4j:log4j-api:${LOG4J_VERSION}" // Bumped for CoreMods
     installer "org.apache.logging.log4j:log4j-core:${LOG4J_VERSION}" // Bumped for CoreMods
+    installer 'net.java.dev.jna:jna:5.12.1'
+    installer 'net.java.dev.jna:jna-platform:5.12.1'
 
     /*
     installer 'org.lwjgl:lwjgl:3.2.2'
@@ -451,7 +453,7 @@ def sharedFmlonlyForge = { Project prj ->
         // SecureJarHandler bootstrap values.
         run.property 'ignoreList', prj.configurations.moduleonly.files.collect {it.name.replaceAll(/([-_]([.\d]*\d+)|\.jar$)/, '') }.join(',') + ",client-extra,fmlcore,javafmllanguage,lowcodelanguage,mclanguage,${prj.name}-"
         // FIXME: Without this jna doesn't work at runtime. Someone figure out why please?
-        run.property 'mergeModules', 'jna-5.10.0.jar,jna-platform-5.10.0.jar'
+        run.property 'mergeModules', 'jna-5.12.1.jar,jna-platform-5.12.1.jar'
         if (userdevRuns.contains(run)) {
             run.property 'legacyClassPath.file', '{minecraft_classpath_file}'
             run.jvmArgs '-p', '{modules}'
