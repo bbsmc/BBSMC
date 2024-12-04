@@ -41,7 +41,7 @@ public class CraftBlockEntityState<T extends net.minecraft.world.level.block.ent
     }
 
     // gets the wrapped net.minecraft.world.level.block.entity.BlockEntity
-    protected T getnet.minecraft.world.level.block.entity.BlockEntity() {
+    protected T getTileEntity() {
         return tileEntity;
     }
 
@@ -51,7 +51,7 @@ public class CraftBlockEntityState<T extends net.minecraft.world.level.block.ent
     }
 
     // gets the current net.minecraft.world.level.block.entity.BlockEntity from the world at this position
-    protected net.minecraft.world.level.block.entity.BlockEntity getnet.minecraft.world.level.block.entity.BlockEntityFromWorld() {
+    protected net.minecraft.world.level.block.entity.BlockEntity getTileEntityFromWorld() {
         requirePlaced();
 
         return getWorldHandle().getBlockEntity(this.getPosition());
@@ -88,7 +88,7 @@ public class CraftBlockEntityState<T extends net.minecraft.world.level.block.ent
         boolean result = super.update(force, applyPhysics);
 
         if (result && this.isPlaced()) {
-            net.minecraft.world.level.block.entity.BlockEntity tile = getnet.minecraft.world.level.block.entity.BlockEntityFromWorld();
+            net.minecraft.world.level.block.entity.BlockEntity tile = getTileEntityFromWorld();
 
             if (isApplicable(tile)) {
                 applyTo((T) tile);

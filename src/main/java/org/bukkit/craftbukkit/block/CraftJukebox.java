@@ -1,6 +1,5 @@
 package org.bukkit.craftbukkit.block;
 
-import com.google.common.base.Preconditions;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import org.bukkit.Effect;
@@ -11,9 +10,9 @@ import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.util.CraftMagicNumbers;
 
-public class CraftJukebox extends CraftBlockEntityState<net.minecraft.world.level.block.entity.BlockEntityJukeBox> implements Jukebox {
+public class CraftJukebox extends CraftBlockEntityState<net.minecraft.world.level.block.entity.JukeboxBlockEntity> implements Jukebox {
 
-    public CraftJukebox(World world, net.minecraft.world.level.block.entity.BlockEntityJukeBox tileEntity) {
+    public CraftJukebox(World world, net.minecraft.world.level.block.entity.JukeboxBlockEntity tileEntity) {
         super(world, tileEntity);
     }
 
@@ -80,10 +79,9 @@ public class CraftJukebox extends CraftBlockEntityState<net.minecraft.world.leve
     public boolean eject() {
         ensureNoWorldGeneration();
 
-        net.minecraft.world.level.block.entity.BlockEntity tileEntity = this.getnet.minecraft.world.level.block.entity.BlockEntityFromWorld();
-        if (!(tileEntity instanceof net.minecraft.world.level.block.entity.BlockEntityJukeBox)) return false;
+        net.minecraft.world.level.block.entity.BlockEntity tileEntity = this.getTileEntityFromWorld();
+        if (!(tileEntity instanceof net.minecraft.world.level.block.entity.JukeboxBlockEntity jukebox)) return false;
 
-        net.minecraft.world.level.block.entity.BlockEntityJukeBox jukebox = (net.minecraft.world.level.block.entity.BlockEntityJukeBox) tileEntity;
         boolean result = !jukebox.getRecord().isEmpty();
         CraftWorld world = (CraftWorld) this.getWorld();
         ((net.minecraft.world.level.block.JukeboxBlock) Blocks.JUKEBOX).dropRecording(world.getHandle(), getPosition());

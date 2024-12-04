@@ -10,9 +10,9 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class CraftBeacon extends CraftBlockEntityState<net.minecraft.world.level.block.entity.BlockEntityBeacon> implements Beacon {
+public class CraftBeacon extends CraftBlockEntityState<net.minecraft.world.level.block.entity.BeaconBlockEntity> implements Beacon {
 
-    public CraftBeacon(World world, net.minecraft.world.level.block.entity.BlockEntityBeacon tileEntity) {
+    public CraftBeacon(World world, net.minecraft.world.level.block.entity.BeaconBlockEntity tileEntity) {
         super(world, tileEntity);
     }
 
@@ -20,11 +20,10 @@ public class CraftBeacon extends CraftBlockEntityState<net.minecraft.world.level
     public Collection<LivingEntity> getEntitiesInRange() {
         ensureNoWorldGeneration();
 
-        net.minecraft.world.level.block.entity.BlockEntity tileEntity = this.getnet.minecraft.world.level.block.entity.BlockEntityFromWorld();
-        if (tileEntity instanceof net.minecraft.world.level.block.entity.BlockEntityBeacon) {
-            net.minecraft.world.level.block.entity.BlockEntityBeacon beacon = (net.minecraft.world.level.block.entity.BlockEntityBeacon) tileEntity;
+        net.minecraft.world.level.block.entity.BlockEntity tileEntity = this.getTileEntityFromWorld();
+        if (tileEntity instanceof net.minecraft.world.level.block.entity.BeaconBlockEntity beacon) {
 
-            Collection<net.minecraft.world.entity.player.Player> nms = net.minecraft.world.level.block.entity.BlockEntityBeacon.getHumansInRange(beacon.getLevel(), beacon.getBlockPos(), beacon.levels);
+            Collection<net.minecraft.world.entity.player.Player> nms = net.minecraft.world.level.block.entity.BeaconBlockEntity.getHumansInRange(beacon.getLevel(), beacon.getBlockPos(), beacon.levels);
             Collection<LivingEntity> bukkit = new ArrayList<LivingEntity>(nms.size());
 
             for (net.minecraft.world.entity.player.Player human : nms) {
@@ -65,7 +64,7 @@ public class CraftBeacon extends CraftBlockEntityState<net.minecraft.world.level
 
     @Override
     public String getCustomName() {
-        net.minecraft.world.level.block.entity.BlockEntityBeacon beacon = this.getSnapshot();
+        net.minecraft.world.level.block.entity.BeaconBlockEntity beacon = this.getSnapshot();
         return beacon.name != null ? CraftChatMessage.fromComponent(beacon.name) : null;
     }
 
