@@ -37,7 +37,7 @@ public class CraftShulkerBox extends CraftLootable<net.minecraft.world.level.blo
     @Override
     public void open() {
         requirePlaced();
-        if (!getTileEntity().opened && getWorldHandle() instanceof net.minecraft.world.level.World) {
+        if (!getTileEntity().opened && getWorldHandle() instanceof net.minecraft.world.level.Level) {
             net.minecraft.world.level.Level world = getTileEntity().getLevel();
             world.blockEvent(getPosition(), getTileEntity().getBlockState().getBlock(), 1, 1);
             world.playSound(null, getPosition(), net.minecraft.sounds.SoundEvents.SHULKER_BOX_OPEN, net.minecraft.sounds.SoundSource.BLOCKS, 0.5F, world.random.nextFloat() * 0.1F + 0.9F);
@@ -48,7 +48,7 @@ public class CraftShulkerBox extends CraftLootable<net.minecraft.world.level.blo
     @Override
     public void close() {
         requirePlaced();
-        if (getTileEntity().opened && getWorldHandle() instanceof net.minecraft.world.level.World) {
+        if (getTileEntity().opened && getWorldHandle() instanceof net.minecraft.world.level.Level) {
             net.minecraft.world.level.Level world = getTileEntity().getLevel();
             world.blockEvent(getPosition(), getTileEntity().getBlockState().getBlock(), 1, 0);
             world.playSound(null, getPosition(), net.minecraft.sounds.SoundEvents.SHULKER_BOX_OPEN, net.minecraft.sounds.SoundSource.BLOCKS, 0.5F, world.random.nextFloat() * 0.1F + 0.9F);

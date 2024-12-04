@@ -4,11 +4,11 @@ import org.bukkit.inventory.Merchant;
 import org.bukkit.inventory.MerchantInventory;
 import org.bukkit.inventory.MerchantRecipe;
 
-public class Craftnet.minecraft.world.inventory.MerchantContainer extends CraftInventory implements MerchantInventory {
+public class CraftInventoryMerchant extends CraftInventory implements MerchantInventory {
 
     private final net.minecraft.world.item.trading.Merchant merchant;
 
-    public Craftnet.minecraft.world.inventory.MerchantContainer(net.minecraft.world.item.trading.Merchant merchant, net.minecraft.world.inventory.MerchantContainer inventory) {
+    public CraftInventoryMerchant(net.minecraft.world.item.trading.Merchant merchant, net.minecraft.world.inventory.MerchantContainer inventory) {
         super(inventory);
         this.merchant = merchant;
     }

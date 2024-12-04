@@ -5,11 +5,11 @@ import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.util.CraftChatMessage;
 import org.bukkit.inventory.ItemStack;
 
-public class Craftnet.minecraft.advancements.DisplayInfo implements org.bukkit.advancement.net.minecraft.advancements.DisplayInfo {
+public class CraftAdvancementDisplay implements org.bukkit.advancement.AdvancementDisplay {
 
     private final net.minecraft.advancements.DisplayInfo handle;
 
-    public Craftnet.minecraft.advancements.DisplayInfo(net.minecraft.advancements.DisplayInfo handle) {
+    public CraftAdvancementDisplay(net.minecraft.advancements.DisplayInfo handle) {
         this.handle = handle;
     }
 
@@ -58,7 +58,7 @@ public class Craftnet.minecraft.advancements.DisplayInfo implements org.bukkit.a
     }
 
     @Override
-    public net.minecraft.advancements.DisplayInfoType getType() {
-        return net.minecraft.advancements.DisplayInfoType.values()[handle.getFrame().ordinal()];
+    public AdvancementDisplayType getType() {
+        return AdvancementDisplayType.values()[handle.getFrame().ordinal()];
     }
 }

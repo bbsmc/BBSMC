@@ -173,7 +173,7 @@ public class CraftStructureBlock extends CraftBlockEntityState<net.minecraft.wor
         net.minecraft.world.level.LevelAccessor access = getWorldHandle();
 
         // Ensure block type is correct
-        if (access instanceof net.minecraft.world.level.World) {
+        if (access instanceof net.minecraft.world.level.Level) {
             tileEntity.setMode(tileEntity.getMode());
         } else if (access != null) {
             // Custom handle during world generation

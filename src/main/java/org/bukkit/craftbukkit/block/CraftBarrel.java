@@ -34,7 +34,7 @@ public class CraftBarrel extends CraftLootable<net.minecraft.world.level.block.e
 
             if (!open) {
                 getTileEntity().updateBlockState(blockData, true);
-                if (getWorldHandle() instanceof net.minecraft.world.level.World) {
+                if (getWorldHandle() instanceof net.minecraft.world.level.Level) {
                     getTileEntity().playSound(blockData, net.minecraft.sounds.SoundEvents.BARREL_OPEN);
                 }
             }
@@ -48,7 +48,7 @@ public class CraftBarrel extends CraftLootable<net.minecraft.world.level.block.e
         if (getTileEntity().openersCounter.opened) {
             net.minecraft.world.level.block.state.BlockState blockData = getTileEntity().getBlockState();
             getTileEntity().updateBlockState(blockData, false);
-            if (getWorldHandle() instanceof net.minecraft.world.level.World) {
+            if (getWorldHandle() instanceof net.minecraft.world.level.Level) {
                 getTileEntity().playSound(blockData, net.minecraft.sounds.SoundEvents.BARREL_CLOSE);
             }
         }

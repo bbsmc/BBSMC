@@ -15,7 +15,7 @@ public final class CraftSculkVein extends org.bukkit.craftbukkit.block.data.Craf
 
     // org.bukkit.craftbukkit.block.data.CraftMultipleFacing
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateBoolean[] FACES = new net.minecraft.world.level.block.state.properties.BlockStateBoolean[]{
+    private static final net.minecraft.world.level.block.state.properties.BooleanProperty[] FACES = new net.minecraft.world.level.block.state.properties.BooleanProperty[]{
         getBoolean(net.minecraft.world.level.block.SculkVeinBlock.class, "north", true), getBoolean(net.minecraft.world.level.block.SculkVeinBlock.class, "east", true), getBoolean(net.minecraft.world.level.block.SculkVeinBlock.class, "south", true), getBoolean(net.minecraft.world.level.block.SculkVeinBlock.class, "west", true), getBoolean(net.minecraft.world.level.block.SculkVeinBlock.class, "up", true), getBoolean(net.minecraft.world.level.block.SculkVeinBlock.class, "down", true)
     };
 

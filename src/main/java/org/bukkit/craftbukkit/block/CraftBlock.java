@@ -183,8 +183,8 @@ public class CraftBlock implements Block {
         // SPIGOT-611: need to do this to prevent glitchiness. Easier to handle this here (like /setblock) than to fix weirdness in tile entity cleanup
         if (old.hasBlockEntity() && blockData.getBlock() != old.getBlock()) { // SPIGOT-3725 remove old tile entity if block changes
             // SPIGOT-4612: faster - just clear tile
-            if (world instanceof net.minecraft.world.level.World) {
-                ((net.minecraft.world.level.World) world).removeBlockEntity(position);
+            if (world instanceof net.minecraft.world.level.Level) {
+                ((net.minecraft.world.level.Level) world).removeBlockEntity(position);
             } else {
                 world.setBlock(position, Blocks.AIR.defaultBlockState(), 0);
             }
@@ -194,7 +194,7 @@ public class CraftBlock implements Block {
             return world.setBlock(position, blockData, 3);
         } else {
             boolean success = world.setBlock(position, blockData, 2 | 16 | 1024); // NOTIFY | NO_OBSERVER | NO_PLACE (custom)
-            if (success && world instanceof net.minecraft.world.level.World) {
+            if (success && world instanceof net.minecraft.world.level.Level) {
                 world.getMinecraftWorld().sendBlockUpdated(
                         position,
                         old,
