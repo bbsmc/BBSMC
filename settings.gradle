@@ -3,6 +3,14 @@ pluginManagement {
         gradlePluginPortal()
         mavenLocal()
         maven { url = 'https://maven.minecraftforge.net/' }
+        maven {
+            name("Spigot")
+            url("https://hub.spigotmc.org/nexus/content/groups/public/")
+        }
+        maven {
+            name("IzzelAliz")
+            url("https://maven.izzel.io/releases")
+        }
     }
 }
 

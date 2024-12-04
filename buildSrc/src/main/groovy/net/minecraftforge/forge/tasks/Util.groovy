@@ -73,6 +73,14 @@ public class Util {
 			def url = "https://libraries.minecraft.net/${path}"
 			if (!checkExists(url)) {
 				url = "https://maven.minecraftforge.net/${path}"
+				// BBSMC start
+				if (!checkExists(url)) {
+					url = "https://hub.spigotmc.org/nexus/content/groups/public/${path}"
+					if (!checkExists(url)) {
+						url = "https://maven.izzel.io/releases/${path}"
+					}
+				}
+				// BBSMC end
 			}
 			ret[key] = [
 				name: "${art.group}:${art.name}:${art.version}" + (art.classifier == null ? '' : ":${art.classifier}") + (art.extension == 'jar' ? '' : "@${art.extension}"),
