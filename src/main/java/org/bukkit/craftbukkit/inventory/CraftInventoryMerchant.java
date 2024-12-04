@@ -1,16 +1,14 @@
 package org.bukkit.craftbukkit.inventory;
 
-import net.minecraft.world.inventory.InventoryMerchant;
-import net.minecraft.world.item.trading.IMerchant;
 import org.bukkit.inventory.Merchant;
 import org.bukkit.inventory.MerchantInventory;
 import org.bukkit.inventory.MerchantRecipe;
 
-public class CraftInventoryMerchant extends CraftInventory implements MerchantInventory {
+public class Craftnet.minecraft.world.inventory.MerchantContainer extends CraftInventory implements MerchantInventory {
 
-    private final IMerchant merchant;
+    private final net.minecraft.world.item.trading.Merchant merchant;
 
-    public CraftInventoryMerchant(IMerchant merchant, InventoryMerchant inventory) {
+    public Craftnet.minecraft.world.inventory.MerchantContainer(net.minecraft.world.item.trading.Merchant merchant, net.minecraft.world.inventory.MerchantContainer inventory) {
         super(inventory);
         this.merchant = merchant;
     }
@@ -22,13 +20,13 @@ public class CraftInventoryMerchant extends CraftInventory implements MerchantIn
 
     @Override
     public MerchantRecipe getSelectedRecipe() {
-        net.minecraft.world.item.trading.MerchantRecipe nmsRecipe = getInventory().getActiveOffer();
+        net.minecraft.world.item.trading.MerchantOffer nmsRecipe = getInventory().getActiveOffer();
         return (nmsRecipe == null) ? null : nmsRecipe.asBukkit();
     }
 
     @Override
-    public InventoryMerchant getInventory() {
-        return (InventoryMerchant) inventory;
+    public net.minecraft.world.inventory.MerchantContainer getInventory() {
+        return (net.minecraft.world.inventory.MerchantContainer) inventory;
     }
 
     @Override

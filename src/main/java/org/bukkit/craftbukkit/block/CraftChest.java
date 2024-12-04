@@ -1,10 +1,6 @@
 package org.bukkit.craftbukkit.block;
 
-import net.minecraft.world.ITileInventory;
-import net.minecraft.world.level.block.BlockChest;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.TileEntityChest;
-import net.minecraft.world.level.block.state.IBlockData;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Chest;
@@ -13,9 +9,9 @@ import org.bukkit.craftbukkit.inventory.CraftInventory;
 import org.bukkit.craftbukkit.inventory.CraftInventoryDoubleChest;
 import org.bukkit.inventory.Inventory;
 
-public class CraftChest extends CraftLootable<TileEntityChest> implements Chest {
+public class CraftChest extends CraftLootable<net.minecraft.world.level.block.entity.ChestBlockEntity> implements Chest {
 
-    public CraftChest(World world, TileEntityChest tileEntity) {
+    public CraftChest(World world, net.minecraft.world.level.block.entity.ChestBlockEntity tileEntity) {
         super(world, tileEntity);
     }
 
@@ -40,14 +36,14 @@ public class CraftChest extends CraftLootable<TileEntityChest> implements Chest 
             return inventory;
         }
 
-        // The logic here is basically identical to the logic in BlockChest.interact
+        // The logic here is basically identical to the logic in net.minecraft.world.level.block.ChestBlock.interact
         CraftWorld world = (CraftWorld) this.getWorld();
 
-        BlockChest blockChest = (BlockChest) (this.getType() == Material.CHEST ? Blocks.CHEST : Blocks.TRAPPED_CHEST);
-        ITileInventory nms = blockChest.getMenuProvider(data, world.getHandle(), this.getPosition(), true);
+        net.minecraft.world.level.block.ChestBlock blockChest = (net.minecraft.world.level.block.ChestBlock) (this.getType() == Material.CHEST ? Blocks.CHEST : Blocks.TRAPPED_CHEST);
+        net.minecraft.world.MenuProvider nms = blockChest.getMenuProvider(data, world.getHandle(), this.getPosition(), true);
 
-        if (nms instanceof BlockChest.DoubleInventory) {
-            inventory = new CraftInventoryDoubleChest((BlockChest.DoubleInventory) nms);
+        if (nms instanceof net.minecraft.world.level.block.ChestBlock.DoubleInventory) {
+            inventory = new CraftInventoryDoubleChest((net.minecraft.world.level.block.ChestBlock.DoubleInventory) nms);
         }
         return inventory;
     }
@@ -56,7 +52,7 @@ public class CraftChest extends CraftLootable<TileEntityChest> implements Chest 
     public void open() {
         requirePlaced();
         if (!getTileEntity().openersCounter.opened && getWorldHandle() instanceof net.minecraft.world.level.World) {
-            IBlockData block = getTileEntity().getBlockState();
+            net.minecraft.world.level.block.state.BlockState block = getTileEntity().getBlockState();
             int openCount = getTileEntity().openersCounter.getOpenerCount();
 
             getTileEntity().openersCounter.onAPIOpen((net.minecraft.world.level.World) getWorldHandle(), getPosition(), block);
@@ -69,7 +65,7 @@ public class CraftChest extends CraftLootable<TileEntityChest> implements Chest 
     public void close() {
         requirePlaced();
         if (getTileEntity().openersCounter.opened && getWorldHandle() instanceof net.minecraft.world.level.World) {
-            IBlockData block = getTileEntity().getBlockState();
+            net.minecraft.world.level.block.state.BlockState block = getTileEntity().getBlockState();
             int openCount = getTileEntity().openersCounter.getOpenerCount();
 
             getTileEntity().openersCounter.onAPIClose((net.minecraft.world.level.World) getWorldHandle(), getPosition(), block);

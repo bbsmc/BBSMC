@@ -7,9 +7,9 @@ import org.bukkit.inventory.MerchantRecipe;
 
 public class CraftMerchantRecipe extends MerchantRecipe {
 
-    private final net.minecraft.world.item.trading.MerchantRecipe handle;
+    private final net.minecraft.world.item.trading.MerchantOffer handle;
 
-    public CraftMerchantRecipe(net.minecraft.world.item.trading.MerchantRecipe merchantRecipe) {
+    public CraftMerchantRecipe(net.minecraft.world.item.trading.MerchantOffer merchantRecipe) {
         super(CraftItemStack.asBukkitCopy(merchantRecipe.result), 0);
         this.handle = merchantRecipe;
         addIngredient(CraftItemStack.asBukkitCopy(merchantRecipe.baseCostA));
@@ -23,7 +23,7 @@ public class CraftMerchantRecipe extends MerchantRecipe {
 
     public CraftMerchantRecipe(ItemStack result, int uses, int maxUses, boolean experienceReward, int experience, float priceMultiplier, int demand, int specialPrice) {
         super(result, uses, maxUses, experienceReward, experience, priceMultiplier, demand, specialPrice);
-        this.handle = new net.minecraft.world.item.trading.MerchantRecipe(
+        this.handle = new net.minecraft.world.item.trading.MerchantOffer(
                 net.minecraft.world.item.ItemStack.EMPTY,
                 net.minecraft.world.item.ItemStack.EMPTY,
                 CraftItemStack.asNMSCopy(result),
@@ -108,7 +108,7 @@ public class CraftMerchantRecipe extends MerchantRecipe {
         handle.priceMultiplier = priceMultiplier;
     }
 
-    public net.minecraft.world.item.trading.MerchantRecipe toMinecraft() {
+    public net.minecraft.world.item.trading.MerchantOffer toMinecraft() {
         List<ItemStack> ingredients = getIngredients();
         Preconditions.checkState(!ingredients.isEmpty(), "No offered ingredients");
         handle.baseCostA = CraftItemStack.asNMSCopy(ingredients.get(0));

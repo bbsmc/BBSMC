@@ -1,8 +1,5 @@
 package org.bukkit.craftbukkit.command;
 
-import net.minecraft.commands.CommandListenerWrapper;
-import net.minecraft.network.chat.IChatBaseComponent;
-import net.minecraft.world.level.block.entity.TileEntity;
 import org.bukkit.block.Block;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.craftbukkit.block.CraftBlock;
@@ -12,10 +9,10 @@ import org.bukkit.craftbukkit.util.CraftChatMessage;
  * Represents input from a command block
  */
 public class CraftBlockCommandSender extends ServerCommandSender implements BlockCommandSender {
-    private final CommandListenerWrapper block;
-    private final TileEntity tile;
+    private final net.minecraft.commands.CommandSourceStack block;
+    private final net.minecraft.world.level.block.entity.BlockEntity tile;
 
-    public CraftBlockCommandSender(CommandListenerWrapper commandBlockListenerAbstract, TileEntity tile) {
+    public CraftBlockCommandSender(net.minecraft.commands.CommandSourceStack commandBlockListenerAbstract, net.minecraft.world.level.block.entity.BlockEntity tile) {
         super();
         this.block = commandBlockListenerAbstract;
         this.tile = tile;
@@ -28,7 +25,7 @@ public class CraftBlockCommandSender extends ServerCommandSender implements Bloc
 
     @Override
     public void sendMessage(String message) {
-        for (IChatBaseComponent component : CraftChatMessage.fromString(message)) {
+        for (net.minecraft.network.chat.Component component : CraftChatMessage.fromString(message)) {
             block.source.sendSystemMessage(component);
         }
     }
@@ -55,7 +52,7 @@ public class CraftBlockCommandSender extends ServerCommandSender implements Bloc
         throw new UnsupportedOperationException("Cannot change operator status of a block");
     }
 
-    public CommandListenerWrapper getWrapper() {
+    public net.minecraft.commands.CommandSourceStack getWrapper() {
         return block;
     }
 }

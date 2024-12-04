@@ -1,7 +1,6 @@
 package org.bukkit.craftbukkit.entity.memory;
 
 import java.util.UUID;
-import net.minecraft.core.BlockPosition;
 import net.minecraft.core.GlobalPos;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -51,6 +50,6 @@ public final class CraftMemoryMapper {
     }
 
     public static GlobalPos toNms(Location location) {
-        return GlobalPos.of(((CraftWorld) location.getWorld()).getHandle().dimension(), new BlockPosition(location.getX(), location.getY(), location.getZ()));
+        return GlobalPos.of(((CraftWorld) location.getWorld()).getHandle().dimension(), new net.minecraft.core.BlockPos(location.getX(), location.getY(), location.getZ()));
     }
 }

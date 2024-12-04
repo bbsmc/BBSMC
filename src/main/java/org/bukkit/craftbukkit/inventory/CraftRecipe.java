@@ -2,7 +2,6 @@ package org.bukkit.craftbukkit.inventory;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.world.item.crafting.RecipeItemStack;
 import org.bukkit.craftbukkit.util.CraftMagicNumbers;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
@@ -12,15 +11,15 @@ public interface CraftRecipe extends Recipe {
 
     void addToCraftingManager();
 
-    default RecipeItemStack toNMS(RecipeChoice bukkit, boolean requireNotEmpty) {
-        RecipeItemStack stack;
+    default net.minecraft.world.item.crafting.Ingredient toNMS(RecipeChoice bukkit, boolean requireNotEmpty) {
+        net.minecraft.world.item.crafting.Ingredient stack;
 
         if (bukkit == null) {
-            stack = RecipeItemStack.EMPTY;
+            stack = net.minecraft.world.item.crafting.Ingredient.EMPTY;
         } else if (bukkit instanceof RecipeChoice.MaterialChoice) {
-            stack = new RecipeItemStack(((RecipeChoice.MaterialChoice) bukkit).getChoices().stream().map((mat) -> new net.minecraft.world.item.crafting.RecipeItemStack.StackProvider(CraftItemStack.asNMSCopy(new ItemStack(mat)))));
+            stack = new net.minecraft.world.item.crafting.Ingredient(((RecipeChoice.MaterialChoice) bukkit).getChoices().stream().map((mat) -> new net.minecraft.world.item.crafting.Ingredient.StackProvider(CraftItemStack.asNMSCopy(new ItemStack(mat)))));
         } else if (bukkit instanceof RecipeChoice.ExactChoice) {
-            stack = new RecipeItemStack(((RecipeChoice.ExactChoice) bukkit).getChoices().stream().map((mat) -> new net.minecraft.world.item.crafting.RecipeItemStack.StackProvider(CraftItemStack.asNMSCopy(mat))));
+            stack = new net.minecraft.world.item.crafting.Ingredient(((RecipeChoice.ExactChoice) bukkit).getChoices().stream().map((mat) -> new net.minecraft.world.item.crafting.Ingredient.StackProvider(CraftItemStack.asNMSCopy(mat))));
             stack.exact = true;
         } else {
             throw new IllegalArgumentException("Unknown recipe stack instance " + bukkit);
@@ -34,7 +33,7 @@ public interface CraftRecipe extends Recipe {
         return stack;
     }
 
-    public static RecipeChoice toBukkit(RecipeItemStack list) {
+    public static RecipeChoice toBukkit(net.minecraft.world.item.crafting.Ingredient list) {
         list.dissolve();
 
         if (list.itemStacks.length == 0) {

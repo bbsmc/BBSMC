@@ -4,9 +4,6 @@ import com.google.common.base.Preconditions;
 import java.lang.ref.WeakReference;
 import java.util.List;
 import javax.annotation.Nullable;
-import net.minecraft.core.BlockPosition;
-import net.minecraft.world.level.GeneratorAccess;
-import net.minecraft.world.level.block.state.IBlockData;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -25,10 +22,10 @@ import org.bukkit.plugin.Plugin;
 public class CraftBlockState implements BlockState {
 
     protected final CraftWorld world;
-    private final BlockPosition position;
-    protected IBlockData data;
+    private final net.minecraft.core.BlockPos position;
+    protected net.minecraft.world.level.block.state.BlockState data;
     protected int flag;
-    private WeakReference<GeneratorAccess> weakWorld;
+    private WeakReference<net.minecraft.world.level.LevelAccessor> weakWorld;
 
     protected CraftBlockState(final Block block) {
         this(block.getWorld(), ((CraftBlock) block).getPosition(), ((CraftBlock) block).getNMS());
@@ -43,13 +40,13 @@ public class CraftBlockState implements BlockState {
     }
 
     // world can be null for non-placed BlockStates.
-    protected CraftBlockState(@Nullable World world, BlockPosition blockPosition, IBlockData blockData) {
+    protected CraftBlockState(@Nullable World world, net.minecraft.core.BlockPos blockPosition, net.minecraft.world.level.block.state.BlockState blockData) {
         this.world = (CraftWorld) world;
         position = blockPosition;
         data = blockData;
     }
 
-    public void setWorldHandle(GeneratorAccess generatorAccess) {
+    public void setWorldHandle(net.minecraft.world.level.LevelAccessor generatorAccess) {
         if (generatorAccess instanceof net.minecraft.world.level.World) {
             this.weakWorld = null;
         } else {
@@ -58,13 +55,13 @@ public class CraftBlockState implements BlockState {
     }
 
     // Returns null if weakWorld is not available and the BlockState is not placed.
-    // If this returns a World instead of only a GeneratorAccess, this implies that this BlockState is placed.
-    public GeneratorAccess getWorldHandle() {
+    // If this returns a World instead of only a net.minecraft.world.level.LevelAccessor, this implies that this BlockState is placed.
+    public net.minecraft.world.level.LevelAccessor getWorldHandle() {
         if (weakWorld == null) {
             return this.isPlaced() ? world.getHandle() : null;
         }
 
-        GeneratorAccess access = weakWorld.get();
+        net.minecraft.world.level.LevelAccessor access = weakWorld.get();
         if (access == null) {
             weakWorld = null;
             return this.isPlaced() ? world.getHandle() : null;
@@ -74,7 +71,7 @@ public class CraftBlockState implements BlockState {
     }
 
     protected final boolean isWorldGeneration() {
-        GeneratorAccess generatorAccess = this.getWorldHandle();
+        net.minecraft.world.level.LevelAccessor generatorAccess = this.getWorldHandle();
         return generatorAccess != null && !(generatorAccess instanceof net.minecraft.world.level.World);
     }
 
@@ -111,15 +108,15 @@ public class CraftBlockState implements BlockState {
         return world.getChunkAt(getX() >> 4, getZ() >> 4);
     }
 
-    public void setData(IBlockData data) {
+    public void setData(net.minecraft.world.level.block.state.BlockState data) {
         this.data = data;
     }
 
-    public BlockPosition getPosition() {
+    public net.minecraft.core.BlockPos getPosition() {
         return this.position;
     }
 
-    public IBlockData getHandle() {
+    public net.minecraft.world.level.block.state.BlockState getHandle() {
         return this.data;
     }
 
@@ -204,7 +201,7 @@ public class CraftBlockState implements BlockState {
         if (!isPlaced()) {
             return true;
         }
-        GeneratorAccess access = getWorldHandle();
+        net.minecraft.world.level.LevelAccessor access = getWorldHandle();
         CraftBlock block = getBlock();
 
         if (block.getType() != getType()) {
@@ -213,7 +210,7 @@ public class CraftBlockState implements BlockState {
             }
         }
 
-        IBlockData newBlock = this.data;
+        net.minecraft.world.level.block.state.BlockState newBlock = this.data;
         block.setTypeAndData(newBlock, applyPhysics);
         if (access instanceof net.minecraft.world.level.World) {
             world.getHandle().sendBlockUpdated(

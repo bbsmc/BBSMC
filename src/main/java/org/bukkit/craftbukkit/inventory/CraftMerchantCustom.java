@@ -1,14 +1,6 @@
 package org.bukkit.craftbukkit.inventory;
 
-import net.minecraft.network.chat.IChatBaseComponent;
-import net.minecraft.sounds.SoundEffect;
-import net.minecraft.sounds.SoundEffects;
-import net.minecraft.world.entity.player.EntityHuman;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.trading.IMerchant;
-import net.minecraft.world.item.trading.MerchantRecipe;
-import net.minecraft.world.item.trading.MerchantRecipeList;
-import net.minecraft.world.level.World;
 import org.apache.commons.lang.Validate;
 import org.bukkit.craftbukkit.util.CraftChatMessage;
 
@@ -29,11 +21,11 @@ public class CraftMerchantCustom extends CraftMerchant {
         return (MinecraftMerchant) super.getMerchant();
     }
 
-    public static class MinecraftMerchant implements IMerchant {
+    public static class MinecraftMerchant implements net.minecraft.world.item.trading.Merchant {
 
-        private final IChatBaseComponent title;
-        private final MerchantRecipeList trades = new MerchantRecipeList();
-        private EntityHuman tradingPlayer;
+        private final net.minecraft.network.chat.Component title;
+        private final net.minecraft.world.item.trading.MerchantOfferList trades = new net.minecraft.world.item.trading.MerchantOfferList();
+        private net.minecraft.world.entity.player.Player tradingPlayer;
         protected CraftMerchant craftMerchant;
 
         public MinecraftMerchant(String title) {
@@ -47,22 +39,22 @@ public class CraftMerchantCustom extends CraftMerchant {
         }
 
         @Override
-        public void setTradingPlayer(EntityHuman entityhuman) {
+        public void setTradingPlayer(net.minecraft.world.entity.player.Player entityhuman) {
             this.tradingPlayer = entityhuman;
         }
 
         @Override
-        public EntityHuman getTradingPlayer() {
+        public net.minecraft.world.entity.player.Player getTradingPlayer() {
             return this.tradingPlayer;
         }
 
         @Override
-        public MerchantRecipeList getOffers() {
+        public net.minecraft.world.item.trading.MerchantOfferList getOffers() {
             return this.trades;
         }
 
         @Override
-        public void notifyTrade(MerchantRecipe merchantrecipe) {
+        public void notifyTrade(net.minecraft.world.item.trading.MerchantOffer merchantrecipe) {
             // increase recipe's uses
             merchantrecipe.increaseUses();
         }
@@ -71,7 +63,7 @@ public class CraftMerchantCustom extends CraftMerchant {
         public void notifyTradeUpdated(ItemStack itemstack) {
         }
 
-        public IChatBaseComponent getScoreboardDisplayName() {
+        public net.minecraft.network.chat.Component getScoreboardDisplayName() {
             return title;
         }
 
@@ -90,12 +82,12 @@ public class CraftMerchantCustom extends CraftMerchant {
         }
 
         @Override
-        public SoundEffect getNotifyTradeSound() {
-            return SoundEffects.VILLAGER_YES;
+        public net.minecraft.sounds.SoundEvent getNotifyTradeSound() {
+            return net.minecraft.sounds.SoundEvents.VILLAGER_YES;
         }
 
         @Override
-        public void overrideOffers(MerchantRecipeList merchantrecipelist) {
+        public void overrideOffers(net.minecraft.world.item.trading.MerchantOfferList merchantrecipelist) {
         }
 
         @Override

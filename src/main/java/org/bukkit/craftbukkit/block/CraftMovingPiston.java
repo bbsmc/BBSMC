@@ -1,11 +1,10 @@
 package org.bukkit.craftbukkit.block;
 
-import net.minecraft.world.level.block.piston.TileEntityPiston;
 import org.bukkit.World;
 
-public class CraftMovingPiston extends CraftBlockEntityState<TileEntityPiston> {
+public class CraftMovingPiston extends CraftBlockEntityState<net.minecraft.world.level.block.piston.PistonMovingBlockEntity> {
 
-    public CraftMovingPiston(World world, TileEntityPiston tileEntity) {
+    public CraftMovingPiston(World world, net.minecraft.world.level.block.piston.PistonMovingBlockEntity tileEntity) {
         super(world, tileEntity);
     }
 }

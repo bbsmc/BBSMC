@@ -1,11 +1,6 @@
 package org.bukkit.craftbukkit.util;
 
-import net.minecraft.core.BlockPosition;
-import net.minecraft.world.phys.MovingObjectPosition;
 import net.minecraft.world.phys.MovingObjectPosition.EnumMovingObjectType;
-import net.minecraft.world.phys.MovingObjectPositionBlock;
-import net.minecraft.world.phys.MovingObjectPositionEntity;
-import net.minecraft.world.phys.Vec3D;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -18,22 +13,22 @@ public final class CraftRayTraceResult {
 
     private CraftRayTraceResult() {}
 
-    public static RayTraceResult fromNMS(World world, MovingObjectPosition nmsHitResult) {
+    public static RayTraceResult fromNMS(World world, net.minecraft.world.phys.HitResult nmsHitResult) {
         if (nmsHitResult == null || nmsHitResult.getType() == EnumMovingObjectType.MISS) return null;
 
-        Vec3D nmsHitPos = nmsHitResult.getLocation();
+        net.minecraft.world.phys.Vec3 nmsHitPos = nmsHitResult.getLocation();
         Vector hitPosition = new Vector(nmsHitPos.x, nmsHitPos.y, nmsHitPos.z);
         BlockFace hitBlockFace = null;
 
         if (nmsHitResult.getType() == EnumMovingObjectType.ENTITY) {
-            Entity hitEntity = ((MovingObjectPositionEntity) nmsHitResult).getEntity().getBukkitEntity();
+            Entity hitEntity = ((net.minecraft.world.phys.HitResultEntity) nmsHitResult).getEntity().getBukkitEntity();
             return new RayTraceResult(hitPosition, hitEntity, null);
         }
 
         Block hitBlock = null;
-        BlockPosition nmsBlockPos = null;
+        net.minecraft.core.BlockPos nmsBlockPos = null;
         if (nmsHitResult.getType() == EnumMovingObjectType.BLOCK) {
-            MovingObjectPositionBlock blockHitResult = (MovingObjectPositionBlock) nmsHitResult;
+            net.minecraft.world.phys.HitResultBlock blockHitResult = (net.minecraft.world.phys.HitResultBlock) nmsHitResult;
             hitBlockFace = CraftBlock.notchToBlockFace(blockHitResult.getDirection());
             nmsBlockPos = blockHitResult.getBlockPos();
         }

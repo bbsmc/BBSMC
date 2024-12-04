@@ -3,22 +3,6 @@ package org.bukkit.craftbukkit.inventory;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
-import net.minecraft.world.IInventory;
-import net.minecraft.world.entity.player.PlayerInventory;
-import net.minecraft.world.inventory.InventoryCrafting;
-import net.minecraft.world.inventory.InventoryEnderChest;
-import net.minecraft.world.inventory.InventoryMerchant;
-import net.minecraft.world.level.block.BlockComposter;
-import net.minecraft.world.level.block.entity.IHopper;
-import net.minecraft.world.level.block.entity.TileEntityBarrel;
-import net.minecraft.world.level.block.entity.TileEntityBlastFurnace;
-import net.minecraft.world.level.block.entity.TileEntityBrewingStand;
-import net.minecraft.world.level.block.entity.TileEntityDispenser;
-import net.minecraft.world.level.block.entity.TileEntityDropper;
-import net.minecraft.world.level.block.entity.TileEntityFurnace;
-import net.minecraft.world.level.block.entity.TileEntityLectern;
-import net.minecraft.world.level.block.entity.TileEntityShulkerBox;
-import net.minecraft.world.level.block.entity.TileEntitySmoker;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -30,13 +14,13 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 public class CraftInventory implements Inventory {
-    protected final IInventory inventory;
+    protected final net.minecraft.world.Container inventory;
 
-    public CraftInventory(IInventory inventory) {
+    public CraftInventory(net.minecraft.world.Container inventory) {
         this.inventory = inventory;
     }
 
-    public IInventory getInventory() {
+    public net.minecraft.world.Container getInventory() {
         return inventory;
     }
 
@@ -451,29 +435,29 @@ public class CraftInventory implements Inventory {
     @Override
     public InventoryType getType() {
         // Thanks to Droppers extending Dispensers, Blast Furnaces & Smokers extending Furnace, order is important.
-        if (inventory instanceof InventoryCrafting) {
+        if (inventory instanceof net.minecraft.world.inventory.CraftingContainer) {
             return inventory.getContainerSize() >= 9 ? InventoryType.WORKBENCH : InventoryType.CRAFTING;
-        } else if (inventory instanceof PlayerInventory) {
+        } else if (inventory instanceof net.minecraft.world.entity.player.Inventory) {
             return InventoryType.PLAYER;
-        } else if (inventory instanceof TileEntityDropper) {
+        } else if (inventory instanceof net.minecraft.world.level.block.entity.DropperBlockEntity) {
             return InventoryType.DROPPER;
-        } else if (inventory instanceof TileEntityDispenser) {
+        } else if (inventory instanceof net.minecraft.world.level.block.entity.DispenserBlockEntity) {
             return InventoryType.DISPENSER;
-        } else if (inventory instanceof TileEntityBlastFurnace) {
+        } else if (inventory instanceof net.minecraft.world.level.block.entity.BlastFurnaceBlockEntity) {
             return InventoryType.BLAST_FURNACE;
-        } else if (inventory instanceof TileEntitySmoker) {
+        } else if (inventory instanceof net.minecraft.world.level.block.entity.SmokerBlockEntity) {
             return InventoryType.SMOKER;
-        } else if (inventory instanceof TileEntityFurnace) {
+        } else if (inventory instanceof net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity) {
             return InventoryType.FURNACE;
         } else if (this instanceof CraftInventoryEnchanting) {
             return InventoryType.ENCHANTING;
-        } else if (inventory instanceof TileEntityBrewingStand) {
+        } else if (inventory instanceof net.minecraft.world.level.block.entity.BrewingStandBlockEntity) {
             return InventoryType.BREWING;
         } else if (inventory instanceof CraftInventoryCustom.MinecraftInventory) {
             return ((CraftInventoryCustom.MinecraftInventory) inventory).getType();
-        } else if (inventory instanceof InventoryEnderChest) {
+        } else if (inventory instanceof net.minecraft.world.inventory.PlayerEnderChestContainer) {
             return InventoryType.ENDER_CHEST;
-        } else if (inventory instanceof InventoryMerchant) {
+        } else if (inventory instanceof net.minecraft.world.inventory.MerchantContainer) {
             return InventoryType.MERCHANT;
         } else if (this instanceof CraftInventoryBeacon) {
             return InventoryType.BEACON;
@@ -481,13 +465,13 @@ public class CraftInventory implements Inventory {
             return InventoryType.ANVIL;
         } else if (this instanceof CraftInventorySmithing) {
             return InventoryType.SMITHING;
-        } else if (inventory instanceof IHopper) {
+        } else if (inventory instanceof net.minecraft.world.level.block.entity.Hopper) {
             return InventoryType.HOPPER;
-        } else if (inventory instanceof TileEntityShulkerBox) {
+        } else if (inventory instanceof net.minecraft.world.level.block.entity.ShulkerBoxBlockEntity) {
             return InventoryType.SHULKER_BOX;
-        } else if (inventory instanceof TileEntityBarrel) {
+        } else if (inventory instanceof net.minecraft.world.level.block.entity.BarrelBlockEntity) {
             return InventoryType.BARREL;
-        } else if (inventory instanceof TileEntityLectern.LecternInventory) {
+        } else if (inventory instanceof net.minecraft.world.level.block.entity.LecternBlockEntity.LecternInventory) {
             return InventoryType.LECTERN;
         } else if (this instanceof CraftInventoryLoom) {
             return InventoryType.LOOM;
@@ -497,7 +481,7 @@ public class CraftInventory implements Inventory {
             return InventoryType.GRINDSTONE;
         } else if (this instanceof CraftInventoryStonecutter) {
             return InventoryType.STONECUTTER;
-        } else if (inventory instanceof BlockComposter.ContainerEmpty || inventory instanceof BlockComposter.ContainerInput || inventory instanceof BlockComposter.ContainerOutput) {
+        } else if (inventory instanceof net.minecraft.world.level.block.ComposterBlock.ContainerEmpty || inventory instanceof net.minecraft.world.level.block.ComposterBlock.ContainerInput || inventory instanceof net.minecraft.world.level.block.ComposterBlock.ContainerOutput) {
             return InventoryType.COMPOSTER;
         } else {
             return InventoryType.CHEST;

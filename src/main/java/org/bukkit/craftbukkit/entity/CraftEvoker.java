@@ -1,20 +1,18 @@
 package org.bukkit.craftbukkit.entity;
 
-import net.minecraft.world.entity.monster.EntityEvoker;
-import net.minecraft.world.entity.monster.EntityIllagerWizard;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Evoker;
 
 public class CraftEvoker extends CraftSpellcaster implements Evoker {
 
-    public CraftEvoker(CraftServer server, EntityEvoker entity) {
+    public CraftEvoker(CraftServer server, net.minecraft.world.entity.monster.Evoker entity) {
         super(server, entity);
     }
 
     @Override
-    public EntityEvoker getHandle() {
-        return (EntityEvoker) super.getHandle();
+    public net.minecraft.world.entity.monster.Evoker getHandle() {
+        return (net.minecraft.world.entity.monster.Evoker) super.getHandle();
     }
 
     @Override
@@ -34,6 +32,6 @@ public class CraftEvoker extends CraftSpellcaster implements Evoker {
 
     @Override
     public void setCurrentSpell(Evoker.Spell spell) {
-        getHandle().setIsCastingSpell(spell == null ? EntityIllagerWizard.Spell.NONE : EntityIllagerWizard.Spell.byId(spell.ordinal()));
+        getHandle().setIsCastingSpell(spell == null ? net.minecraft.world.entity.monster.SpellcasterIllager.Spell.NONE : net.minecraft.world.entity.monster.SpellcasterIllager.Spell.byId(spell.ordinal()));
     }
 }

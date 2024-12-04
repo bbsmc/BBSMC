@@ -2,7 +2,6 @@ package org.bukkit.craftbukkit.entity;
 
 import com.google.common.base.Preconditions;
 import java.util.stream.Collectors;
-import net.minecraft.world.entity.vehicle.EntityBoat;
 import org.bukkit.TreeSpecies;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.Boat;
@@ -11,7 +10,7 @@ import org.bukkit.entity.EntityType;
 
 public class CraftBoat extends CraftVehicle implements Boat {
 
-    public CraftBoat(CraftServer server, EntityBoat entity) {
+    public CraftBoat(CraftServer server, net.minecraft.world.entity.vehicle.Boat entity) {
         super(server, entity);
     }
 
@@ -87,8 +86,8 @@ public class CraftBoat extends CraftVehicle implements Boat {
     }
 
     @Override
-    public EntityBoat getHandle() {
-        return (EntityBoat) entity;
+    public net.minecraft.world.entity.vehicle.Boat getHandle() {
+        return (net.minecraft.world.entity.vehicle.Boat) entity;
     }
 
     @Override
@@ -101,7 +100,7 @@ public class CraftBoat extends CraftVehicle implements Boat {
         return EntityType.BOAT;
     }
 
-    public static Boat.Type boatTypeFromNms(EntityBoat.EnumBoatType boatType) {
+    public static Boat.Type boatTypeFromNms(net.minecraft.world.entity.vehicle.Boat.EnumBoatType boatType) {
         return switch (boatType) {
             default -> throw new EnumConstantNotPresentException(Type.class, boatType.name());
             case OAK -> Type.OAK;
@@ -114,20 +113,20 @@ public class CraftBoat extends CraftVehicle implements Boat {
         };
     }
 
-    public static EntityBoat.EnumBoatType boatTypeToNms(Boat.Type type) {
+    public static net.minecraft.world.entity.vehicle.Boat.EnumBoatType boatTypeToNms(Boat.Type type) {
         return switch (type) {
-            default -> throw new EnumConstantNotPresentException(EntityBoat.EnumBoatType.class, type.name());
-            case MANGROVE -> EntityBoat.EnumBoatType.MANGROVE;
-            case SPRUCE -> EntityBoat.EnumBoatType.SPRUCE;
-            case DARK_OAK -> EntityBoat.EnumBoatType.DARK_OAK;
-            case JUNGLE -> EntityBoat.EnumBoatType.JUNGLE;
-            case ACACIA -> EntityBoat.EnumBoatType.ACACIA;
-            case BIRCH -> EntityBoat.EnumBoatType.BIRCH;
-            case OAK -> EntityBoat.EnumBoatType.OAK;
+            default -> throw new EnumConstantNotPresentException(net.minecraft.world.entity.vehicle.Boat.EnumBoatType.class, type.name());
+            case MANGROVE -> net.minecraft.world.entity.vehicle.Boat.EnumBoatType.MANGROVE;
+            case SPRUCE -> net.minecraft.world.entity.vehicle.Boat.EnumBoatType.SPRUCE;
+            case DARK_OAK -> net.minecraft.world.entity.vehicle.Boat.EnumBoatType.DARK_OAK;
+            case JUNGLE -> net.minecraft.world.entity.vehicle.Boat.EnumBoatType.JUNGLE;
+            case ACACIA -> net.minecraft.world.entity.vehicle.Boat.EnumBoatType.ACACIA;
+            case BIRCH -> net.minecraft.world.entity.vehicle.Boat.EnumBoatType.BIRCH;
+            case OAK -> net.minecraft.world.entity.vehicle.Boat.EnumBoatType.OAK;
         };
     }
 
-    public static Status boatStatusFromNms(EntityBoat.EnumStatus enumStatus) {
+    public static Status boatStatusFromNms(net.minecraft.world.entity.vehicle.Boat.EnumStatus enumStatus) {
         return switch (enumStatus) {
             default -> throw new EnumConstantNotPresentException(Status.class, enumStatus.name());
             case IN_AIR -> Status.IN_AIR;
@@ -139,7 +138,7 @@ public class CraftBoat extends CraftVehicle implements Boat {
     }
 
     @Deprecated
-    public static TreeSpecies getTreeSpecies(EntityBoat.EnumBoatType boatType) {
+    public static TreeSpecies getTreeSpecies(net.minecraft.world.entity.vehicle.Boat.EnumBoatType boatType) {
         switch (boatType) {
             case SPRUCE:
                 return TreeSpecies.REDWOOD;
@@ -158,21 +157,21 @@ public class CraftBoat extends CraftVehicle implements Boat {
     }
 
     @Deprecated
-    public static EntityBoat.EnumBoatType getBoatType(TreeSpecies species) {
+    public static net.minecraft.world.entity.vehicle.Boat.EnumBoatType getBoatType(TreeSpecies species) {
         switch (species) {
             case REDWOOD:
-                return EntityBoat.EnumBoatType.SPRUCE;
+                return net.minecraft.world.entity.vehicle.Boat.EnumBoatType.SPRUCE;
             case BIRCH:
-                return EntityBoat.EnumBoatType.BIRCH;
+                return net.minecraft.world.entity.vehicle.Boat.EnumBoatType.BIRCH;
             case JUNGLE:
-                return EntityBoat.EnumBoatType.JUNGLE;
+                return net.minecraft.world.entity.vehicle.Boat.EnumBoatType.JUNGLE;
             case ACACIA:
-                return EntityBoat.EnumBoatType.ACACIA;
+                return net.minecraft.world.entity.vehicle.Boat.EnumBoatType.ACACIA;
             case DARK_OAK:
-                return EntityBoat.EnumBoatType.DARK_OAK;
+                return net.minecraft.world.entity.vehicle.Boat.EnumBoatType.DARK_OAK;
             case GENERIC:
             default:
-                return EntityBoat.EnumBoatType.OAK;
+                return net.minecraft.world.entity.vehicle.Boat.EnumBoatType.OAK;
         }
     }
 }

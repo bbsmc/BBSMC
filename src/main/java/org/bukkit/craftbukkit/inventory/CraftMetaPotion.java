@@ -8,8 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -62,7 +60,7 @@ class CraftMetaPotion extends CraftMetaItem implements PotionMeta {
         }
     }
 
-    CraftMetaPotion(NBTTagCompound tag) {
+    CraftMetaPotion(net.minecraft.nbt.CompoundTag tag) {
         super(tag);
         if (tag.contains(DEFAULT_POTION.NBT)) {
             type = CraftPotionUtil.toBukkit(tag.getString(DEFAULT_POTION.NBT));
@@ -75,12 +73,12 @@ class CraftMetaPotion extends CraftMetaItem implements PotionMeta {
             }
         }
         if (tag.contains(POTION_EFFECTS.NBT)) {
-            NBTTagList list = tag.getList(POTION_EFFECTS.NBT, CraftMagicNumbers.NBT.TAG_COMPOUND);
+            net.minecraft.nbt.ListTag list = tag.getList(POTION_EFFECTS.NBT, CraftMagicNumbers.NBT.TAG_COMPOUND);
             int length = list.size();
             customEffects = new ArrayList<PotionEffect>(length);
 
             for (int i = 0; i < length; i++) {
-                NBTTagCompound effect = list.getCompound(i);
+                net.minecraft.nbt.CompoundTag effect = list.getCompound(i);
                 PotionEffectType type = PotionEffectType.getById(effect.getByte(ID.NBT));
                 // SPIGOT-4047: Vanilla just disregards these
                 if (type == null) {
@@ -120,7 +118,7 @@ class CraftMetaPotion extends CraftMetaItem implements PotionMeta {
     }
 
     @Override
-    void applyToItem(NBTTagCompound tag) {
+    void applyToItem(net.minecraft.nbt.CompoundTag tag) {
         super.applyToItem(tag);
 
         tag.putString(DEFAULT_POTION.NBT, CraftPotionUtil.fromBukkit(type));
@@ -130,11 +128,11 @@ class CraftMetaPotion extends CraftMetaItem implements PotionMeta {
         }
 
         if (customEffects != null) {
-            NBTTagList effectList = new NBTTagList();
+            net.minecraft.nbt.ListTag effectList = new net.minecraft.nbt.ListTag();
             tag.put(POTION_EFFECTS.NBT, effectList);
 
             for (PotionEffect effect : customEffects) {
-                NBTTagCompound effectData = new NBTTagCompound();
+                net.minecraft.nbt.CompoundTag effectData = new net.minecraft.nbt.CompoundTag();
                 effectData.putByte(ID.NBT, (byte) effect.getType().getId());
                 effectData.putByte(AMPLIFIER.NBT, (byte) effect.getAmplifier());
                 effectData.putInt(DURATION.NBT, effect.getDuration());

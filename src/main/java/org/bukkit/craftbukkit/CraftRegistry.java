@@ -5,8 +5,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
-import net.minecraft.core.IRegistry;
-import net.minecraft.core.IRegistryCustom;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
@@ -18,22 +16,22 @@ import org.bukkit.generator.structure.StructureType;
 
 public class CraftRegistry<B extends Keyed, M> implements Registry<B> {
 
-    public static <B extends Keyed> Registry<?> createRegistry(Class<B> bukkitClass, IRegistryCustom registryHolder) {
+    public static <B extends Keyed> Registry<?> createRegistry(Class<B> bukkitClass, net.minecraft.core.RegistryCustom registryHolder) {
         if (bukkitClass == Structure.class) {
-            return new CraftRegistry<>(registryHolder.registryOrThrow(IRegistry.STRUCTURE_REGISTRY), CraftStructure::new);
+            return new CraftRegistry<>(registryHolder.registryOrThrow(net.minecraft.core.Registry.STRUCTURE_REGISTRY), CraftStructure::new);
         }
         if (bukkitClass == StructureType.class) {
-            return new CraftRegistry<>(IRegistry.STRUCTURE_TYPES, CraftStructureType::new);
+            return new CraftRegistry<>(net.minecraft.core.Registry.STRUCTURE_TYPES, CraftStructureType::new);
         }
 
         return null;
     }
 
     private final Map<NamespacedKey, B> cache = new HashMap<>();
-    private final IRegistry<M> minecraftRegistry;
+    private final net.minecraft.core.Registry<M> minecraftRegistry;
     private final BiFunction<NamespacedKey, M, B> minecraftToBukkit;
 
-    public CraftRegistry(IRegistry<M> minecraftRegistry, BiFunction<NamespacedKey, M, B> minecraftToBukkit) {
+    public CraftRegistry(net.minecraft.core.Registry<M> minecraftRegistry, BiFunction<NamespacedKey, M, B> minecraftToBukkit) {
         this.minecraftRegistry = minecraftRegistry;
         this.minecraftToBukkit = minecraftToBukkit;
     }

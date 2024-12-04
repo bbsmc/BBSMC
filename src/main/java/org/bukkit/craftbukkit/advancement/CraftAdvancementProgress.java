@@ -5,17 +5,16 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import net.minecraft.advancements.CriterionProgress;
-import net.minecraft.server.AdvancementDataPlayer;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
 
 public class CraftAdvancementProgress implements AdvancementProgress {
 
     private final CraftAdvancement advancement;
-    private final AdvancementDataPlayer playerData;
+    private final net.minecraft.server.PlayerAdvancements playerData;
     private final net.minecraft.advancements.AdvancementProgress handle;
 
-    public CraftAdvancementProgress(CraftAdvancement advancement, AdvancementDataPlayer player, net.minecraft.advancements.AdvancementProgress handle) {
+    public CraftAdvancementProgress(CraftAdvancement advancement, net.minecraft.server.PlayerAdvancements player, net.minecraft.advancements.AdvancementProgress handle) {
         this.advancement = advancement;
         this.playerData = player;
         this.handle = handle;

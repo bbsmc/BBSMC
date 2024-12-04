@@ -9,13 +9,13 @@ public final class CraftDirtSnow extends org.bukkit.craftbukkit.block.data.Craft
         super();
     }
 
-    public CraftDirtSnow(net.minecraft.world.level.block.state.IBlockData state) {
+    public CraftDirtSnow(net.minecraft.world.level.block.state.BlockState state) {
         super(state);
     }
 
     // org.bukkit.craftbukkit.block.data.CraftSnowable
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateBoolean SNOWY = getBoolean(net.minecraft.world.level.block.BlockDirtSnow.class, "snowy");
+    private static final net.minecraft.world.level.block.state.properties.BooleanProperty SNOWY = getBoolean(net.minecraft.world.level.block.SnowyDirtBlock.class, "snowy");
 
     @Override
     public boolean isSnowy() {

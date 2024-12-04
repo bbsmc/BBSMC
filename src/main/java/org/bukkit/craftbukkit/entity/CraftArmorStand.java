@@ -1,7 +1,5 @@
 package org.bukkit.craftbukkit.entity;
 
-import net.minecraft.core.Vector3f;
-import net.minecraft.world.entity.decoration.EntityArmorStand;
 import org.bukkit.craftbukkit.CraftEquipmentSlot;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.ArmorStand;
@@ -13,7 +11,7 @@ import org.bukkit.util.EulerAngle;
 
 public class CraftArmorStand extends CraftLivingEntity implements ArmorStand {
 
-    public CraftArmorStand(CraftServer server, EntityArmorStand entity) {
+    public CraftArmorStand(CraftServer server, net.minecraft.world.entity.decoration.ArmorStand entity) {
         super(server, entity);
     }
 
@@ -28,8 +26,8 @@ public class CraftArmorStand extends CraftLivingEntity implements ArmorStand {
     }
 
     @Override
-    public EntityArmorStand getHandle() {
-        return (EntityArmorStand) super.getHandle();
+    public net.minecraft.world.entity.decoration.ArmorStand getHandle() {
+        return (net.minecraft.world.entity.decoration.ArmorStand) super.getHandle();
     }
 
     @Override
@@ -189,7 +187,7 @@ public class CraftArmorStand extends CraftLivingEntity implements ArmorStand {
         getHandle().setSmall(small);
     }
 
-    private static EulerAngle fromNMS(Vector3f old) {
+    private static EulerAngle fromNMS(net.minecraft.core.Rotations old) {
         return new EulerAngle(
             Math.toRadians(old.getX()),
             Math.toRadians(old.getY()),
@@ -197,8 +195,8 @@ public class CraftArmorStand extends CraftLivingEntity implements ArmorStand {
         );
     }
 
-    private static Vector3f toNMS(EulerAngle old) {
-        return new Vector3f(
+    private static net.minecraft.core.Rotations toNMS(EulerAngle old) {
+        return new net.minecraft.core.Rotations(
             (float) Math.toDegrees(old.getX()),
             (float) Math.toDegrees(old.getY()),
             (float) Math.toDegrees(old.getZ())

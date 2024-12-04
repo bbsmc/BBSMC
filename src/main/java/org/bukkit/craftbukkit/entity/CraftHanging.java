@@ -1,7 +1,5 @@
 package org.bukkit.craftbukkit.entity;
 
-import net.minecraft.core.EnumDirection;
-import net.minecraft.world.entity.decoration.EntityHanging;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.block.CraftBlock;
@@ -9,7 +7,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Hanging;
 
 public class CraftHanging extends CraftEntity implements Hanging {
-    public CraftHanging(CraftServer server, EntityHanging entity) {
+    public CraftHanging(CraftServer server, net.minecraft.world.entity.decoration.HangingEntity entity) {
         super(server, entity);
     }
 
@@ -25,20 +23,20 @@ public class CraftHanging extends CraftEntity implements Hanging {
 
     @Override
     public boolean setFacingDirection(BlockFace face, boolean force) {
-        EntityHanging hanging = getHandle();
-        EnumDirection dir = hanging.getDirection();
+        net.minecraft.world.entity.decoration.HangingEntity hanging = getHandle();
+        net.minecraft.core.Direction dir = hanging.getDirection();
         switch (face) {
             case SOUTH:
-                getHandle().setDirection(EnumDirection.SOUTH);
+                getHandle().setDirection(net.minecraft.core.Direction.SOUTH);
                 break;
             case WEST:
-                getHandle().setDirection(EnumDirection.WEST);
+                getHandle().setDirection(net.minecraft.core.Direction.WEST);
                 break;
             case NORTH:
-                getHandle().setDirection(EnumDirection.NORTH);
+                getHandle().setDirection(net.minecraft.core.Direction.NORTH);
                 break;
             case EAST:
-                getHandle().setDirection(EnumDirection.EAST);
+                getHandle().setDirection(net.minecraft.core.Direction.EAST);
                 break;
             default:
                 throw new IllegalArgumentException(String.format("%s is not a valid facing direction", face));
@@ -53,14 +51,14 @@ public class CraftHanging extends CraftEntity implements Hanging {
 
     @Override
     public BlockFace getFacing() {
-        EnumDirection direction = this.getHandle().getDirection();
+        net.minecraft.core.Direction direction = this.getHandle().getDirection();
         if (direction == null) return BlockFace.SELF;
         return CraftBlock.notchToBlockFace(direction);
     }
 
     @Override
-    public EntityHanging getHandle() {
-        return (EntityHanging) entity;
+    public net.minecraft.world.entity.decoration.HangingEntity getHandle() {
+        return (net.minecraft.world.entity.decoration.HangingEntity) entity;
     }
 
     @Override

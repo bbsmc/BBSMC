@@ -3,36 +3,31 @@ package org.bukkit.craftbukkit.block;
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.world.item.EnumColor;
-import net.minecraft.world.level.block.BlockBannerAbstract;
-import net.minecraft.world.level.block.entity.TileEntityBanner;
 import org.bukkit.DyeColor;
 import org.bukkit.World;
 import org.bukkit.block.Banner;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 
-public class CraftBanner extends CraftBlockEntityState<TileEntityBanner> implements Banner {
+public class CraftBanner extends CraftBlockEntityState<net.minecraft.world.level.block.entity.BannerBlockEntity> implements Banner {
 
     private DyeColor base;
     private List<Pattern> patterns;
 
-    public CraftBanner(World world, TileEntityBanner tileEntity) {
+    public CraftBanner(World world, net.minecraft.world.level.block.entity.BannerBlockEntity tileEntity) {
         super(world, tileEntity);
     }
 
     @Override
-    public void load(TileEntityBanner banner) {
+    public void load(net.minecraft.world.level.block.entity.BannerBlockEntity banner) {
         super.load(banner);
 
-        base = DyeColor.getByWoolData((byte) ((BlockBannerAbstract) this.data.getBlock()).getColor().getId());
+        base = DyeColor.getByWoolData((byte) ((net.minecraft.world.level.block.AbstractBannerBlock) this.data.getBlock()).getColor().getId());
         patterns = new ArrayList<Pattern>();
 
         if (banner.itemPatterns != null) {
             for (int i = 0; i < banner.itemPatterns.size(); i++) {
-                NBTTagCompound p = (NBTTagCompound) banner.itemPatterns.get(i);
+                net.minecraft.nbt.CompoundTag p = (net.minecraft.nbt.CompoundTag) banner.itemPatterns.get(i);
                 patterns.add(new Pattern(DyeColor.getByWoolData((byte) p.getInt("Color")), PatternType.getByIdentifier(p.getString("Pattern"))));
             }
         }
@@ -85,15 +80,15 @@ public class CraftBanner extends CraftBlockEntityState<TileEntityBanner> impleme
     }
 
     @Override
-    public void applyTo(TileEntityBanner banner) {
+    public void applyTo(net.minecraft.world.level.block.entity.BannerBlockEntity banner) {
         super.applyTo(banner);
 
-        banner.baseColor = EnumColor.byId(base.getWoolData());
+        banner.baseColor = net.minecraft.world.item.DyeColor.byId(base.getWoolData());
 
-        NBTTagList newPatterns = new NBTTagList();
+        net.minecraft.nbt.ListTag newPatterns = new net.minecraft.nbt.ListTag();
 
         for (Pattern p : patterns) {
-            NBTTagCompound compound = new NBTTagCompound();
+            net.minecraft.nbt.CompoundTag compound = new net.minecraft.nbt.CompoundTag();
             compound.putInt("Color", p.getColor().getWoolData());
             compound.putString("Pattern", p.getPattern().getIdentifier());
             newPatterns.add(compound);

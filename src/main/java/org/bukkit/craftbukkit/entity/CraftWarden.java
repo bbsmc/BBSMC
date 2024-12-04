@@ -1,7 +1,6 @@
 package org.bukkit.craftbukkit.entity;
 
 import com.google.common.base.Preconditions;
-import net.minecraft.core.BlockPosition;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.monster.warden.WardenAi;
 import org.bukkit.Location;
@@ -74,7 +73,7 @@ public class CraftWarden extends CraftMonster implements org.bukkit.entity.Warde
     public void setDisturbanceLocation(Location location) {
         Preconditions.checkArgument(location != null, "Location cannot be null");
 
-        WardenAi.setDisturbanceLocation(getHandle(), new BlockPosition(location.getX(), location.getY(), location.getZ()));
+        WardenAi.setDisturbanceLocation(getHandle(), new net.minecraft.core.BlockPos(location.getX(), location.getY(), location.getZ()));
     }
 
     @Override

@@ -1,7 +1,6 @@
 package org.bukkit.craftbukkit.entity;
 
 import com.google.common.base.Preconditions;
-import net.minecraft.world.entity.animal.EntityPanda;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Panda;
@@ -9,13 +8,13 @@ import org.bukkit.entity.Panda.Gene;
 
 public class CraftPanda extends CraftAnimals implements Panda {
 
-    public CraftPanda(CraftServer server, EntityPanda entity) {
+    public CraftPanda(CraftServer server, net.minecraft.world.entity.animal.Panda entity) {
         super(server, entity);
     }
 
     @Override
-    public EntityPanda getHandle() {
-        return (EntityPanda) super.getHandle();
+    public net.minecraft.world.entity.animal.Panda getHandle() {
+        return (net.minecraft.world.entity.animal.Panda) super.getHandle();
     }
 
     @Override
@@ -108,15 +107,15 @@ public class CraftPanda extends CraftAnimals implements Panda {
         return getHandle().getUnhappyCounter();
     }
 
-    public static Gene fromNms(EntityPanda.Gene gene) {
+    public static Gene fromNms(net.minecraft.world.entity.animal.Panda.Gene gene) {
         Preconditions.checkArgument(gene != null, "Gene may not be null");
 
         return Gene.values()[gene.ordinal()];
     }
 
-    public static EntityPanda.Gene toNms(Gene gene) {
+    public static net.minecraft.world.entity.animal.Panda.Gene toNms(Gene gene) {
         Preconditions.checkArgument(gene != null, "Gene may not be null");
 
-        return EntityPanda.Gene.values()[gene.ordinal()];
+        return net.minecraft.world.entity.animal.Panda.Gene.values()[gene.ordinal()];
     }
 }

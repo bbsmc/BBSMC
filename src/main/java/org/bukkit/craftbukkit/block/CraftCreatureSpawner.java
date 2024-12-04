@@ -2,22 +2,20 @@ package org.bukkit.craftbukkit.block;
 
 import com.google.common.base.Preconditions;
 import java.util.Optional;
-import net.minecraft.world.entity.EntityTypes;
-import net.minecraft.world.level.block.entity.TileEntityMobSpawner;
 import org.bukkit.World;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.EntityType;
 
-public class CraftCreatureSpawner extends CraftBlockEntityState<TileEntityMobSpawner> implements CreatureSpawner {
+public class CraftCreatureSpawner extends CraftBlockEntityState<net.minecraft.world.level.block.entity.SpawnerBlockEntity> implements CreatureSpawner {
 
-    public CraftCreatureSpawner(World world, TileEntityMobSpawner tileEntity) {
+    public CraftCreatureSpawner(World world, net.minecraft.world.level.block.entity.SpawnerBlockEntity tileEntity) {
         super(world, tileEntity);
     }
 
     @Override
     public EntityType getSpawnedType() {
-        Optional<EntityTypes<?>> type = EntityTypes.by(this.getSnapshot().getSpawner().nextSpawnData.getEntityToSpawn());
-        return (type.isEmpty()) ? EntityType.PIG : EntityType.fromName(EntityTypes.getKey(type.get()).getPath());
+        Optional<net.minecraft.world.entity.EntityType<?>> type = net.minecraft.world.entity.EntityType.by(this.getSnapshot().getSpawner().nextSpawnData.getEntityToSpawn());
+        return (type.isEmpty()) ? EntityType.PIG : EntityType.fromName(net.minecraft.world.entity.EntityType.getKey(type.get()).getPath());
     }
 
     @Override
@@ -26,13 +24,13 @@ public class CraftCreatureSpawner extends CraftBlockEntityState<TileEntityMobSpa
             throw new IllegalArgumentException("Can't spawn EntityType " + entityType + " from mobspawners!");
         }
 
-        this.getSnapshot().getSpawner().setEntityId(EntityTypes.byString(entityType.getName()).get());
+        this.getSnapshot().getSpawner().setEntityId(net.minecraft.world.entity.EntityType.byString(entityType.getName()).get());
     }
 
     @Override
     public String getCreatureTypeName() {
-        Optional<EntityTypes<?>> type = EntityTypes.by(this.getSnapshot().getSpawner().nextSpawnData.getEntityToSpawn());
-        return (type.isEmpty()) ? "" : EntityTypes.getKey(type.get()).getPath();
+        Optional<net.minecraft.world.entity.EntityType<?>> type = net.minecraft.world.entity.EntityType.by(this.getSnapshot().getSpawner().nextSpawnData.getEntityToSpawn());
+        return (type.isEmpty()) ? "" : net.minecraft.world.entity.EntityType.getKey(type.get()).getPath();
     }
 
     @Override

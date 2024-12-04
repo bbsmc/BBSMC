@@ -1,8 +1,6 @@
 package org.bukkit.craftbukkit.entity;
 
 import com.google.common.base.Preconditions;
-import net.minecraft.core.BlockPosition;
-import net.minecraft.world.entity.projectile.EntityArrow;
 import org.apache.commons.lang.Validate;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.CraftServer;
@@ -14,7 +12,7 @@ import org.bukkit.projectiles.ProjectileSource;
 
 public class CraftArrow extends AbstractProjectile implements AbstractArrow {
 
-    public CraftArrow(CraftServer server, EntityArrow entity) {
+    public CraftArrow(CraftServer server, net.minecraft.world.entity.projectile.AbstractArrow entity) {
         super(server, entity);
     }
 
@@ -88,7 +86,7 @@ public class CraftArrow extends AbstractProjectile implements AbstractArrow {
             return null;
         }
 
-        BlockPosition pos = getHandle().blockPosition();
+        net.minecraft.core.BlockPos pos = getHandle().blockPosition();
         return getWorld().getBlockAt(pos.getX(), pos.getY(), pos.getZ());
     }
 
@@ -100,14 +98,14 @@ public class CraftArrow extends AbstractProjectile implements AbstractArrow {
     @Override
     public void setPickupStatus(PickupStatus status) {
         Preconditions.checkNotNull(status, "status");
-        getHandle().pickup = EntityArrow.PickupStatus.byOrdinal(status.ordinal());
+        getHandle().pickup = net.minecraft.world.entity.projectile.AbstractArrow.PickupStatus.byOrdinal(status.ordinal());
     }
 
     @Override
     public void setTicksLived(int value) {
         super.setTicksLived(value);
 
-        // Second field for EntityArrow
+        // Second field for net.minecraft.world.entity.projectile.AbstractArrow
         getHandle().life = value;
     }
 
@@ -122,8 +120,8 @@ public class CraftArrow extends AbstractProjectile implements AbstractArrow {
     }
 
     @Override
-    public EntityArrow getHandle() {
-        return (EntityArrow) entity;
+    public net.minecraft.world.entity.projectile.AbstractArrow getHandle() {
+        return (net.minecraft.world.entity.projectile.AbstractArrow) entity;
     }
 
     @Override

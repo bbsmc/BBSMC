@@ -9,13 +9,13 @@ public final class CraftMangroveRoots extends org.bukkit.craftbukkit.block.data.
         super();
     }
 
-    public CraftMangroveRoots(net.minecraft.world.level.block.state.IBlockData state) {
+    public CraftMangroveRoots(net.minecraft.world.level.block.state.BlockState state) {
         super(state);
     }
 
     // org.bukkit.craftbukkit.block.data.CraftWaterlogged
 
-    private static final net.minecraft.world.level.block.state.properties.BlockStateBoolean WATERLOGGED = getBoolean(net.minecraft.world.level.block.MangroveRootsBlock.class, "waterlogged");
+    private static final net.minecraft.world.level.block.state.properties.BooleanProperty WATERLOGGED = getBoolean(net.minecraft.world.level.block.MangroveRootsBlock.class, "waterlogged");
 
     @Override
     public boolean isWaterlogged() {

@@ -1,16 +1,14 @@
 package org.bukkit.craftbukkit.block;
 
-import net.minecraft.world.level.block.BlockLectern;
-import net.minecraft.world.level.block.entity.TileEntityLectern;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Lectern;
 import org.bukkit.craftbukkit.inventory.CraftInventoryLectern;
 import org.bukkit.inventory.Inventory;
 
-public class CraftLectern extends CraftBlockEntityState<TileEntityLectern> implements Lectern {
+public class CraftLectern extends CraftBlockEntityState<net.minecraft.world.level.block.entity.LecternBlockEntity> implements Lectern {
 
-    public CraftLectern(World world, TileEntityLectern tileEntity) {
+    public CraftLectern(World world, net.minecraft.world.level.block.entity.LecternBlockEntity tileEntity) {
         super(world, tileEntity);
     }
 
@@ -43,7 +41,7 @@ public class CraftLectern extends CraftBlockEntityState<TileEntityLectern> imple
         boolean result = super.update(force, applyPhysics);
 
         if (result && this.getType() == Material.LECTERN && getWorldHandle() instanceof net.minecraft.world.level.World) {
-            BlockLectern.signalPageChange(this.world.getHandle(), this.getPosition(), this.getHandle());
+            net.minecraft.world.level.block.LecternBlock.signalPageChange(this.world.getHandle(), this.getPosition(), this.getHandle());
         }
 
         return result;

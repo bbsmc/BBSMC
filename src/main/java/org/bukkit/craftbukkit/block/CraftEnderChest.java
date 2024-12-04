@@ -1,13 +1,11 @@
 package org.bukkit.craftbukkit.block;
 
-import net.minecraft.world.level.block.entity.TileEntityEnderChest;
-import net.minecraft.world.level.block.state.IBlockData;
 import org.bukkit.World;
 import org.bukkit.block.EnderChest;
 
-public class CraftEnderChest extends CraftBlockEntityState<TileEntityEnderChest> implements EnderChest {
+public class CraftEnderChest extends CraftBlockEntityState<net.minecraft.world.level.block.entity.EnderChestBlockEntity> implements EnderChest {
 
-    public CraftEnderChest(World world, TileEntityEnderChest tileEntity) {
+    public CraftEnderChest(World world, net.minecraft.world.level.block.entity.EnderChestBlockEntity tileEntity) {
         super(world, tileEntity);
     }
 
@@ -15,7 +13,7 @@ public class CraftEnderChest extends CraftBlockEntityState<TileEntityEnderChest>
     public void open() {
         requirePlaced();
         if (!getTileEntity().openersCounter.opened && getWorldHandle() instanceof net.minecraft.world.level.World) {
-            IBlockData block = getTileEntity().getBlockState();
+            net.minecraft.world.level.block.state.BlockState block = getTileEntity().getBlockState();
             int openCount = getTileEntity().openersCounter.getOpenerCount();
 
             getTileEntity().openersCounter.onAPIOpen((net.minecraft.world.level.World) getWorldHandle(), getPosition(), block);
@@ -28,7 +26,7 @@ public class CraftEnderChest extends CraftBlockEntityState<TileEntityEnderChest>
     public void close() {
         requirePlaced();
         if (getTileEntity().openersCounter.opened && getWorldHandle() instanceof net.minecraft.world.level.World) {
-            IBlockData block = getTileEntity().getBlockState();
+            net.minecraft.world.level.block.state.BlockState block = getTileEntity().getBlockState();
             int openCount = getTileEntity().openersCounter.getOpenerCount();
 
             getTileEntity().openersCounter.onAPIClose((net.minecraft.world.level.World) getWorldHandle(), getPosition(), block);

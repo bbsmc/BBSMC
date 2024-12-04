@@ -1,12 +1,10 @@
 package org.bukkit.craftbukkit.block;
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.level.block.entity.TileEntity;
 import org.bukkit.World;
 import org.bukkit.block.TileState;
 import org.bukkit.persistence.PersistentDataContainer;
 
-public class CraftBlockEntityState<T extends TileEntity> extends CraftBlockState implements TileState {
+public class CraftBlockEntityState<T extends net.minecraft.world.level.block.entity.BlockEntity> extends CraftBlockState implements TileState {
 
     private final T tileEntity;
     private final T snapshot;
@@ -30,37 +28,37 @@ public class CraftBlockEntityState<T extends TileEntity> extends CraftBlockState
             return null;
         }
 
-        NBTTagCompound nbtTagCompound = tileEntity.saveWithFullMetadata();
-        T snapshot = (T) TileEntity.loadStatic(getPosition(), getHandle(), nbtTagCompound);
+        net.minecraft.nbt.CompoundTag nbtTagCompound = tileEntity.saveWithFullMetadata();
+        T snapshot = (T) net.minecraft.world.level.block.entity.BlockEntity.loadStatic(getPosition(), getHandle(), nbtTagCompound);
 
         return snapshot;
     }
 
-    // copies the TileEntity-specific data, retains the position
+    // copies the net.minecraft.world.level.block.entity.BlockEntity-specific data, retains the position
     private void copyData(T from, T to) {
-        NBTTagCompound nbtTagCompound = from.saveWithFullMetadata();
+        net.minecraft.nbt.CompoundTag nbtTagCompound = from.saveWithFullMetadata();
         to.load(nbtTagCompound);
     }
 
-    // gets the wrapped TileEntity
-    protected T getTileEntity() {
+    // gets the wrapped net.minecraft.world.level.block.entity.BlockEntity
+    protected T getnet.minecraft.world.level.block.entity.BlockEntity() {
         return tileEntity;
     }
 
-    // gets the cloned TileEntity which is used to store the captured data
+    // gets the cloned net.minecraft.world.level.block.entity.BlockEntity which is used to store the captured data
     protected T getSnapshot() {
         return snapshot;
     }
 
-    // gets the current TileEntity from the world at this position
-    protected TileEntity getTileEntityFromWorld() {
+    // gets the current net.minecraft.world.level.block.entity.BlockEntity from the world at this position
+    protected net.minecraft.world.level.block.entity.BlockEntity getnet.minecraft.world.level.block.entity.BlockEntityFromWorld() {
         requirePlaced();
 
         return getWorldHandle().getBlockEntity(this.getPosition());
     }
 
-    // gets the NBT data of the TileEntity represented by this block state
-    public NBTTagCompound getSnapshotNBT() {
+    // gets the NBT data of the net.minecraft.world.level.block.entity.BlockEntity represented by this block state
+    public net.minecraft.nbt.CompoundTag getSnapshotNBT() {
         // update snapshot
         applyTo(snapshot);
 
@@ -74,14 +72,14 @@ public class CraftBlockEntityState<T extends TileEntity> extends CraftBlockState
         }
     }
 
-    // applies the TileEntity data of this block state to the given TileEntity
+    // applies the net.minecraft.world.level.block.entity.BlockEntity data of this block state to the given net.minecraft.world.level.block.entity.BlockEntity
     protected void applyTo(T tileEntity) {
         if (tileEntity != null && tileEntity != snapshot) {
             copyData(snapshot, tileEntity);
         }
     }
 
-    protected boolean isApplicable(TileEntity tileEntity) {
+    protected boolean isApplicable(net.minecraft.world.level.block.entity.BlockEntity tileEntity) {
         return tileEntity != null && this.tileEntity.getClass() == tileEntity.getClass();
     }
 
@@ -90,7 +88,7 @@ public class CraftBlockEntityState<T extends TileEntity> extends CraftBlockState
         boolean result = super.update(force, applyPhysics);
 
         if (result && this.isPlaced()) {
-            TileEntity tile = getTileEntityFromWorld();
+            net.minecraft.world.level.block.entity.BlockEntity tile = getnet.minecraft.world.level.block.entity.BlockEntityFromWorld();
 
             if (isApplicable(tile)) {
                 applyTo((T) tile);

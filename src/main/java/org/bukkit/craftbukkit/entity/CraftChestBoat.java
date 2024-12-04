@@ -1,6 +1,5 @@
 package org.bukkit.craftbukkit.entity;
 
-import net.minecraft.resources.MinecraftKey;
 import net.minecraft.world.entity.vehicle.ChestBoat;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -47,7 +46,7 @@ public class CraftChestBoat extends CraftBoat implements org.bukkit.entity.Chest
 
     @Override
     public LootTable getLootTable() {
-        MinecraftKey nmsTable = getHandle().getLootTable();
+        net.minecraft.resources.ResourceLocation nmsTable = getHandle().getLootTable();
         if (nmsTable == null) {
             return null; // return empty loot table?
         }
@@ -67,7 +66,7 @@ public class CraftChestBoat extends CraftBoat implements org.bukkit.entity.Chest
     }
 
     private void setLootTable(LootTable table, long seed) {
-        MinecraftKey newKey = (table == null) ? null : CraftNamespacedKey.toMinecraft(table.getKey());
+        net.minecraft.resources.ResourceLocation newKey = (table == null) ? null : CraftNamespacedKey.toMinecraft(table.getKey());
         getHandle().setLootTable(newKey);
         getHandle().setLootTableSeed(seed);
     }

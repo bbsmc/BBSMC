@@ -1,6 +1,5 @@
 package org.bukkit.craftbukkit.generator.strucutre;
 
-import net.minecraft.core.IRegistry;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
@@ -13,7 +12,7 @@ public class CraftStructureType extends StructureType {
             return null;
         }
 
-        return Registry.STRUCTURE_TYPE.get(CraftNamespacedKey.fromMinecraft(IRegistry.STRUCTURE_TYPES.getKey(minecraft)));
+        return Registry.STRUCTURE_TYPE.get(CraftNamespacedKey.fromMinecraft(net.minecraft.core.Registry.STRUCTURE_TYPES.getKey(minecraft)));
     }
 
     public static net.minecraft.world.level.levelgen.structure.StructureType<?> bukkitToMinecraft(StructureType bukkit) {

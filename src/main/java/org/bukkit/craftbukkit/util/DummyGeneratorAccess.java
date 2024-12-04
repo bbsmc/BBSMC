@@ -3,48 +3,23 @@ package org.bukkit.craftbukkit.util;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
-import net.minecraft.core.BlockPosition;
-import net.minecraft.core.EnumDirection;
 import net.minecraft.core.Holder;
-import net.minecraft.core.IRegistryCustom;
-import net.minecraft.core.particles.ParticleParam;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.WorldServer;
-import net.minecraft.sounds.SoundCategory;
-import net.minecraft.sounds.SoundEffect;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.DifficultyDamageScaler;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.EntityHuman;
-import net.minecraft.world.level.GeneratorAccessSeed;
-import net.minecraft.world.level.biome.BiomeBase;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.TileEntity;
-import net.minecraft.world.level.block.state.IBlockData;
 import net.minecraft.world.level.border.WorldBorder;
 import net.minecraft.world.level.chunk.ChunkStatus;
-import net.minecraft.world.level.chunk.IChunkAccess;
-import net.minecraft.world.level.chunk.IChunkProvider;
-import net.minecraft.world.level.dimension.DimensionManager;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.levelgen.HeightMap;
-import net.minecraft.world.level.lighting.LightEngine;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.FluidType;
-import net.minecraft.world.level.material.FluidTypes;
-import net.minecraft.world.level.storage.WorldData;
-import net.minecraft.world.phys.AxisAlignedBB;
-import net.minecraft.world.phys.Vec3D;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.ticks.LevelTickAccess;
-import net.minecraft.world.ticks.TickListEmpty;
 
-public class DummyGeneratorAccess implements GeneratorAccessSeed {
+public class DummyGeneratorAccess implements net.minecraft.world.level.WorldGenLevel {
 
-    public static final GeneratorAccessSeed INSTANCE = new DummyGeneratorAccess();
+    public static final net.minecraft.world.level.WorldGenLevel INSTANCE = new DummyGeneratorAccess();
 
     protected DummyGeneratorAccess() {
     }
@@ -55,7 +30,7 @@ public class DummyGeneratorAccess implements GeneratorAccessSeed {
     }
 
     @Override
-    public WorldServer getLevel() {
+    public net.minecraft.server.level.ServerLevel getLevel() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -66,26 +41,26 @@ public class DummyGeneratorAccess implements GeneratorAccessSeed {
 
     @Override
     public LevelTickAccess<Block> getBlockTicks() {
-        return TickListEmpty.emptyLevelList();
+        return net.minecraft.world.ticks.BlackholeTickAccess.emptyLevelList();
     }
 
     @Override
-    public void scheduleTick(BlockPosition blockposition, Block block, int i) {
+    public void scheduleTick(net.minecraft.core.BlockPos blockposition, Block block, int i) {
         // Used by BlockComposter
     }
 
     @Override
-    public LevelTickAccess<FluidType> getFluidTicks() {
-        return TickListEmpty.emptyLevelList();
+    public LevelTickAccess<net.minecraft.world.level.material.FluidStateType> getnet.minecraft.world.level.material.FluidStateTicks() {
+        return net.minecraft.world.ticks.BlackholeTickAccess.emptyLevelList();
     }
 
     @Override
-    public WorldData getLevelData() {
+    public net.minecraft.world.level.storage.LevelData getLevelData() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public DifficultyDamageScaler getCurrentDifficultyAt(BlockPosition blockposition) {
+    public net.minecraft.world.DifficultyInstance getCurrentDifficultyAt(net.minecraft.core.BlockPos blockposition) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -95,7 +70,7 @@ public class DummyGeneratorAccess implements GeneratorAccessSeed {
     }
 
     @Override
-    public IChunkProvider getChunkSource() {
+    public net.minecraft.world.level.chunk.ChunkSource getChunkSource() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -105,52 +80,52 @@ public class DummyGeneratorAccess implements GeneratorAccessSeed {
     }
 
     @Override
-    public void playSound(EntityHuman entityhuman, BlockPosition blockposition, SoundEffect soundeffect, SoundCategory soundcategory, float f, float f1) {
+    public void playSound(net.minecraft.world.entity.player.Player entityhuman, net.minecraft.core.BlockPos blockposition, net.minecraft.sounds.SoundEvent soundeffect, net.minecraft.sounds.SoundSource soundcategory, float f, float f1) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void addParticle(ParticleParam particleparam, double d0, double d1, double d2, double d3, double d4, double d5) {
+    public void addParticle(net.minecraft.core.particles.ParticleOptions particleparam, double d0, double d1, double d2, double d3, double d4, double d5) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void levelEvent(EntityHuman entityhuman, int i, BlockPosition blockposition, int j) {
-        // Used by PowderSnowBlock.removeFluid
+    public void levelEvent(net.minecraft.world.entity.player.Player entityhuman, int i, net.minecraft.core.BlockPos blockposition, int j) {
+        // Used by PowderSnowBlock.removenet.minecraft.world.level.material.FluidState
     }
 
     @Override
-    public void gameEvent(GameEvent gameevent, Vec3D vec3d, GameEvent.a gameevent_a) {
+    public void gameEvent(GameEvent gameevent, net.minecraft.world.phys.Vec3 vec3d, GameEvent.a gameevent_a) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public IRegistryCustom registryAccess() {
+    public net.minecraft.core.RegistryAccess registryAccess() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public List<Entity> getEntities(Entity entity, AxisAlignedBB aabb, Predicate<? super Entity> prdct) {
+    public List<Entity> getEntities(Entity entity, net.minecraft.world.phys.AABB aabb, Predicate<? super Entity> prdct) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public <T extends Entity> List<T> getEntities(EntityTypeTest<Entity, T> ett, AxisAlignedBB aabb, Predicate<? super T> prdct) {
+    public <T extends Entity> List<T> getEntities(EntityTypeTest<Entity, T> ett, net.minecraft.world.phys.AABB aabb, Predicate<? super T> prdct) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public List<? extends EntityHuman> players() {
+    public List<? extends net.minecraft.world.entity.player.Player> players() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public IChunkAccess getChunk(int i, int i1, ChunkStatus cs, boolean bln) {
+    public net.minecraft.world.level.chunk.ChunkAccess getChunk(int i, int i1, ChunkStatus cs, boolean bln) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public int getHeight(HeightMap.Type type, int i, int i1) {
+    public int getHeight(net.minecraft.world.level.levelgen.Heightmap.Type type, int i, int i1) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -165,7 +140,7 @@ public class DummyGeneratorAccess implements GeneratorAccessSeed {
     }
 
     @Override
-    public Holder<BiomeBase> getUncachedNoiseBiome(int i, int i1, int i2) {
+    public Holder<net.minecraft.world.level.biome.Biome> getUncachedNoiseBiome(int i, int i1, int i2) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -180,33 +155,33 @@ public class DummyGeneratorAccess implements GeneratorAccessSeed {
     }
 
     @Override
-    public DimensionManager dimensionType() {
+    public net.minecraft.world.level.dimension.DimensionType dimensionType() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public float getShade(EnumDirection ed, boolean bln) {
+    public float getShade(net.minecraft.core.Direction ed, boolean bln) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public LightEngine getLightEngine() {
+    public net.minecraft.world.level.lighting.LevelLightEngine getnet.minecraft.world.level.lighting.LevelLightEngine() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public TileEntity getBlockEntity(BlockPosition blockposition) {
+    public net.minecraft.world.level.block.entity.BlockEntity getBlockEntity(net.minecraft.core.BlockPos blockposition) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public IBlockData getBlockState(BlockPosition blockposition) {
+    public net.minecraft.world.level.block.state.BlockState getBlockState(net.minecraft.core.BlockPos blockposition) {
         return Blocks.AIR.defaultBlockState(); // SPIGOT-6515
     }
 
     @Override
-    public Fluid getFluidState(BlockPosition blockposition) {
-        return FluidTypes.EMPTY.defaultFluidState(); // SPIGOT-6634
+    public net.minecraft.world.level.material.FluidState getnet.minecraft.world.level.material.FluidStateState(net.minecraft.core.BlockPos blockposition) {
+        return net.minecraft.world.level.material.FluidStateTypes.EMPTY.defaultnet.minecraft.world.level.material.FluidStateState(); // SPIGOT-6634
     }
 
     @Override
@@ -215,27 +190,27 @@ public class DummyGeneratorAccess implements GeneratorAccessSeed {
     }
 
     @Override
-    public boolean isStateAtPosition(BlockPosition bp, Predicate<IBlockData> prdct) {
+    public boolean isStateAtPosition(net.minecraft.core.BlockPos bp, Predicate<net.minecraft.world.level.block.state.BlockState> prdct) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public boolean isFluidAtPosition(BlockPosition bp, Predicate<Fluid> prdct) {
+    public boolean isnet.minecraft.world.level.material.FluidStateAtPosition(net.minecraft.core.BlockPos bp, Predicate<net.minecraft.world.level.material.FluidState> prdct) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public boolean setBlock(BlockPosition blockposition, IBlockData iblockdata, int i, int j) {
+    public boolean setBlock(net.minecraft.core.BlockPos blockposition, net.minecraft.world.level.block.state.BlockState iblockdata, int i, int j) {
         return false;
     }
 
     @Override
-    public boolean removeBlock(BlockPosition blockposition, boolean flag) {
+    public boolean removeBlock(net.minecraft.core.BlockPos blockposition, boolean flag) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public boolean destroyBlock(BlockPosition blockposition, boolean flag, Entity entity, int i) {
+    public boolean destroyBlock(net.minecraft.core.BlockPos blockposition, boolean flag, Entity entity, int i) {
         return false; // SPIGOT-6515
     }
 }

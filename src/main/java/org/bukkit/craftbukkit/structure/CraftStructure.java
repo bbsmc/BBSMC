@@ -5,15 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
-import net.minecraft.core.BlockPosition;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.EnumBlockMirror;
-import net.minecraft.world.level.block.EnumBlockRotation;
-import net.minecraft.world.level.levelgen.structure.templatesystem.DefinedStructure;
-import net.minecraft.world.level.levelgen.structure.templatesystem.DefinedStructureInfo;
-import net.minecraft.world.level.levelgen.structure.templatesystem.DefinedStructureProcessorRotation;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -32,9 +25,9 @@ import org.bukkit.util.BlockVector;
 
 public class CraftStructure implements Structure {
 
-    private final DefinedStructure structure;
+    private final net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate structure;
 
-    public CraftStructure(DefinedStructure structure) {
+    public CraftStructure(net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate structure) {
         this.structure = structure;
     }
 
@@ -58,15 +51,15 @@ public class CraftStructure implements Structure {
         }
 
         RandomSource randomSource = new RandomSourceWrapper(random);
-        DefinedStructureInfo definedstructureinfo = new DefinedStructureInfo()
-                .setMirror(EnumBlockMirror.valueOf(mirror.name()))
-                .setRotation(EnumBlockRotation.valueOf(structureRotation.name()))
+        net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateInfo definedstructureinfo = new net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateInfo()
+                .setMirror(net.minecraft.world.level.block.Mirror.valueOf(mirror.name()))
+                .setRotation(net.minecraft.world.level.block.Rotation.valueOf(structureRotation.name()))
                 .setIgnoreEntities(!includeEntities)
-                .addProcessor(new DefinedStructureProcessorRotation(integrity))
+                .addProcessor(new net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateProcessorRotation(integrity))
                 .setRandom(randomSource);
         definedstructureinfo.palette = palette;
 
-        BlockPosition blockPosition = new BlockPosition(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+        net.minecraft.core.BlockPos blockPosition = new net.minecraft.core.BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
         structure.placeInWorld(((CraftRegionAccessor) regionAccessor).getHandle(), blockPosition, blockPosition, definedstructureinfo, randomSource, 2);
     }
 
@@ -92,7 +85,7 @@ public class CraftStructure implements Structure {
             throw new IllegalArgumentException("Size must be at least 1x1x1 but was " + size.getBlockX() + "x" + size.getBlockY() + "x" + size.getBlockZ());
         }
 
-        structure.fillFromWorld(((CraftWorld) world).getHandle(), new BlockPosition(origin.getBlockX(), origin.getBlockY(), origin.getBlockZ()), new BlockPosition(size.getBlockX(), size.getBlockY(), size.getBlockZ()), includeEntities, Blocks.STRUCTURE_VOID);
+        structure.fillFromWorld(((CraftWorld) world).getHandle(), new net.minecraft.core.BlockPos(origin.getBlockX(), origin.getBlockY(), origin.getBlockZ()), new net.minecraft.core.BlockPos(size.getBlockX(), size.getBlockY(), size.getBlockZ()), includeEntities, Blocks.STRUCTURE_VOID);
     }
 
     @Override
@@ -103,8 +96,8 @@ public class CraftStructure implements Structure {
     @Override
     public List<Entity> getEntities() {
         List<Entity> entities = new ArrayList<>();
-        for (DefinedStructure.EntityInfo entity : structure.entityInfoList) {
-            EntityTypes.create(entity.nbt, ((CraftWorld) Bukkit.getServer().getWorlds().get(0)).getHandle()).ifPresent(dummyEntity -> {
+        for (net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.EntityInfo entity : structure.entityInfoList) {
+            net.minecraft.world.entity.EntityType.create(entity.nbt, ((CraftWorld) Bukkit.getServer().getWorlds().get(0)).getHandle()).ifPresent(dummyEntity -> {
                 dummyEntity.setPos(entity.pos.x, entity.pos.y, entity.pos.z);
                 entities.add(dummyEntity.getBukkitEntity());
             });
@@ -132,7 +125,7 @@ public class CraftStructure implements Structure {
         return getHandle().persistentDataContainer;
     }
 
-    public DefinedStructure getHandle() {
+    public net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate getHandle() {
         return structure;
     }
 }

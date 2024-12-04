@@ -1,7 +1,6 @@
 package org.bukkit.craftbukkit.entity;
 
 import com.google.common.base.Preconditions;
-import net.minecraft.core.BlockPosition;
 import net.minecraft.world.entity.animal.allay.Allay;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -70,7 +69,7 @@ public class CraftAllay extends CraftCreature implements org.bukkit.entity.Allay
     public void startDancing(Location location) {
         Preconditions.checkArgument(location != null, "Location cannot be null");
         Preconditions.checkArgument(location.getBlock().getType().equals(Material.JUKEBOX), "The Block in the Location need to be a JukeBox");
-        getHandle().setJukeboxPlaying(new BlockPosition(location.getX(), location.getY(), location.getZ()), true);
+        getHandle().setJukeboxPlaying(new net.minecraft.core.BlockPos(location.getX(), location.getY(), location.getZ()), true);
     }
 
     @Override
@@ -93,7 +92,7 @@ public class CraftAllay extends CraftCreature implements org.bukkit.entity.Allay
     }
 
     public Location getJukebox() {
-        BlockPosition nmsJukeboxPos = getHandle().jukeboxPos;
+        net.minecraft.core.BlockPos nmsJukeboxPos = getHandle().jukeboxPos;
         return (nmsJukeboxPos != null) ? new Location(getWorld(), nmsJukeboxPos.getX(), nmsJukeboxPos.getY(), nmsJukeboxPos.getZ()) : null;
     }
 }

@@ -3,7 +3,6 @@ package org.bukkit.craftbukkit.util;
 import java.util.HashSet;
 import java.util.List;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.EntityPlayer;
 import org.bukkit.entity.Player;
 
 public class LazyPlayerSet extends LazyHashSet<Player> {
@@ -19,9 +18,9 @@ public class LazyPlayerSet extends LazyHashSet<Player> {
         if (reference != null) {
             throw new IllegalStateException("Reference already created!");
         }
-        List<EntityPlayer> players = server.getPlayerList().players;
+        List<net.minecraft.server.level.ServerPlayer> players = server.getPlayerList().players;
         HashSet<Player> reference = new HashSet<Player>(players.size());
-        for (EntityPlayer player : players) {
+        for (net.minecraft.server.level.ServerPlayer player : players) {
             reference.add(player.getBukkitEntity());
         }
         return reference;

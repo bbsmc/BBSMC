@@ -1,12 +1,7 @@
 package org.bukkit.craftbukkit.generator;
 
 import java.lang.ref.WeakReference;
-import net.minecraft.core.BlockPosition;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.ITileEntity;
-import net.minecraft.world.level.block.entity.TileEntity;
-import net.minecraft.world.level.block.state.IBlockData;
-import net.minecraft.world.level.chunk.IChunkAccess;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
@@ -23,23 +18,23 @@ import org.bukkit.material.MaterialData;
 public final class CraftChunkData implements ChunkGenerator.ChunkData {
     private final int maxHeight;
     private final int minHeight;
-    private final WeakReference<IChunkAccess> weakChunk;
+    private final WeakReference<net.minecraft.world.level.chunk.ChunkAccess> weakChunk;
 
-    public CraftChunkData(World world, IChunkAccess chunkAccess) {
+    public CraftChunkData(World world, net.minecraft.world.level.chunk.ChunkAccess chunkAccess) {
         this(world.getMaxHeight(), world.getMinHeight(), chunkAccess);
     }
 
-    CraftChunkData(int maxHeight, int minHeight, IChunkAccess chunkAccess) {
+    CraftChunkData(int maxHeight, int minHeight, net.minecraft.world.level.chunk.ChunkAccess chunkAccess) {
         this.maxHeight = maxHeight;
         this.minHeight = minHeight;
         this.weakChunk = new WeakReference<>(chunkAccess);
     }
 
-    public IChunkAccess getHandle() {
-        IChunkAccess access = weakChunk.get();
+    public net.minecraft.world.level.chunk.ChunkAccess getHandle() {
+        net.minecraft.world.level.chunk.ChunkAccess access = weakChunk.get();
 
         if (access == null) {
-            throw new IllegalStateException("IChunkAccess no longer present, are you using it in a different tick?");
+            throw new IllegalStateException("net.minecraft.world.level.chunk.ChunkAccess no longer present, are you using it in a different tick?");
         }
 
         return access;
@@ -109,7 +104,7 @@ public final class CraftChunkData implements ChunkGenerator.ChunkData {
         return CraftBlockData.fromData(getTypeId(x, y, z));
     }
 
-    public void setRegion(int xMin, int yMin, int zMin, int xMax, int yMax, int zMax, IBlockData type) {
+    public void setRegion(int xMin, int yMin, int zMin, int xMax, int yMax, int zMax, net.minecraft.world.level.block.state.BlockState type) {
         // Clamp to sane values.
         if (xMin > 0xf || yMin >= maxHeight || zMin > 0xf) {
             return;
@@ -144,13 +139,13 @@ public final class CraftChunkData implements ChunkGenerator.ChunkData {
         }
     }
 
-    public IBlockData getTypeId(int x, int y, int z) {
+    public net.minecraft.world.level.block.state.BlockState getTypeId(int x, int y, int z) {
         if (x != (x & 0xf) || y < minHeight || y >= maxHeight || z != (z & 0xf)) {
             return Blocks.AIR.defaultBlockState();
         }
 
-        IChunkAccess access = getHandle();
-        return access.getBlockState(new BlockPosition(access.getPos().getMinBlockX() + x, y, access.getPos().getMinBlockZ() + z));
+        net.minecraft.world.level.chunk.ChunkAccess access = getHandle();
+        return access.getBlockState(new net.minecraft.core.BlockPos(access.getPos().getMinBlockX() + x, y, access.getPos().getMinBlockZ() + z));
     }
 
     @Override
@@ -158,17 +153,17 @@ public final class CraftChunkData implements ChunkGenerator.ChunkData {
         return CraftMagicNumbers.toLegacyData(getTypeId(x, y, z));
     }
 
-    private void setBlock(int x, int y, int z, IBlockData type) {
+    private void setBlock(int x, int y, int z, net.minecraft.world.level.block.state.BlockState type) {
         if (x != (x & 0xf) || y < minHeight || y >= maxHeight || z != (z & 0xf)) {
             return;
         }
 
-        IChunkAccess access = getHandle();
-        BlockPosition blockPosition = new BlockPosition(access.getPos().getMinBlockX() + x, y, access.getPos().getMinBlockZ() + z);
-        IBlockData oldBlockData = access.setBlockState(blockPosition, type, false);
+        net.minecraft.world.level.chunk.ChunkAccess access = getHandle();
+        net.minecraft.core.BlockPos blockPosition = new net.minecraft.core.BlockPos(access.getPos().getMinBlockX() + x, y, access.getPos().getMinBlockZ() + z);
+        net.minecraft.world.level.block.state.BlockState oldBlockData = access.setBlockState(blockPosition, type, false);
 
         if (type.hasBlockEntity()) {
-            TileEntity tileEntity = ((ITileEntity) type.getBlock()).newBlockEntity(blockPosition, type);
+            net.minecraft.world.level.block.entity.BlockEntity tileEntity = ((net.minecraft.world.level.block.EntityBlock) type.getBlock()).newBlockEntity(blockPosition, type);
 
             // createTile can return null, currently only the case with material MOVING_PISTON
             if (tileEntity == null) {

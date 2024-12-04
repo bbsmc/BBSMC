@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.banner.Pattern;
@@ -75,21 +73,21 @@ public class CraftMetaBanner extends CraftMetaItem implements BannerMeta {
         patterns = new ArrayList<Pattern>(banner.patterns);
     }
 
-    CraftMetaBanner(NBTTagCompound tag) {
+    CraftMetaBanner(net.minecraft.nbt.CompoundTag tag) {
         super(tag);
 
         if (!tag.contains("BlockEntityTag")) {
             return;
         }
 
-        NBTTagCompound entityTag = tag.getCompound("BlockEntityTag");
+        net.minecraft.nbt.CompoundTag entityTag = tag.getCompound("BlockEntityTag");
 
         base = entityTag.contains(BASE.NBT) ? DyeColor.getByWoolData((byte) entityTag.getInt(BASE.NBT)) : null;
 
         if (entityTag.contains(PATTERNS.NBT)) {
-            NBTTagList patterns = entityTag.getList(PATTERNS.NBT, CraftMagicNumbers.NBT.TAG_COMPOUND);
+            net.minecraft.nbt.ListTag patterns = entityTag.getList(PATTERNS.NBT, CraftMagicNumbers.NBT.TAG_COMPOUND);
             for (int i = 0; i < Math.min(patterns.size(), 20); i++) {
-                NBTTagCompound p = patterns.getCompound(i);
+                net.minecraft.nbt.CompoundTag p = patterns.getCompound(i);
                 DyeColor color = DyeColor.getByWoolData((byte) p.getInt(COLOR.NBT));
                 PatternType pattern = PatternType.getByIdentifier(p.getString(PATTERN.NBT));
 
@@ -121,18 +119,18 @@ public class CraftMetaBanner extends CraftMetaItem implements BannerMeta {
         }
     }
     @Override
-    void applyToItem(NBTTagCompound tag) {
+    void applyToItem(net.minecraft.nbt.CompoundTag tag) {
         super.applyToItem(tag);
 
-        NBTTagCompound entityTag = new NBTTagCompound();
+        net.minecraft.nbt.CompoundTag entityTag = new net.minecraft.nbt.CompoundTag();
         if (base != null) {
             entityTag.putInt(BASE.NBT, base.getWoolData());
         }
 
-        NBTTagList newPatterns = new NBTTagList();
+        net.minecraft.nbt.ListTag newPatterns = new net.minecraft.nbt.ListTag();
 
         for (Pattern p : patterns) {
-            NBTTagCompound compound = new NBTTagCompound();
+            net.minecraft.nbt.CompoundTag compound = new net.minecraft.nbt.CompoundTag();
             compound.putInt(COLOR.NBT, p.getColor().getWoolData());
             compound.putString(PATTERN.NBT, p.getPattern().getIdentifier());
             newPatterns.add(compound);

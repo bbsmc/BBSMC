@@ -2,8 +2,6 @@ package org.bukkit.craftbukkit.inventory;
 
 import com.google.common.collect.ImmutableMap;
 import java.util.Map;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
 import org.bukkit.Material;
 import org.bukkit.configuration.serialization.DelegateDeserialization;
 import org.bukkit.craftbukkit.util.CraftMagicNumbers;
@@ -17,7 +15,7 @@ public class CraftMetaAxolotlBucket extends CraftMetaItem implements AxolotlBuck
     static final ItemMetaKey ENTITY_TAG = new ItemMetaKey("EntityTag", "entity-tag");
 
     private Integer variant;
-    private NBTTagCompound entityTag;
+    private net.minecraft.nbt.CompoundTag entityTag;
 
     CraftMetaAxolotlBucket(CraftMetaItem meta) {
         super(meta);
@@ -31,7 +29,7 @@ public class CraftMetaAxolotlBucket extends CraftMetaItem implements AxolotlBuck
         this.entityTag = bucket.entityTag;
     }
 
-    CraftMetaAxolotlBucket(NBTTagCompound tag) {
+    CraftMetaAxolotlBucket(net.minecraft.nbt.CompoundTag tag) {
         super(tag);
 
         if (tag.contains(VARIANT.NBT, CraftMagicNumbers.NBT.TAG_INT)) {
@@ -53,7 +51,7 @@ public class CraftMetaAxolotlBucket extends CraftMetaItem implements AxolotlBuck
     }
 
     @Override
-    void deserializeInternal(NBTTagCompound tag, Object context) {
+    void deserializeInternal(net.minecraft.nbt.CompoundTag tag, Object context) {
         super.deserializeInternal(tag, context);
 
         if (tag.contains(ENTITY_TAG.NBT)) {
@@ -62,14 +60,14 @@ public class CraftMetaAxolotlBucket extends CraftMetaItem implements AxolotlBuck
     }
 
     @Override
-    void serializeInternal(Map<String, NBTBase> internalTags) {
+    void serializeInternal(Map<String, net.minecraft.nbt.Tag> internalTags) {
         if (entityTag != null && !entityTag.isEmpty()) {
             internalTags.put(ENTITY_TAG.NBT, entityTag);
         }
     }
 
     @Override
-    void applyToItem(NBTTagCompound tag) {
+    void applyToItem(net.minecraft.nbt.CompoundTag tag) {
         super.applyToItem(tag);
 
         if (hasVariant()) {

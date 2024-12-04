@@ -7,11 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.nbt.DynamicOpsNBT;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.players.WhiteListEntry;
-import net.minecraft.stats.ServerStatisticManager;
-import net.minecraft.world.level.storage.WorldNBTStorage;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -33,7 +28,7 @@ import org.bukkit.profile.PlayerProfile;
 public class CraftOfflinePlayer implements OfflinePlayer, ConfigurationSerializable {
     private final GameProfile profile;
     private final CraftServer server;
-    private final WorldNBTStorage storage;
+    private final net.minecraft.world.level.storage.PlayerDataStorage storage;
 
     protected CraftOfflinePlayer(CraftServer server, GameProfile profile) {
         this.server = server;
@@ -59,7 +54,7 @@ public class CraftOfflinePlayer implements OfflinePlayer, ConfigurationSerializa
             return profile.getName();
         }
 
-        NBTTagCompound data = getBukkitData();
+        net.minecraft.nbt.CompoundTag data = getBukkitData();
 
         if (data != null) {
             if (data.contains("lastKnownName")) {
@@ -131,7 +126,7 @@ public class CraftOfflinePlayer implements OfflinePlayer, ConfigurationSerializa
     @Override
     public void setWhitelisted(boolean value) {
         if (value) {
-            server.getHandle().getWhiteList().add(new WhiteListEntry(profile));
+            server.getHandle().getWhiteList().add(new net.minecraft.server.players.UserWhiteListEntry(profile));
         } else {
             server.getHandle().getWhiteList().remove(profile);
         }
@@ -186,16 +181,16 @@ public class CraftOfflinePlayer implements OfflinePlayer, ConfigurationSerializa
         return hash;
     }
 
-    private NBTTagCompound getData() {
+    private net.minecraft.nbt.CompoundTag getData() {
         return storage.getPlayerData(getUniqueId().toString());
     }
 
-    private NBTTagCompound getBukkitData() {
-        NBTTagCompound result = getData();
+    private net.minecraft.nbt.CompoundTag getBukkitData() {
+        net.minecraft.nbt.CompoundTag result = getData();
 
         if (result != null) {
             if (!result.contains("bukkit")) {
-                result.put("bukkit", new NBTTagCompound());
+                result.put("bukkit", new net.minecraft.nbt.CompoundTag());
             }
             result = result.getCompound("bukkit");
         }
@@ -212,7 +207,7 @@ public class CraftOfflinePlayer implements OfflinePlayer, ConfigurationSerializa
         Player player = getPlayer();
         if (player != null) return player.getFirstPlayed();
 
-        NBTTagCompound data = getBukkitData();
+        net.minecraft.nbt.CompoundTag data = getBukkitData();
 
         if (data != null) {
             if (data.contains("firstPlayed")) {
@@ -231,7 +226,7 @@ public class CraftOfflinePlayer implements OfflinePlayer, ConfigurationSerializa
         Player player = getPlayer();
         if (player != null) return player.getLastPlayed();
 
-        NBTTagCompound data = getBukkitData();
+        net.minecraft.nbt.CompoundTag data = getBukkitData();
 
         if (data != null) {
             if (data.contains("lastPlayed")) {
@@ -253,14 +248,14 @@ public class CraftOfflinePlayer implements OfflinePlayer, ConfigurationSerializa
     @Override
     public Location getLastDeathLocation() {
         if (getData().contains("LastDeathLocation", 10)) {
-            return GlobalPos.CODEC.parse(DynamicOpsNBT.INSTANCE, getData().get("LastDeathLocation")).result().map(CraftMemoryMapper::fromNms).orElse(null);
+            return GlobalPos.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, getData().get("LastDeathLocation")).result().map(CraftMemoryMapper::fromNms).orElse(null);
         }
         return null;
     }
 
     @Override
     public Location getBedSpawnLocation() {
-        NBTTagCompound data = getData();
+        net.minecraft.nbt.CompoundTag data = getData();
         if (data == null) return null;
 
         if (data.contains("SpawnX") && data.contains("SpawnY") && data.contains("SpawnZ")) {
@@ -289,7 +284,7 @@ public class CraftOfflinePlayer implements OfflinePlayer, ConfigurationSerializa
         server.getPlayerMetadata().removeMetadata(this, metadataKey, plugin);
     }
 
-    private ServerStatisticManager getStatisticManager() {
+    private net.minecraft.stats.ServerStatsCounter getStatisticManager() {
         return server.getHandle().getPlayerStats(getUniqueId(), getName());
     }
 
@@ -298,7 +293,7 @@ public class CraftOfflinePlayer implements OfflinePlayer, ConfigurationSerializa
         if (isOnline()) {
             getPlayer().incrementStatistic(statistic);
         } else {
-            ServerStatisticManager manager = getStatisticManager();
+            net.minecraft.stats.ServerStatsCounter manager = getStatisticManager();
             CraftStatistic.incrementStatistic(manager, statistic);
             manager.save();
         }
@@ -309,7 +304,7 @@ public class CraftOfflinePlayer implements OfflinePlayer, ConfigurationSerializa
         if (isOnline()) {
             getPlayer().decrementStatistic(statistic);
         } else {
-            ServerStatisticManager manager = getStatisticManager();
+            net.minecraft.stats.ServerStatsCounter manager = getStatisticManager();
             CraftStatistic.decrementStatistic(manager, statistic);
             manager.save();
         }
@@ -329,7 +324,7 @@ public class CraftOfflinePlayer implements OfflinePlayer, ConfigurationSerializa
         if (isOnline()) {
             getPlayer().incrementStatistic(statistic, amount);
         } else {
-            ServerStatisticManager manager = getStatisticManager();
+            net.minecraft.stats.ServerStatsCounter manager = getStatisticManager();
             CraftStatistic.incrementStatistic(manager, statistic, amount);
             manager.save();
         }
@@ -340,7 +335,7 @@ public class CraftOfflinePlayer implements OfflinePlayer, ConfigurationSerializa
         if (isOnline()) {
             getPlayer().decrementStatistic(statistic, amount);
         } else {
-            ServerStatisticManager manager = getStatisticManager();
+            net.minecraft.stats.ServerStatsCounter manager = getStatisticManager();
             CraftStatistic.decrementStatistic(manager, statistic, amount);
             manager.save();
         }
@@ -351,7 +346,7 @@ public class CraftOfflinePlayer implements OfflinePlayer, ConfigurationSerializa
         if (isOnline()) {
             getPlayer().setStatistic(statistic, newValue);
         } else {
-            ServerStatisticManager manager = getStatisticManager();
+            net.minecraft.stats.ServerStatsCounter manager = getStatisticManager();
             CraftStatistic.setStatistic(manager, statistic, newValue);
             manager.save();
         }
@@ -362,7 +357,7 @@ public class CraftOfflinePlayer implements OfflinePlayer, ConfigurationSerializa
         if (isOnline()) {
             getPlayer().incrementStatistic(statistic, material);
         } else {
-            ServerStatisticManager manager = getStatisticManager();
+            net.minecraft.stats.ServerStatsCounter manager = getStatisticManager();
             CraftStatistic.incrementStatistic(manager, statistic, material);
             manager.save();
         }
@@ -373,7 +368,7 @@ public class CraftOfflinePlayer implements OfflinePlayer, ConfigurationSerializa
         if (isOnline()) {
             getPlayer().decrementStatistic(statistic, material);
         } else {
-            ServerStatisticManager manager = getStatisticManager();
+            net.minecraft.stats.ServerStatsCounter manager = getStatisticManager();
             CraftStatistic.decrementStatistic(manager, statistic, material);
             manager.save();
         }
@@ -393,7 +388,7 @@ public class CraftOfflinePlayer implements OfflinePlayer, ConfigurationSerializa
         if (isOnline()) {
             getPlayer().incrementStatistic(statistic, material, amount);
         } else {
-            ServerStatisticManager manager = getStatisticManager();
+            net.minecraft.stats.ServerStatsCounter manager = getStatisticManager();
             CraftStatistic.incrementStatistic(manager, statistic, material, amount);
             manager.save();
         }
@@ -404,7 +399,7 @@ public class CraftOfflinePlayer implements OfflinePlayer, ConfigurationSerializa
         if (isOnline()) {
             getPlayer().decrementStatistic(statistic, material, amount);
         } else {
-            ServerStatisticManager manager = getStatisticManager();
+            net.minecraft.stats.ServerStatsCounter manager = getStatisticManager();
             CraftStatistic.decrementStatistic(manager, statistic, material, amount);
             manager.save();
         }
@@ -415,7 +410,7 @@ public class CraftOfflinePlayer implements OfflinePlayer, ConfigurationSerializa
         if (isOnline()) {
             getPlayer().setStatistic(statistic, material, newValue);
         } else {
-            ServerStatisticManager manager = getStatisticManager();
+            net.minecraft.stats.ServerStatsCounter manager = getStatisticManager();
             CraftStatistic.setStatistic(manager, statistic, material, newValue);
             manager.save();
         }
@@ -426,7 +421,7 @@ public class CraftOfflinePlayer implements OfflinePlayer, ConfigurationSerializa
         if (isOnline()) {
             getPlayer().incrementStatistic(statistic, entityType);
         } else {
-            ServerStatisticManager manager = getStatisticManager();
+            net.minecraft.stats.ServerStatsCounter manager = getStatisticManager();
             CraftStatistic.incrementStatistic(manager, statistic, entityType);
             manager.save();
         }
@@ -437,7 +432,7 @@ public class CraftOfflinePlayer implements OfflinePlayer, ConfigurationSerializa
         if (isOnline()) {
             getPlayer().decrementStatistic(statistic, entityType);
         } else {
-            ServerStatisticManager manager = getStatisticManager();
+            net.minecraft.stats.ServerStatsCounter manager = getStatisticManager();
             CraftStatistic.decrementStatistic(manager, statistic, entityType);
             manager.save();
         }
@@ -457,7 +452,7 @@ public class CraftOfflinePlayer implements OfflinePlayer, ConfigurationSerializa
         if (isOnline()) {
             getPlayer().incrementStatistic(statistic, entityType, amount);
         } else {
-            ServerStatisticManager manager = getStatisticManager();
+            net.minecraft.stats.ServerStatsCounter manager = getStatisticManager();
             CraftStatistic.incrementStatistic(manager, statistic, entityType, amount);
             manager.save();
         }
@@ -468,7 +463,7 @@ public class CraftOfflinePlayer implements OfflinePlayer, ConfigurationSerializa
         if (isOnline()) {
             getPlayer().decrementStatistic(statistic, entityType, amount);
         } else {
-            ServerStatisticManager manager = getStatisticManager();
+            net.minecraft.stats.ServerStatsCounter manager = getStatisticManager();
             CraftStatistic.decrementStatistic(manager, statistic, entityType, amount);
             manager.save();
         }
@@ -479,7 +474,7 @@ public class CraftOfflinePlayer implements OfflinePlayer, ConfigurationSerializa
         if (isOnline()) {
             getPlayer().setStatistic(statistic, entityType, newValue);
         } else {
-            ServerStatisticManager manager = getStatisticManager();
+            net.minecraft.stats.ServerStatsCounter manager = getStatisticManager();
             CraftStatistic.setStatistic(manager, statistic, entityType, newValue);
             manager.save();
         }

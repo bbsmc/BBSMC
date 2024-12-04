@@ -2,8 +2,6 @@ package org.bukkit.craftbukkit.scoreboard;
 
 import com.google.common.collect.ImmutableSet;
 import java.util.Set;
-import net.minecraft.world.scores.ScoreboardTeam;
-import net.minecraft.world.scores.ScoreboardTeamBase;
 import net.minecraft.world.scores.ScoreboardTeamBase.EnumNameTagVisibility;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
@@ -16,9 +14,9 @@ import org.bukkit.scoreboard.Team.Option;
 import org.bukkit.scoreboard.Team.OptionStatus;
 
 final class CraftTeam extends CraftScoreboardComponent implements Team {
-    private final ScoreboardTeam team;
+    private final net.minecraft.world.scores.PlayerTeam team;
 
-    CraftTeam(CraftScoreboard scoreboard, ScoreboardTeam team) {
+    CraftTeam(CraftScoreboard scoreboard, net.minecraft.world.scores.PlayerTeam team) {
         super(scoreboard);
         this.team = team;
     }
@@ -247,7 +245,7 @@ final class CraftTeam extends CraftScoreboardComponent implements Team {
                 team.setDeathMessageVisibility(EnumNameTagVisibility.values()[status.ordinal()]);
                 break;
             case COLLISION_RULE:
-                team.setCollisionRule(ScoreboardTeamBase.EnumTeamPush.values()[status.ordinal()]);
+                team.setCollisionRule(net.minecraft.world.scores.PlayerTeamBase.EnumTeamPush.values()[status.ordinal()]);
                 break;
             default:
                 throw new IllegalArgumentException("Unrecognised option " + option);

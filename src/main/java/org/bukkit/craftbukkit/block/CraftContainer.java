@@ -1,12 +1,10 @@
 package org.bukkit.craftbukkit.block;
 
-import net.minecraft.world.ChestLock;
-import net.minecraft.world.level.block.entity.TileEntityContainer;
 import org.bukkit.World;
 import org.bukkit.block.Container;
 import org.bukkit.craftbukkit.util.CraftChatMessage;
 
-public abstract class CraftContainer<T extends TileEntityContainer> extends CraftBlockEntityState<T> implements Container {
+public abstract class CraftContainer<T extends net.minecraft.world.level.block.entity.BaseContainerBlockEntity> extends CraftBlockEntityState<T> implements Container {
 
     public CraftContainer(World world, T tileEntity) {
         super(world, tileEntity);
@@ -24,7 +22,7 @@ public abstract class CraftContainer<T extends TileEntityContainer> extends Craf
 
     @Override
     public void setLock(String key) {
-        this.getSnapshot().lockKey = (key == null) ? ChestLock.NO_LOCK : new ChestLock(key);
+        this.getSnapshot().lockKey = (key == null) ? net.minecraft.world.LockCode.NO_LOCK : new net.minecraft.world.LockCode(key);
     }
 
     @Override
