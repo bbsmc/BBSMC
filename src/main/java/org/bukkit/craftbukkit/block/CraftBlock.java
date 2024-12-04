@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.apache.commons.lang.Validate;
@@ -333,10 +334,10 @@ public class CraftBlock implements Block {
         }
 
         Biome biome = Registry.BIOME.get(CraftNamespacedKey.fromMinecraft(registry.getKey(base)));
-        return (biome == null) ? Biome.CUSTOM : biome;
+        return (biome == null) ? org.bukkit.block.Biome.CUSTOM : biome;
     }
 
-    public static Holder<net.minecraft.world.level.biome.Biome> biomeTonet.minecraft.world.level.biome.Biome(net.minecraft.core.Registry<net.minecraft.world.level.biome.Biome> registry, Biome bio) {
+    public static Holder<net.minecraft.world.level.biome.Biome> biomeToBiomeBase(net.minecraft.core.Registry<net.minecraft.world.level.biome.Biome> registry, Biome bio) {
         if (bio == null || bio == Biome.CUSTOM) {
             return null;
         }
@@ -473,7 +474,7 @@ public class CraftBlock implements Block {
         net.minecraft.core.Direction direction = blockFaceToNotch(face);
         BlockFertilizeEvent event = null;
         net.minecraft.server.level.ServerLevel world = getCraftWorld().getHandle();
-        net.minecraft.world.item.context.UseOnContext context = new net.minecraft.world.item.context.UseOnContext(world, null, net.minecraft.world.InteractionHand.MAIN_HAND, Items.BONE_MEAL.getDefaultInstance(), new net.minecraft.world.phys.HitResultBlock(net.minecraft.world.phys.Vec3.ZERO, direction, getPosition(), false));
+        net.minecraft.world.item.context.UseOnContext context = new net.minecraft.world.item.context.UseOnContext(world, null, net.minecraft.world.InteractionHand.MAIN_HAND, Items.BONE_MEAL.getDefaultInstance(), new net.minecraft.world.phys.BlockHitResult(net.minecraft.world.phys.Vec3.ZERO, direction, getPosition(), false));
 
         // SPIGOT-6895: Call StructureGrowEvent and BlockFertilizeEvent
         world.captureTreeGeneration = true;
@@ -573,7 +574,7 @@ public class CraftBlock implements Block {
     }
 
     @Override
-    public net.minecraft.world.level.ClipContextResult rayTrace(Location start, Vector direction, double maxDistance, FluidCollisionMode fluidCollisionMode) {
+    public RayTraceResult rayTrace(Location start, Vector direction, double maxDistance, FluidCollisionMode fluidCollisionMode) {
         Validate.notNull(start, "Start location is null!");
         Validate.isTrue(this.getWorld().equals(start.getWorld()), "Start location is from different world!");
         start.checkFinite();
@@ -591,8 +592,8 @@ public class CraftBlock implements Block {
         net.minecraft.world.phys.Vec3 startPos = new net.minecraft.world.phys.Vec3(start.getX(), start.getY(), start.getZ());
         net.minecraft.world.phys.Vec3 endPos = new net.minecraft.world.phys.Vec3(start.getX() + dir.getX(), start.getY() + dir.getY(), start.getZ() + dir.getZ());
 
-        net.minecraft.world.phys.HitResult nmsHitResult = world.clip(new net.minecraft.world.level.ClipContext(startPos, endPos, net.minecraft.world.level.ClipContext.BlockCollisionOption.OUTLINE, CraftFluidCollisionMode.toNMS(fluidCollisionMode), null), position);
-        return Craftnet.minecraft.world.level.ClipContextResult.fromNMS(this.getWorld(), nmsHitResult);
+        net.minecraft.world.phys.HitResult nmsHitResult = world.clip(new net.minecraft.world.level.ClipContext(startPos, endPos, ClipContext.Block.OUTLINE, CraftFluidCollisionMode.toNMS(fluidCollisionMode), null), position);
+        return CraftRayTraceResult.fromNMS(this.getWorld(), nmsHitResult);
     }
 
     @Override

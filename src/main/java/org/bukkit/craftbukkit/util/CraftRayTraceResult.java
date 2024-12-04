@@ -28,7 +28,7 @@ public final class CraftRayTraceResult {
         Block hitBlock = null;
         net.minecraft.core.BlockPos nmsBlockPos = null;
         if (nmsHitResult.getType() == EnumMovingObjectType.BLOCK) {
-            net.minecraft.world.phys.HitResultBlock blockHitResult = (net.minecraft.world.phys.HitResultBlock) nmsHitResult;
+            net.minecraft.world.phys.BlockHitResult blockHitResult = (net.minecraft.world.phys.BlockHitResult) nmsHitResult;
             hitBlockFace = CraftBlock.notchToBlockFace(blockHitResult.getDirection());
             nmsBlockPos = blockHitResult.getBlockPos();
         }

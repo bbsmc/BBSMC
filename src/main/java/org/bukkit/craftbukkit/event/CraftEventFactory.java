@@ -1202,7 +1202,7 @@ public class CraftEventFactory {
         Block hitBlock = null;
         BlockFace hitFace = null;
         if (position.getType() == net.minecraft.world.phys.HitResult.EnumMovingObjectType.BLOCK) {
-            net.minecraft.world.phys.HitResultBlock positionBlock = (net.minecraft.world.phys.HitResultBlock) position;
+            net.minecraft.world.phys.BlockHitResult positionBlock = (net.minecraft.world.phys.BlockHitResult) position;
             hitBlock = CraftBlock.at(entity.level, positionBlock.getBlockPos());
             hitFace = CraftBlock.notchToBlockFace(positionBlock.getDirection());
         }
