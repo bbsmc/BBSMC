@@ -37,32 +37,6 @@
 +
  public abstract class Entity implements INamableTileEntity, EntityAccess, ICommandListener {
  
-+    // CraftBukkit start
-+    private static final int CURRENT_LEVEL = 2;
-+    static boolean isLevelAtLeast(NBTTagCompound tag, int level) {
-+        return tag.contains("Bukkit.updateLevel") && tag.getInt("Bukkit.updateLevel") >= level;
-+    }
-+
-+    private CraftEntity bukkitEntity;
-+
-+    public CraftEntity getBukkitEntity() {
-+        if (bukkitEntity == null) {
-+            bukkitEntity = CraftEntity.getEntity(level.getCraftServer(), this);
-+        }
-+        return bukkitEntity;
-+    }
-+
-+    @Override
-+    public CommandSender getBukkitSender(CommandListenerWrapper wrapper) {
-+        return getBukkitEntity();
-+    }
-+
-+    // CraftBukkit - SPIGOT-6907: re-implement LivingEntity#setMaximumAir()
-+    public int getDefaultMaxAirSupply() {
-+        return TOTAL_AIR_SUPPLY;
-+    }
-+    // CraftBukkit end
-+
      private static final Logger LOGGER = LogUtils.getLogger();
      public static final String ID_TAG = "id";
      public static final String PASSENGERS_TAG = "Passengers";
@@ -70,24 +44,6 @@
      public boolean hasVisualFire;
      @Nullable
      private IBlockData feetBlockState;
-+    // CraftBukkit start
-+    public boolean persist = true;
-+    public boolean valid;
-+    public boolean generation;
-+    public int maxAirTicks = getDefaultMaxAirSupply(); // CraftBukkit - SPIGOT-6907: re-implement LivingEntity#setMaximumAir()
-+    public org.bukkit.projectiles.ProjectileSource projectileSource; // For projectiles only
-+    public boolean lastDamageCancelled; // SPIGOT-5339, SPIGOT-6252, SPIGOT-6777: Keep track if the event was canceled
-+    public boolean persistentInvisibility = false;
-+    public BlockPosition lastLavaContact;
-+
-+    public float getBukkitYaw() {
-+        return this.yRot;
-+    }
-+
-+    public boolean isChunkLoaded() {
-+        return level.hasChunk((int) Math.floor(this.getX()) >> 4, (int) Math.floor(this.getZ()) >> 4);
-+    }
-+    // CraftBukkit end
  
      public Entity(EntityTypes<?> entitytypes, World world) {
          this.id = Entity.ENTITY_COUNTER.incrementAndGet();
@@ -142,15 +98,6 @@
          this.baseTick();
      }
  
-+    // CraftBukkit start
-+    public void postTick() {
-+        // No clean way to break out of ticking once the entity has been copied to a new world, so instead we move the portalling later in the tick cycle
-+        if (!(this instanceof EntityPlayer)) {
-+            this.handleNetherPortal();
-+        }
-+    }
-+    // CraftBukkit end
-+
      public void baseTick() {
          this.level.getProfiler().push("entityBaseTick");
          this.feetBlockState = null;
@@ -257,20 +204,6 @@
          return SoundEffects.GENERIC_SPLASH;
      }
  
-+    // CraftBukkit start - Add delegate methods
-+    public SoundEffect getSwimSound0() {
-+        return getSwimSound();
-+    }
-+
-+    public SoundEffect getSwimSplashSound0() {
-+        return getSwimSplashSound();
-+    }
-+
-+    public SoundEffect getSwimHighSpeedSplashSound0() {
-+        return getSwimHighSpeedSplashSound();
-+    }
-+    // CraftBukkit end
-+
      protected void checkInsideBlocks() {
          AxisAlignedBB axisalignedbb = this.getBoundingBox();
          BlockPosition blockposition = new BlockPosition(axisalignedbb.minX + 0.001D, axisalignedbb.minY + 0.001D, axisalignedbb.minZ + 0.001D);
@@ -286,12 +219,6 @@
          return false;
      }
  
-+    // CraftBukkit start - collidable API
-+    public boolean canCollideWithBukkit(Entity entity) {
-+        return isPushable();
-+    }
-+    // CraftBukkit end
-+
      public void awardKillScore(Entity entity, int i, DamageSource damagesource) {
          if (entity instanceof EntityPlayer) {
              CriterionTriggers.ENTITY_KILLED_PLAYER.trigger((EntityPlayer) entity, this, damagesource);
@@ -778,20 +705,6 @@
  
 -    protected Optional<BlockUtil.Rectangle> getExitPortal(WorldServer worldserver, BlockPosition blockposition, boolean flag, WorldBorder worldborder) {
 -        return worldserver.getPortalForcer().findPortalAround(blockposition, flag, worldborder);
-+    // CraftBukkit start
-+    protected CraftPortalEvent callPortalEvent(Entity entity, WorldServer exitWorldServer, Position exitPosition, PlayerTeleportEvent.TeleportCause cause, int searchRadius, int creationRadius) {
-+        org.bukkit.entity.Entity bukkitEntity = entity.getBukkitEntity();
-+        Location enter = bukkitEntity.getLocation();
-+        Location exit = new Location(exitWorldServer.getWorld(), exitPosition.x(), exitPosition.y(), exitPosition.z());
-+
-+        EntityPortalEvent event = new EntityPortalEvent(bukkitEntity, enter, exit, searchRadius);
-+        event.getEntity().getServer().getPluginManager().callEvent(event);
-+        if (event.isCancelled() || event.getTo() == null || event.getTo().getWorld() == null || !entity.isAlive()) {
-+            return null;
-+        }
-+        return new CraftPortalEvent(event);
-+    }
-+
 +    protected Optional<BlockUtil.Rectangle> getExitPortal(WorldServer worldserver, BlockPosition blockposition, boolean flag, WorldBorder worldborder, int searchRadius, boolean canCreatePortal, int createRadius) {
 +        return worldserver.getPortalForcer().findPortalAround(blockposition, worldborder, searchRadius);
 +        // CraftBukkit end

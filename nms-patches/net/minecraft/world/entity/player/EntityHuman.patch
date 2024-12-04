@@ -48,16 +48,6 @@
      @Nullable
      public EntityFishingHook fishing;
  
-+    // CraftBukkit start
-+    public boolean fauxSleeping;
-+    public int oldLevel = -1;
-+
-+    @Override
-+    public CraftHumanEntity getBukkitEntity() {
-+        return (CraftHumanEntity) super.getBukkitEntity();
-+    }
-+    // CraftBukkit end
-+
      public EntityHuman(World world, BlockPosition blockposition, float f, GameProfile gameprofile, @Nullable ProfilePublicKey profilepublickey) {
          super(EntityTypes.PLAYER, world);
          this.lastItemInMainHand = ItemStack.EMPTY;

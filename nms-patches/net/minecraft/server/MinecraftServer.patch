@@ -45,21 +45,6 @@
      protected SaveData worldData;
      private volatile boolean isSaving;
  
-+    // CraftBukkit start
-+    public final DataPackConfiguration datapackconfiguration;
-+    public final DynamicOps<NBTBase> registryreadops;
-+    public org.bukkit.craftbukkit.CraftServer server;
-+    public OptionSet options;
-+    public org.bukkit.command.ConsoleCommandSender console;
-+    public org.bukkit.command.RemoteConsoleCommandSender remoteConsole;
-+    public ConsoleReader reader;
-+    public static int currentTick = (int) (System.currentTimeMillis() / 50);
-+    public java.util.Queue<Runnable> processQueue = new java.util.concurrent.ConcurrentLinkedQueue<Runnable>();
-+    public int autosavePeriod;
-+    public CommandDispatcher vanillaCommandDispatcher;
-+    private boolean forceTicks;
-+    // CraftBukkit end
-+
      public static <S extends MinecraftServer> S spin(Function<Thread, S> function) {
          AtomicReference<S> atomicreference = new AtomicReference();
          Thread thread = new Thread(() -> {

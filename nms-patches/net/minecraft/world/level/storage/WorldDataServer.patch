@@ -20,19 +20,6 @@
      private final Set<String> knownServerBrands;
      private boolean wasModded;
      private final CustomFunctionCallbackTimerQueue<MinecraftServer> scheduledEvents;
-+    // CraftBukkit start - Add world and pdc
-+    private WorldServer world;
-+    protected NBTBase pdc;
-+
-+    public void setWorld(WorldServer world) {
-+        if (this.world != null) {
-+            return;
-+        }
-+        this.world = world;
-+        world.getWorld().readBukkitValues(pdc);
-+        pdc = null;
-+    }
-+    // CraftBukkit end
  
      private WorldDataServer(@Nullable DataFixer datafixer, int i, @Nullable NBTTagCompound nbttagcompound, boolean flag, int j, int k, int l, float f, long i1, long j1, int k1, int l1, int i2, boolean flag1, int j2, boolean flag2, boolean flag3, boolean flag4, WorldBorder.c worldborder_c, int k2, int l2, @Nullable UUID uuid, Set<String> set, CustomFunctionCallbackTimerQueue<MinecraftServer> customfunctioncallbacktimerqueue, @Nullable NBTTagCompound nbttagcompound1, NBTTagCompound nbttagcompound2, WorldSettings worldsettings, GeneratorSettings generatorsettings, Lifecycle lifecycle) {
          if (!generatorsettings.dimensions().containsKey(WorldDimension.OVERWORLD)) {
@@ -132,12 +119,4 @@
      public WorldSettings getLevelSettings() {
          return this.settings.copy();
      }
-+
-+    // CraftBukkit start - Check if the name stored in NBT is the correct one
-+    public void checkName(String name) {
-+        if (!this.settings.levelName.equals(name)) {
-+            this.settings.levelName = name;
-+        }
-+    }
-+    // CraftBukkit end
  }

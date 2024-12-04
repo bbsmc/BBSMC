@@ -35,20 +35,6 @@
      private float swimAmountO;
      protected BehaviorController<?> brain;
      private boolean skipDropExperience;
-+    // CraftBukkit start
-+    public int expToDrop;
-+    public boolean forceDrops;
-+    public ArrayList<org.bukkit.inventory.ItemStack> drops = new ArrayList<org.bukkit.inventory.ItemStack>();
-+    public final org.bukkit.craftbukkit.attribute.CraftAttributeMap craftAttributes;
-+    public boolean collides = true;
-+    public Set<UUID> collidableExemptions = new HashSet<>();
-+    public boolean bukkitPickUpLoot;
-+
-+    @Override
-+    public float getBukkitYaw() {
-+        return getYHeadRot();
-+    }
-+    // CraftBukkit end
  
      protected EntityLiving(EntityTypes<? extends EntityLiving> entitytypes, World world) {
          super(entitytypes, world);
@@ -56,10 +42,6 @@
          this.useItem = ItemStack.EMPTY;
          this.lastClimbablePos = Optional.empty();
          this.attributes = new AttributeMapBase(AttributeDefaults.getSupplier(entitytypes));
--        this.setHealth(this.getMaxHealth());
-+        this.craftAttributes = new CraftAttributeMap(attributes); // CraftBukkit
-+        // CraftBukkit - setHealth(getMaxHealth()) inlined and simplified to skip the instanceof check for EntityPlayer, as getBukkitEntity() is not initialized in constructor
-+        this.entityData.set(EntityLiving.DATA_HEALTH_ID, (float) this.getAttribute(GenericAttributes.MAX_HEALTH).getValue());
          this.blocksBuilding = true;
          this.rotA = (float) ((Math.random() + 1.0D) * 0.009999999776482582D);
          this.reapplyPosition();
@@ -118,28 +100,6 @@
  
      }
  
-+    // CraftBukkit start
-+    private boolean isTickingEffects = false;
-+    private List<ProcessableEffect> effectsToProcess = Lists.newArrayList();
-+
-+    private static class ProcessableEffect {
-+
-+        private MobEffectList type;
-+        private MobEffect effect;
-+        private final EntityPotionEffectEvent.Cause cause;
-+
-+        private ProcessableEffect(MobEffect effect, EntityPotionEffectEvent.Cause cause) {
-+            this.effect = effect;
-+            this.cause = cause;
-+        }
-+
-+        private ProcessableEffect(MobEffectList type, EntityPotionEffectEvent.Cause cause) {
-+            this.type = type;
-+            this.cause = cause;
-+        }
-+    }
-+    // CraftBukkit end
-+
      protected void tickEffects() {
          Iterator iterator = this.activeEffects.keySet().iterator();
  
@@ -563,28 +523,6 @@
          return itemstack.getEatingSound();
      }
  
-+    // CraftBukkit start - Add delegate methods
-+    public SoundEffect getHurtSound0(DamageSource damagesource) {
-+        return getHurtSound(damagesource);
-+    }
-+
-+    public SoundEffect getDeathSound0() {
-+        return getDeathSound();
-+    }
-+
-+    public SoundEffect getFallDamageSound0(int fallHeight) {
-+        return getFallDamageSound(fallHeight);
-+    }
-+
-+    public SoundEffect getDrinkingSound0(ItemStack itemstack) {
-+        return getDrinkingSound(itemstack);
-+    }
-+
-+    public SoundEffect getEatingSound0(ItemStack itemstack) {
-+        return getEatingSound(itemstack);
-+    }
-+    // CraftBukkit end
-+
      @Override
      public void setOnGround(boolean flag) {
          super.setOnGround(flag);
@@ -870,13 +808,6 @@
 +        return this.isAlive() && !this.isSpectator() && !this.onClimbable() && this.collides; // CraftBukkit
      }
  
-+    // CraftBukkit start - collidable API
-+    @Override
-+    public boolean canCollideWithBukkit(Entity entity) {
-+        return isPushable() && this.collides != this.collidableExemptions.contains(entity.getUUID());
-+    }
-+    // CraftBukkit end
-+
      @Override
      public float getYHeadRot() {
          return this.yHeadRot;

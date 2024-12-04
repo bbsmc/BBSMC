@@ -595,26 +595,7 @@
 @@ -576,6 +831,25 @@
  
      }
- 
-+    // CraftBukkit start - add a world/entity limited version
-+    public void broadcastAll(Packet packet, EntityHuman entityhuman) {
-+        for (int i = 0; i < this.players.size(); ++i) {
-+            EntityPlayer entityplayer =  this.players.get(i);
-+            if (entityhuman != null && !entityplayer.getBukkitEntity().canSee(entityhuman.getBukkitEntity())) {
-+                continue;
-+            }
-+            ((EntityPlayer) this.players.get(i)).connection.send(packet);
-+        }
-+    }
-+
-+    public void broadcastAll(Packet packet, World world) {
-+        for (int i = 0; i < world.players().size(); ++i) {
-+            ((EntityPlayer) world.players().get(i)).connection.send(packet);
-+        }
-+
-+    }
-+    // CraftBukkit end
-+
+
      public void broadcastAll(Packet<?> packet, ResourceKey<World> resourcekey) {
          Iterator iterator = this.players.iterator();
  
