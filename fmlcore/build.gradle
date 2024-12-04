@@ -57,7 +57,7 @@ tasks.withType(JavaCompile) {
 }
 
 license {
-    header = rootProject.file('LICENSE-header.txt')
+    header = rootProject.file('/forge/LICENSE-header.txt')
 
     include 'net/minecraftforge/'
 }
@@ -65,9 +65,4 @@ license {
 artifacts {
     archives jar
     archives sourcesJar
-}
-
-publishing.publications.mavenJava(MavenPublication) {
-    from components.java
-    artifact sourcesJar
 }

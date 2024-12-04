@@ -30,13 +30,6 @@ Util.init() //Init all our extension methods!
 
 ext {
     JAR_SIGNER = null
-    if (project.hasProperty('keystore')) {
-        JAR_SIGNER = [
-            storepass: project.properties.keystoreStorePass,
-            keypass: project.properties.keystoreKeyPass,
-            keystore: project.properties.keystore
-        ]
-    }
     MAPPING_CHANNEL = 'official'
     MAPPING_VERSION = '1.19.2'
     MC_VERSION = '1.19.2'
@@ -92,8 +85,8 @@ changelog {
 }
 
 def extraTxts = [
-    rootProject.file('CREDITS.txt'),
-    rootProject.file('LICENSE.txt'),
+    rootProject.file('/forge/CREDITS.txt'),
+    rootProject.file('/forge/LICENSE.txt'),
     rootProject.tasks.createChangelog.outputFile
 ]
 
@@ -162,44 +155,6 @@ subprojects {
                 'implNote:a:<em>Implementation Note:</em>'
         ]
         options.addStringOption('Xdoclint:all,-missing', '-public')
-    }
-
-    publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                // Normal Maven/old gradle doesn't support '2.+' version wildcards
-                // For now we just suppress. We *should* force the resolution to pinned versions.
-                suppressPomMetadataWarningsFor('apiElements')
-                suppressPomMetadataWarningsFor('runtimeElements')
-                pom {
-                    name = project.name
-                    description = 'Modifactions to Minecraft to enable mod developers.'
-                    url = 'https://github.com/MinecraftForge/MinecraftForge'
-
-                    scm {
-                        url = 'https://github.com/MinecraftForge/MinecraftForge'
-                        connection = 'scm:git:git://github.com/MinecraftForge/MinecraftForge.git'
-                        developerConnection = 'scm:git:git@github.com:MinecraftForge/MinecraftForge.git'
-                    }
-
-                    issueManagement {
-                        system = 'github'
-                        url = 'https://github.com/MinecraftForge/MinecraftForge/issues'
-                    }
-
-                    licenses {
-                        license {
-                            name = 'LGPL 2.1'
-                            url = 'https://github.com/MinecraftForge/MinecraftForge/blob/1.13-pre/LICENSE.txt'
-                            distribution = 'repo'
-                        }
-                    }
-                }
-            }
-        }
-        repositories {
-            maven gradleutils.getPublishingForgeMaven()
-        }
     }
 }
 
@@ -858,7 +813,7 @@ project(':fmlonly') {
         packedDependencies = PACKED_DEPS
         from(extraTxts)
         //TODO: make FML installer logo?
-        from(rootProject.file('/forge_installer_logo.png')) {
+        from(rootProject.file('/forge/forge_installer_logo.png')) {
             rename { 'big_logo.png' }
         }
     }
@@ -1541,7 +1496,7 @@ project(':forge') {
     task installerJar(type: InstallerJar, dependsOn: [genClientBinPatches, genServerBinPatches, 'signUniversalJar', launcherJson]) {
         packedDependencies = PACKED_DEPS
         from(extraTxts)
-        from(rootProject.file('/forge_installer_logo.png')) {
+        from(rootProject.file('/forge/forge_installer_logo.png')) {
             rename { 'big_logo.png' }
         }
         from(genClientBinPatches.output) {
@@ -1677,18 +1632,6 @@ project(':forge') {
         }
     }
 
-    publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                artifact universalJar
-                artifact installerJar
-                //TODO: installer-win
-                artifact makeMdk
-                artifact userdevJar
-                artifact sourcesJar
-            }
-        }
-    }
     // Since we need the modules in the bootstrap, we need to make sure they are compiled before we do each run
     afterEvaluate { prepareRuns.dependsOn(PACKED_DEPS) }
 
@@ -1703,18 +1646,6 @@ task setup() {  //These must be strings so that we can do lazy resolution. Else 
     if (symlinkValid)
         dependsOn ':fmlonly:extractMapped'
     dependsOn ':forge:extractMapped'
-}
-
-//Also output FMLOnly when building a version.
-if (System.env.TEAMCITY_VERSION) {
-    //Only setup the CI environment if and only if the environment variables are set.
-    tasks.configureTeamCity {
-        doLast {
-            println "##teamcity[buildNumber '${project(':forge').version}']"
-            println "##teamcity[setParameter name='env.PUBLISHED_JAVA_ARTIFACT_VERSION' value='${project(':forge').version}']"
-            println "##teamcity[setParameter name='env.PUBLISHED_JAVA_FML_ARTIFACT_VERSION' value='${project(':fmlonly').version}']"
-        }
-    }
 }
 
 idea {
