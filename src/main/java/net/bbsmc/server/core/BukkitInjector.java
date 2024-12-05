@@ -11,13 +11,16 @@ import net.bbsmc.server.utils.EnumHelper;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.dimension.LevelStem;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.jetbrains.annotations.Contract;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 public class BukkitInjector {
@@ -27,6 +30,8 @@ public class BukkitInjector {
             .put(LevelStem.NETHER, World.Environment.NETHER)
             .put(LevelStem.END, World.Environment.THE_END)
             .build());
+
+    public static Map<EntityType<?>, String> entityTypeMap = new HashMap<>();
 
     public static void register() {
 

@@ -7,6 +7,9 @@ import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+
+import net.bbsmc.server.world.entity.CraftEntityClassLookup;
+import net.bbsmc.server.world.entity.impl.CraftFakePlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.GlowSquid;
@@ -16,9 +19,12 @@ import net.minecraft.world.entity.animal.axolotl.Axolotl;
 import net.minecraft.world.entity.animal.frog.Frog;
 import net.minecraft.world.entity.animal.frog.Tadpole;
 import net.minecraft.world.entity.animal.goat.Goat;
+import net.minecraft.world.entity.boss.EnderDragonPart;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.decoration.GlowItemFrame;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.vehicle.ChestBoat;
+import net.minecraftforge.common.util.FakePlayer;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.Server;
@@ -65,222 +71,16 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
     }
 
     public static CraftEntity getEntity(CraftServer server, Entity entity) {
-        /*
-         * Order is *EXTREMELY* important -- keep it right! =D
-         */
-        // CHECKSTYLE:OFF
-        if (entity instanceof net.minecraft.world.entity.LivingEntity) {
-            // Players
-            if (entity instanceof net.minecraft.world.entity.player.Player) {
-                if (entity instanceof net.minecraft.server.level.ServerPlayer) { return new CraftPlayer(server, (net.minecraft.server.level.ServerPlayer) entity); }
-                else { return new CraftHumanEntity(server, (net.minecraft.world.entity.player.Player) entity); }
-            }
-            // Water Animals
-            else if (entity instanceof net.minecraft.world.entity.animal.WaterAnimal) {
-                if (entity instanceof net.minecraft.world.entity.animal.Squid) {
-                    if (entity instanceof GlowSquid) { return new CraftGlowSquid(server, (GlowSquid) entity); }
-                    else { return new CraftSquid(server, (net.minecraft.world.entity.animal.Squid) entity); }
-                }
-                else if (entity instanceof net.minecraft.world.entity.animal.AbstractFish) {
-                    if (entity instanceof net.minecraft.world.entity.animal.Cod) { return new CraftCod(server, (net.minecraft.world.entity.animal.Cod) entity); }
-                    else if (entity instanceof net.minecraft.world.entity.animal.Pufferfish) { return new CraftPufferFish(server, (net.minecraft.world.entity.animal.Pufferfish) entity); }
-                    else if (entity instanceof net.minecraft.world.entity.animal.Salmon) { return new CraftSalmon(server, (net.minecraft.world.entity.animal.Salmon) entity); }
-                    else if (entity instanceof net.minecraft.world.entity.animal.TropicalFish) { return new CraftTropicalFish(server, (net.minecraft.world.entity.animal.TropicalFish) entity); }
-                    else if (entity instanceof Tadpole) { return new CraftTadpole(server, (Tadpole) entity); }
-                    else { return new CraftFish(server, (net.minecraft.world.entity.animal.AbstractFish) entity); }
-                }
-                else if (entity instanceof net.minecraft.world.entity.animal.Dolphin) { return new CraftDolphin(server, (net.minecraft.world.entity.animal.Dolphin) entity); }
-                else { return new CraftWaterMob(server, (net.minecraft.world.entity.animal.WaterAnimal) entity); }
-            }
-            else if (entity instanceof net.minecraft.world.entity.PathfinderMob) {
-                // Animals
-                if (entity instanceof net.minecraft.world.entity.animal.Animal) {
-                    if (entity instanceof net.minecraft.world.entity.animal.Chicken) { return new CraftChicken(server, (net.minecraft.world.entity.animal.Chicken) entity); }
-                    else if (entity instanceof net.minecraft.world.entity.animal.Cow) {
-                        if (entity instanceof net.minecraft.world.entity.animal.MushroomCow) { return new CraftMushroomCow(server, (net.minecraft.world.entity.animal.MushroomCow) entity); }
-                        else { return new CraftCow(server, (net.minecraft.world.entity.animal.Cow) entity); }
-                    }
-                    else if (entity instanceof net.minecraft.world.entity.animal.Pig) { return new CraftPig(server, (net.minecraft.world.entity.animal.Pig) entity); }
-                    else if (entity instanceof net.minecraft.world.entity.TamableAnimal) {
-                        if (entity instanceof net.minecraft.world.entity.animal.Wolf) { return new CraftWolf(server, (net.minecraft.world.entity.animal.Wolf) entity); }
-                        else if (entity instanceof net.minecraft.world.entity.animal.Cat) { return new CraftCat(server, (net.minecraft.world.entity.animal.Cat) entity); }
-                        else if (entity instanceof net.minecraft.world.entity.animal.Parrot) { return new CraftParrot(server, (net.minecraft.world.entity.animal.Parrot) entity); }
-                    }
-                    else if (entity instanceof net.minecraft.world.entity.animal.Sheep) { return new CraftSheep(server, (net.minecraft.world.entity.animal.Sheep) entity); }
-                    else if (entity instanceof net.minecraft.world.entity.animal.horse.HorseAbstract) {
-                        if (entity instanceof net.minecraft.world.entity.animal.horse.HorseChestedAbstract){
-                            if (entity instanceof net.minecraft.world.entity.animal.horse.HorseDonkey) { return new CraftDonkey(server, (net.minecraft.world.entity.animal.horse.HorseDonkey) entity); }
-                            else if (entity instanceof net.minecraft.world.entity.animal.horse.HorseMule) { return new CraftMule(server, (net.minecraft.world.entity.animal.horse.HorseMule) entity); }
-                            else if (entity instanceof net.minecraft.world.entity.animal.horse.LlamaTrader) { return new CraftTraderLlama(server, (net.minecraft.world.entity.animal.horse.LlamaTrader) entity); }
-                            else if (entity instanceof net.minecraft.world.entity.animal.horse.Llama) { return new CraftLlama(server, (net.minecraft.world.entity.animal.horse.Llama) entity); }
-                        } else if (entity instanceof net.minecraft.world.entity.animal.horse.Horse) { return new CraftHorse(server, (net.minecraft.world.entity.animal.horse.Horse) entity); }
-                        else if (entity instanceof net.minecraft.world.entity.animal.horse.HorseSkeleton) { return new CraftSkeletonHorse(server, (net.minecraft.world.entity.animal.horse.HorseSkeleton) entity); }
-                        else if (entity instanceof net.minecraft.world.entity.animal.horse.HorseZombie) { return new CraftZombieHorse(server, (net.minecraft.world.entity.animal.horse.HorseZombie) entity); }
-                    }
-                    else if (entity instanceof net.minecraft.world.entity.animal.Rabbit) { return new CraftRabbit(server, (net.minecraft.world.entity.animal.Rabbit) entity); }
-                    else if (entity instanceof net.minecraft.world.entity.animal.PolarBear) { return new CraftPolarBear(server, (net.minecraft.world.entity.animal.PolarBear) entity); }
-                    else if (entity instanceof net.minecraft.world.entity.animal.Turtle) { return new CraftTurtle(server, (net.minecraft.world.entity.animal.Turtle) entity); }
-                    else if (entity instanceof net.minecraft.world.entity.animal.Ocelot) { return new CraftOcelot(server, (net.minecraft.world.entity.animal.Ocelot) entity); }
-                    else if (entity instanceof net.minecraft.world.entity.animal.Panda) { return new CraftPanda(server, (net.minecraft.world.entity.animal.Panda) entity); }
-                    else if (entity instanceof net.minecraft.world.entity.animal.Fox) { return new CraftFox(server, (net.minecraft.world.entity.animal.Fox) entity); }
-                    else if (entity instanceof net.minecraft.world.entity.animal.Bee) { return new CraftBee(server, (net.minecraft.world.entity.animal.Bee) entity); }
-                    else if (entity instanceof net.minecraft.world.entity.monster.hoglin.Hoglin) { return new CraftHoglin(server, (net.minecraft.world.entity.monster.hoglin.Hoglin) entity); }
-                    else if (entity instanceof net.minecraft.world.entity.monster.Strider) { return new CraftStrider(server, (net.minecraft.world.entity.monster.Strider) entity); }
-                    else if (entity instanceof Axolotl) { return new CraftAxolotl(server, (Axolotl) entity); }
-                    else if (entity instanceof Goat) { return new CraftGoat(server, (Goat) entity); }
-                    else if (entity instanceof Frog) { return new CraftFrog(server, (Frog) entity); }
-                    else  { return new CraftAnimals(server, (net.minecraft.world.entity.animal.Animal) entity); }
-                }
-                // Monsters
-                else if (entity instanceof net.minecraft.world.entity.monster.Monster) {
-                    if (entity instanceof net.minecraft.world.entity.monster.Zombie) {
-                        if (entity instanceof net.minecraft.world.entity.animal.PigZombie) { return new CraftPigZombie(server, (net.minecraft.world.entity.animal.PigZombie) entity); }
-                        else if (entity instanceof net.minecraft.world.entity.monster.ZombieHusk) { return new CraftHusk(server, (net.minecraft.world.entity.monster.ZombieHusk) entity); }
-                        else if (entity instanceof net.minecraft.world.entity.monster.ZombieVillager) { return new CraftVillagerZombie(server, (net.minecraft.world.entity.monster.ZombieVillager) entity); }
-                        else if (entity instanceof net.minecraft.world.entity.monster.Drowned) { return new CraftDrowned(server, (net.minecraft.world.entity.monster.Drowned) entity); }
-                        else { return new CraftZombie(server, (net.minecraft.world.entity.monster.Zombie) entity); }
-                    }
-                    else if (entity instanceof net.minecraft.world.entity.monster.Creeper) { return new CraftCreeper(server, (net.minecraft.world.entity.monster.Creeper) entity); }
-                    else if (entity instanceof net.minecraft.world.entity.monster.EnderMan) { return new CraftEnderman(server, (net.minecraft.world.entity.monster.EnderMan) entity); }
-                    else if (entity instanceof net.minecraft.world.entity.monster.Silverfish) { return new CraftSilverfish(server, (net.minecraft.world.entity.monster.Silverfish) entity); }
-                    else if (entity instanceof net.minecraft.world.entity.monster.Giant) { return new CraftGiant(server, (net.minecraft.world.entity.monster.Giant) entity); }
-                    else if (entity instanceof net.minecraft.world.entity.monster.SkeletonAbstract) {
-                        if (entity instanceof net.minecraft.world.entity.monster.SkeletonStray) { return new CraftStray(server, (net.minecraft.world.entity.monster.SkeletonStray) entity); }
-                        else if (entity instanceof net.minecraft.world.entity.monster.SkeletonWither) { return new CraftWitherSkeleton(server, (net.minecraft.world.entity.monster.SkeletonWither) entity); }
-                        else if (entity instanceof net.minecraft.world.entity.monster.Skeleton){ return new CraftSkeleton(server, (net.minecraft.world.entity.monster.Skeleton) entity); }
-                    }
-                    else if (entity instanceof net.minecraft.world.entity.monster.Blaze) { return new CraftBlaze(server, (net.minecraft.world.entity.monster.Blaze) entity); }
-                    else if (entity instanceof net.minecraft.world.entity.monster.Witch) { return new CraftWitch(server, (net.minecraft.world.entity.monster.Witch) entity); }
-                    else if (entity instanceof net.minecraft.world.entity.boss.wither.WitherBoss) { return new CraftWither(server, (net.minecraft.world.entity.boss.wither.WitherBoss) entity); }
-                    else if (entity instanceof net.minecraft.world.entity.monster.Spider) {
-                        if (entity instanceof net.minecraft.world.entity.monster.CaveSpider) { return new CraftCaveSpider(server, (net.minecraft.world.entity.monster.CaveSpider) entity); }
-                        else { return new CraftSpider(server, (net.minecraft.world.entity.monster.Spider) entity); }
-                    }
-                    else if (entity instanceof net.minecraft.world.entity.monster.Endermite) { return new CraftEndermite(server, (net.minecraft.world.entity.monster.Endermite) entity); }
-                    else if (entity instanceof net.minecraft.world.entity.monster.Guardian) {
-                        if (entity instanceof net.minecraft.world.entity.monster.GuardianElder) { return new CraftElderGuardian(server, (net.minecraft.world.entity.monster.GuardianElder) entity); }
-                        else { return new CraftGuardian(server, (net.minecraft.world.entity.monster.Guardian) entity); }
-                    }
-                    else if (entity instanceof net.minecraft.world.entity.monster.Vex) { return new CraftVex(server, (net.minecraft.world.entity.monster.Vex) entity); }
-                    else if (entity instanceof net.minecraft.world.entity.monster.AbstractIllager) {
-                        if (entity instanceof net.minecraft.world.entity.monster.SpellcasterIllager) {
-                            if (entity instanceof net.minecraft.world.entity.monster.Evoker) { return new CraftEvoker(server, (net.minecraft.world.entity.monster.Evoker) entity); }
-                            else if (entity instanceof net.minecraft.world.entity.monster.Illusioner) { return new CraftIllusioner(server, (net.minecraft.world.entity.monster.Illusioner) entity); }
-                            else {  return new CraftSpellcaster(server, (net.minecraft.world.entity.monster.SpellcasterIllager) entity); }
-                        }
-                        else if (entity instanceof net.minecraft.world.entity.monster.Vindicator) { return new CraftVindicator(server, (net.minecraft.world.entity.monster.Vindicator) entity); }
-                        else if (entity instanceof net.minecraft.world.entity.monster.Pillager) { return new CraftPillager(server, (net.minecraft.world.entity.monster.Pillager) entity); }
-                        else { return new CraftIllager(server, (net.minecraft.world.entity.monster.AbstractIllager) entity); }
-                    }
-                    else if (entity instanceof net.minecraft.world.entity.monster.Ravager) { return new CraftRavager(server, (net.minecraft.world.entity.monster.Ravager) entity); }
-                    else if (entity instanceof net.minecraft.world.entity.animal.PiglinAbstract) {
-                        if (entity instanceof net.minecraft.world.entity.animal.Piglin) return new CraftPiglin(server, (net.minecraft.world.entity.animal.Piglin) entity);
-                        else if (entity instanceof net.minecraft.world.entity.animal.PiglinBrute) { return new CraftPiglinBrute(server, (net.minecraft.world.entity.animal.PiglinBrute) entity); }
-                        else { return new CraftPiglinAbstract(server, (net.minecraft.world.entity.animal.PiglinAbstract) entity); }
-                    }
-                    else if (entity instanceof net.minecraft.world.entity.monster.Zoglin) { return new CraftZoglin(server, (net.minecraft.world.entity.monster.Zoglin) entity); }
-                    else if (entity instanceof Warden) { return new CraftWarden(server, (Warden) entity); }
-
-                    else  { return new CraftMonster(server, (net.minecraft.world.entity.monster.Monster) entity); }
-                }
-                else if (entity instanceof net.minecraft.world.entity.animal.AbstractGolem) {
-                    if (entity instanceof net.minecraft.world.entity.animal.SnowGolem) { return new CraftSnowman(server, (net.minecraft.world.entity.animal.SnowGolem) entity); }
-                    else if (entity instanceof net.minecraft.world.entity.animal.IronGolem) { return new CraftIronGolem(server, (net.minecraft.world.entity.animal.IronGolem) entity); }
-                    else if (entity instanceof net.minecraft.world.entity.monster.Shulker) { return new CraftShulker(server, (net.minecraft.world.entity.monster.Shulker) entity); }
-                }
-                else if (entity instanceof net.minecraft.world.entity.npc.VillagerAbstract) {
-                    if (entity instanceof net.minecraft.world.entity.npc.Villager) { return new CraftVillager(server, (net.minecraft.world.entity.npc.Villager) entity); }
-                    else if (entity instanceof net.minecraft.world.entity.npc.VillagerTrader) { return new CraftWanderingTrader(server, (net.minecraft.world.entity.npc.VillagerTrader) entity); }
-                    else { return new CraftAbstractVillager(server, (net.minecraft.world.entity.npc.VillagerAbstract) entity); }
-                }
-                else if (entity instanceof Allay) { return new CraftAllay(server, (Allay) entity); }
-                else { return new CraftCreature(server, (net.minecraft.world.entity.PathfinderMob) entity); }
-            }
-            // Slimes are a special (and broken) case
-            else if (entity instanceof net.minecraft.world.entity.monster.Slime) {
-                if (entity instanceof net.minecraft.world.entity.monster.MagmaCube) { return new CraftMagmaCube(server, (net.minecraft.world.entity.monster.MagmaCube) entity); }
-                else { return new CraftSlime(server, (net.minecraft.world.entity.monster.Slime) entity); }
-            }
-            // Flying
-            else if (entity instanceof net.minecraft.world.entity.FlyingMob) {
-                if (entity instanceof net.minecraft.world.entity.monster.Ghast) { return new CraftGhast(server, (net.minecraft.world.entity.monster.Ghast) entity); }
-                else if (entity instanceof net.minecraft.world.entity.monster.Phantom) { return new CraftPhantom(server, (net.minecraft.world.entity.monster.Phantom) entity); }
-                else { return new CraftFlying(server, (net.minecraft.world.entity.FlyingMob) entity); }
-            }
-            else if (entity instanceof net.minecraft.world.entity.boss.enderdragon.EnderDragon) {
-                return new CraftEnderDragon(server, (net.minecraft.world.entity.boss.enderdragon.EnderDragon) entity);
-            }
-            // Ambient
-            else if (entity instanceof net.minecraft.world.entity.ambient.AmbientCreature) {
-                if (entity instanceof net.minecraft.world.entity.ambient.Bat) { return new CraftBat(server, (net.minecraft.world.entity.ambient.Bat) entity); }
-                else { return new CraftAmbient(server, (net.minecraft.world.entity.ambient.AmbientCreature) entity); }
-            }
-            else if (entity instanceof net.minecraft.world.entity.decoration.ArmorStand) { return new CraftArmorStand(server, (net.minecraft.world.entity.decoration.ArmorStand) entity); }
-            else  { return new CraftLivingEntity(server, (net.minecraft.world.entity.LivingEntity) entity); }
+        if (entity instanceof FakePlayer) {
+            return new CraftFakePlayer(server, (FakePlayer) entity);
         }
-        else if (entity instanceof net.minecraft.world.entity.boss.EnderDragonPart) {
-            net.minecraft.world.entity.boss.EnderDragonPart part = (net.minecraft.world.entity.boss.EnderDragonPart) entity;
-            if (part.parentMob instanceof net.minecraft.world.entity.boss.enderdragon.EnderDragon) { return new CraftEnderDragonPart(server, (net.minecraft.world.entity.boss.EnderDragonPart) entity); }
-            else { return new CraftComplexPart(server, (net.minecraft.world.entity.boss.EnderDragonPart) entity); }
-        }
-        else if (entity instanceof net.minecraft.world.entity.ExperienceOrb) { return new CraftExperienceOrb(server, (net.minecraft.world.entity.ExperienceOrb) entity); }
-        else if (entity instanceof net.minecraft.world.entity.projectile.Arrow) { return new CraftTippedArrow(server, (net.minecraft.world.entity.projectile.Arrow) entity); }
-        else if (entity instanceof net.minecraft.world.entity.projectile.SpectralArrow) { return new CraftSpectralArrow(server, (net.minecraft.world.entity.projectile.SpectralArrow) entity); }
-        else if (entity instanceof net.minecraft.world.entity.projectile.AbstractArrow) {
-            if (entity instanceof net.minecraft.world.entity.projectile.ThrownTrident) { return new CraftTrident(server, (net.minecraft.world.entity.projectile.ThrownTrident) entity); }
-            else { return new CraftArrow(server, (net.minecraft.world.entity.projectile.AbstractArrow) entity); }
-        }
-        else if (entity instanceof net.minecraft.world.entity.vehicle.Boat) {
-            if (entity instanceof ChestBoat) { return new CraftChestBoat(server, (ChestBoat) entity); }
-            else { return new CraftBoat(server, (net.minecraft.world.entity.vehicle.Boat) entity); }
-        }
-        else if (entity instanceof net.minecraft.world.entity.projectile.ThrowableProjectile) {
-            if (entity instanceof net.minecraft.world.entity.projectile.ThrownEgg) { return new CraftEgg(server, (net.minecraft.world.entity.projectile.ThrownEgg) entity); }
-            else if (entity instanceof net.minecraft.world.entity.projectile.Snowball) { return new CraftSnowball(server, (net.minecraft.world.entity.projectile.Snowball) entity); }
-            else if (entity instanceof net.minecraft.world.entity.projectile.ThrownPotion) { return new CraftThrownPotion(server, (net.minecraft.world.entity.projectile.ThrownPotion) entity); }
-            else if (entity instanceof net.minecraft.world.entity.projectile.ThrownEnderpearl) { return new CraftEnderPearl(server, (net.minecraft.world.entity.projectile.ThrownEnderpearl) entity); }
-            else if (entity instanceof net.minecraft.world.entity.projectile.ThrownExperienceBottle) { return new CraftThrownExpBottle(server, (net.minecraft.world.entity.projectile.ThrownExperienceBottle) entity); }
-        }
-        else if (entity instanceof net.minecraft.world.entity.item.FallingBlockEntity) { return new CraftFallingBlock(server, (net.minecraft.world.entity.item.FallingBlockEntity) entity); }
-        else if (entity instanceof net.minecraft.world.entity.projectile.AbstractHurtingProjectile) {
-            if (entity instanceof net.minecraft.world.entity.projectile.SmallFireball) { return new CraftSmallFireball(server, (net.minecraft.world.entity.projectile.SmallFireball) entity); }
-            else if (entity instanceof net.minecraft.world.entity.projectile.LargeFireball) { return new CraftLargeFireball(server, (net.minecraft.world.entity.projectile.LargeFireball) entity); }
-            else if (entity instanceof net.minecraft.world.entity.boss.wither.WitherBossSkull) { return new CraftWitherSkull(server, (net.minecraft.world.entity.boss.wither.WitherBossSkull) entity); }
-            else if (entity instanceof net.minecraft.world.entity.projectile.DragonFireball) { return new CraftDragonFireball(server, (net.minecraft.world.entity.projectile.DragonFireball) entity); }
-            else { return new CraftFireball(server, (net.minecraft.world.entity.projectile.AbstractHurtingProjectile) entity); }
-        }
-        else if (entity instanceof net.minecraft.world.entity.projectile.EyeOfEnder) { return new CraftEnderSignal(server, (net.minecraft.world.entity.projectile.EyeOfEnder) entity); }
-        else if (entity instanceof net.minecraft.world.entity.boss.enderdragon.EndCrystal) { return new CraftEnderCrystal(server, (net.minecraft.world.entity.boss.enderdragon.EndCrystal) entity); }
-        else if (entity instanceof net.minecraft.world.entity.animal.AbstractFishingHook) { return new CraftFishHook(server, (net.minecraft.world.entity.animal.AbstractFishingHook) entity); }
-        else if (entity instanceof net.minecraft.world.entity.item.ItemEntity) { return new CraftItem(server, (net.minecraft.world.entity.item.ItemEntity) entity); }
-        else if (entity instanceof net.minecraft.world.entity.LightningBolt) { return new CraftLightningStrike(server, (net.minecraft.world.entity.LightningBolt) entity); }
-        else if (entity instanceof net.minecraft.world.entity.vehicle.AbstractMinecart) {
-            if (entity instanceof net.minecraft.world.entity.vehicle.MinecartFurnace) { return new CraftMinecartFurnace(server, (net.minecraft.world.entity.vehicle.MinecartFurnace) entity); }
-            else if (entity instanceof net.minecraft.world.entity.vehicle.MinecartChest) { return new CraftMinecartChest(server, (net.minecraft.world.entity.vehicle.MinecartChest) entity); }
-            else if (entity instanceof net.minecraft.world.entity.vehicle.MinecartTNT) { return new CraftMinecartTNT(server, (net.minecraft.world.entity.vehicle.MinecartTNT) entity); }
-            else if (entity instanceof net.minecraft.world.entity.vehicle.MinecartHopper) { return new CraftMinecartHopper(server, (net.minecraft.world.entity.vehicle.MinecartHopper) entity); }
-            else if (entity instanceof net.minecraft.world.entity.vehicle.MinecartSpawner) { return new CraftMinecartMobSpawner(server, (net.minecraft.world.entity.vehicle.MinecartSpawner) entity); }
-            else if (entity instanceof net.minecraft.world.entity.vehicle.Minecart) { return new CraftMinecartRideable(server, (net.minecraft.world.entity.vehicle.Minecart) entity); }
-            else if (entity instanceof net.minecraft.world.entity.vehicle.MinecartCommandBlock) { return new CraftMinecartCommand(server, (net.minecraft.world.entity.vehicle.MinecartCommandBlock) entity); }
-        } else if (entity instanceof net.minecraft.world.entity.decoration.HangingEntity) {
-            if (entity instanceof net.minecraft.world.entity.decoration.Painting) { return new CraftPainting(server, (net.minecraft.world.entity.decoration.Painting) entity); }
-            else if (entity instanceof net.minecraft.world.entity.decoration.ItemFrame) {
-                if (entity instanceof GlowItemFrame) { return new CraftGlowItemFrame(server, (GlowItemFrame) entity); }
-                else { return new CraftItemFrame(server, (net.minecraft.world.entity.decoration.ItemFrame) entity); }
+        if (entity instanceof EnderDragonPart enderDragonPart) {
+            if (enderDragonPart.parentMob instanceof EnderDragon) {
+                return new CraftEnderDragonPart(server, (EnderDragonPart) entity);
             }
-            else if (entity instanceof net.minecraft.world.entity.decoration.LeashFenceKnotEntity) { return new CraftLeash(server, (net.minecraft.world.entity.decoration.LeashFenceKnotEntity) entity); }
-            else { return new CraftHanging(server, (net.minecraft.world.entity.decoration.HangingEntity) entity); }
+            return new CraftComplexPart(server, enderDragonPart);
         }
-        else if (entity instanceof net.minecraft.world.entity.item.PrimedTnt) { return new CraftTNTPrimed(server, (net.minecraft.world.entity.item.PrimedTnt) entity); }
-        else if (entity instanceof net.minecraft.world.entity.projectile.FireworkRocketEntity) { return new CraftFirework(server, (net.minecraft.world.entity.projectile.FireworkRocketEntity) entity); }
-        else if (entity instanceof net.minecraft.world.entity.monster.ShulkerBullet) { return new CraftShulkerBullet(server, (net.minecraft.world.entity.monster.ShulkerBullet) entity); }
-        else if (entity instanceof net.minecraft.world.entity.AreaEffectCloud) { return new CraftAreaEffectCloud(server, (net.minecraft.world.entity.AreaEffectCloud) entity); }
-        else if (entity instanceof net.minecraft.world.entity.monster.EvokerFangs) { return new CraftEvokerFangs(server, (net.minecraft.world.entity.monster.EvokerFangs) entity); }
-        else if (entity instanceof net.minecraft.world.entity.animal.horse.LlamaSpit) { return new CraftLlamaSpit(server, (net.minecraft.world.entity.animal.horse.LlamaSpit) entity); }
-        else if (entity instanceof Marker) { return new CraftMarker(server, (Marker) entity); }
-        // CHECKSTYLE:ON
-
-        throw new AssertionError("Unknown entity " + (entity == null ? null : entity.getClass()));
+        return (CraftEntity) CraftEntityClassLookup.getConvert(entity).apply(server, entity);
     }
 
     @Override

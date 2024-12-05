@@ -13,6 +13,7 @@ public interface Horse extends AbstractHorse {
      */
     @Deprecated
     public enum Variant {
+        MOD_CUSTOM,
         /**
          * A normal horse
          */

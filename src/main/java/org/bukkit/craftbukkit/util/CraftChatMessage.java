@@ -367,7 +367,7 @@ public final class CraftChatMessage {
                     extras.add(prev);
 
                     net.minecraft.network.chat.MutableComponent link = net.minecraft.network.chat.Component.literal(matcher.group());
-                    net.minecraft.network.chat.Style linkModi = modifier.withClickEvent(new net.minecraft.network.chat.ClickEvent(EnumClickAction.OPEN_URL, match));
+                    net.minecraft.network.chat.Style linkModi = modifier.withClickEvent(new net.minecraft.network.chat.ClickEvent(ClickEvent.Action.OPEN_URL, match));
                     link.setStyle(linkModi);
                     extras.add(link);
 

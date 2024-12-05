@@ -50,7 +50,10 @@ public interface Skeleton extends AbstractSkeleton {
      */
     @Deprecated
     public enum SkeletonType {
-
+        /**
+         * Mod custom skeleton type
+         */
+        MOD_CUSTOM,
         /**
          * Standard skeleton type.
          */
