@@ -7,14 +7,14 @@ import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 
 public class CraftSound {
 
-    public static net.minecraft.sounds.SoundEvent getnet.minecraft.sounds.SoundEvent(String s) {
+    public static net.minecraft.sounds.SoundEvent getSoundEffect(String s) {
         net.minecraft.sounds.SoundEvent effect = net.minecraft.core.Registry.SOUND_EVENT.get(new net.minecraft.resources.ResourceLocation(s));
         Preconditions.checkArgument(effect != null, "Sound effect %s does not exist", s);
 
         return effect;
     }
 
-    public static net.minecraft.sounds.SoundEvent getnet.minecraft.sounds.SoundEvent(Sound s) {
+    public static net.minecraft.sounds.SoundEvent getSoundEffect(Sound s) {
         net.minecraft.sounds.SoundEvent effect = net.minecraft.core.Registry.SOUND_EVENT.get(CraftNamespacedKey.toMinecraft(s.getKey()));
         Preconditions.checkArgument(effect != null, "Sound effect %s does not exist", s);
 

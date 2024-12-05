@@ -14,6 +14,9 @@ import net.minecraft.world.level.border.WorldBorder;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.ticks.LevelTickAccess;
 
@@ -50,7 +53,7 @@ public class DummyGeneratorAccess implements net.minecraft.world.level.WorldGenL
     }
 
     @Override
-    public LevelTickAccess<net.minecraft.world.level.material.FluidStateType> getnet.minecraft.world.level.material.FluidStateTicks() {
+    public LevelTickAccess<Fluid> getFluidTicks() {
         return net.minecraft.world.ticks.BlackholeTickAccess.emptyLevelList();
     }
 
@@ -95,7 +98,7 @@ public class DummyGeneratorAccess implements net.minecraft.world.level.WorldGenL
     }
 
     @Override
-    public void gameEvent(GameEvent gameevent, net.minecraft.world.phys.Vec3 vec3d, GameEvent.a gameevent_a) {
+    public void gameEvent(GameEvent gameevent, net.minecraft.world.phys.Vec3 vec3d, GameEvent.Context gameevent_a) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -125,7 +128,7 @@ public class DummyGeneratorAccess implements net.minecraft.world.level.WorldGenL
     }
 
     @Override
-    public int getHeight(net.minecraft.world.level.levelgen.Heightmap.Type type, int i, int i1) {
+    public int getHeight(Heightmap.Types type, int i, int i1) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -165,7 +168,7 @@ public class DummyGeneratorAccess implements net.minecraft.world.level.WorldGenL
     }
 
     @Override
-    public net.minecraft.world.level.lighting.LevelLightEngine getnet.minecraft.world.level.lighting.LevelLightEngine() {
+    public net.minecraft.world.level.lighting.LevelLightEngine getLightEngine() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -180,8 +183,8 @@ public class DummyGeneratorAccess implements net.minecraft.world.level.WorldGenL
     }
 
     @Override
-    public net.minecraft.world.level.material.FluidState getnet.minecraft.world.level.material.FluidStateState(net.minecraft.core.BlockPos blockposition) {
-        return net.minecraft.world.level.material.FluidStateTypes.EMPTY.defaultnet.minecraft.world.level.material.FluidStateState(); // SPIGOT-6634
+    public net.minecraft.world.level.material.FluidState getFluidState(net.minecraft.core.BlockPos blockposition) {
+        return Fluids.EMPTY.defaultFluidState(); // SPIGOT-6634
     }
 
     @Override
@@ -195,7 +198,7 @@ public class DummyGeneratorAccess implements net.minecraft.world.level.WorldGenL
     }
 
     @Override
-    public boolean isnet.minecraft.world.level.material.FluidStateAtPosition(net.minecraft.core.BlockPos bp, Predicate<net.minecraft.world.level.material.FluidState> prdct) {
+    public boolean isFluidAtPosition(net.minecraft.core.BlockPos bp, Predicate<net.minecraft.world.level.material.FluidState> prdct) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

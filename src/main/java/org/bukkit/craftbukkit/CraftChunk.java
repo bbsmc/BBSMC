@@ -3,20 +3,15 @@ package org.bukkit.craftbukkit;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicates;
 import com.mojang.serialization.Codec;
-import java.lang.ref.WeakReference;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.concurrent.locks.LockSupport;
-import java.util.function.BooleanSupplier;
-import java.util.function.Predicate;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.chunk.PalettedContainer;
 import net.minecraft.world.level.chunk.PalettedContainerRO;
 import net.minecraft.world.level.chunk.storage.EntityStorage;
 import net.minecraft.world.level.entity.PersistentEntitySectionManager;
+import net.minecraft.world.level.levelgen.Heightmap;
 import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.World;
@@ -29,16 +24,24 @@ import org.bukkit.entity.Entity;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.plugin.Plugin;
 
+import java.lang.ref.WeakReference;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.concurrent.locks.LockSupport;
+import java.util.function.BooleanSupplier;
+import java.util.function.Predicate;
+
 public class CraftChunk implements Chunk {
-    private WeakReference<net.minecraft.world.level.chunk.Chunk> weakChunk;
+    private WeakReference<net.minecraft.world.level.chunk.LevelChunk> weakChunk;
     private final net.minecraft.server.level.ServerLevel worldServer;
     private final int x;
     private final int z;
-    private static final net.minecraft.world.level.chunk.PalettedContainer<net.minecraft.world.level.block.state.BlockState> emptyBlockIDs = new net.minecraft.world.level.chunk.PalettedContainer<>(net.minecraft.world.level.block.Block.BLOCK_STATE_REGISTRY, Blocks.AIR.defaultBlockState(), net.minecraft.world.level.chunk.PalettedContainer.d.SECTION_STATES);
+    private static final net.minecraft.world.level.chunk.PalettedContainer<net.minecraft.world.level.block.state.BlockState> emptyBlockIDs = new net.minecraft.world.level.chunk.PalettedContainer<>(net.minecraft.world.level.block.Block.BLOCK_STATE_REGISTRY, Blocks.AIR.defaultBlockState(), PalettedContainer.Strategy.SECTION_STATES);
     private static final byte[] emptyLight = new byte[2048];
 
     public CraftChunk(net.minecraft.world.level.chunk.LevelChunk chunk) {
-        this.weakChunk = new WeakReference<net.minecraft.world.level.chunk.Chunk>(chunk);
+        this.weakChunk = new WeakReference<>(chunk);
 
         worldServer = (net.minecraft.server.level.ServerLevel) getHandle().level;
         x = getHandle().getPos().x;
@@ -67,7 +70,7 @@ public class CraftChunk implements Chunk {
         if (c == null) {
             c = worldServer.getChunk(x, z);
 
-            weakChunk = new WeakReference<net.minecraft.world.level.chunk.Chunk>(c);
+            weakChunk = new WeakReference<>(c);
         }
 
         return c;
@@ -267,6 +270,7 @@ public class CraftChunk implements Chunk {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public ChunkSnapshot getChunkSnapshot(boolean includeMaxBlockY, boolean includeBiome, boolean includeBiomeTempRain) {
         net.minecraft.world.level.chunk.LevelChunk chunk = getHandle();
 
@@ -278,7 +282,7 @@ public class CraftChunk implements Chunk {
         PalettedContainerRO<Holder<net.minecraft.world.level.biome.Biome>>[] biome = (includeBiome || includeBiomeTempRain) ? new net.minecraft.world.level.chunk.PalettedContainer[cs.length] : null;
 
         net.minecraft.core.Registry<net.minecraft.world.level.biome.Biome> iregistry = worldServer.registryAccess().registryOrThrow(net.minecraft.core.Registry.BIOME_REGISTRY);
-        Codec<PalettedContainerRO<Holder<net.minecraft.world.level.biome.Biome>>> biomeCodec = net.minecraft.world.level.chunk.PalettedContainer.codecRO(iregistry.asHolderIdMap(), iregistry.holderByNameCodec(), net.minecraft.world.level.chunk.PalettedContainer.d.SECTION_BIOMES, iregistry.getHolderOrThrow(Biomes.PLAINS));
+        Codec<PalettedContainerRO<Holder<net.minecraft.world.level.biome.Biome>>> biomeCodec = net.minecraft.world.level.chunk.PalettedContainer.codecRO(iregistry.asHolderIdMap(), iregistry.holderByNameCodec(), PalettedContainer.Strategy.SECTION_BIOMES, iregistry.getHolderOrThrow(Biomes.PLAINS));
 
         for (int i = 0; i < cs.length; i++) {
             net.minecraft.nbt.CompoundTag data = new net.minecraft.nbt.CompoundTag();
@@ -286,7 +290,7 @@ public class CraftChunk implements Chunk {
             data.put("block_states", net.minecraft.world.level.chunk.storage.ChunkSerializer.BLOCK_STATE_CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, cs[i].getStates()).get().left().get());
             sectionBlockIDs[i] = net.minecraft.world.level.chunk.storage.ChunkSerializer.BLOCK_STATE_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, data.getCompound("block_states")).get().left().get();
 
-            net.minecraft.world.level.lighting.LevelLightEngine lightengine = chunk.level.getnet.minecraft.world.level.lighting.LevelLightEngine();
+            net.minecraft.world.level.lighting.LevelLightEngine lightengine = chunk.level.getLightEngine();
             net.minecraft.world.level.chunk.DataLayer skyLightArray = lightengine.getLayerListener(net.minecraft.world.level.LightLayer.SKY).getDataLayerData(net.minecraft.core.SectionPos.of(x, i, z));
             if (skyLightArray == null) {
                 sectionSkyLights[i] = emptyLight;
@@ -311,8 +315,8 @@ public class CraftChunk implements Chunk {
         net.minecraft.world.level.levelgen.Heightmap hmap = null;
 
         if (includeMaxBlockY) {
-            hmap = new net.minecraft.world.level.levelgen.Heightmap(chunk, net.minecraft.world.level.levelgen.Heightmap.Type.MOTION_BLOCKING);
-            hmap.setRawData(chunk, net.minecraft.world.level.levelgen.Heightmap.Type.MOTION_BLOCKING, chunk.heightmaps.get(net.minecraft.world.level.levelgen.Heightmap.Type.MOTION_BLOCKING).getRawData());
+            hmap = new net.minecraft.world.level.levelgen.Heightmap(chunk, Heightmap.Types.MOTION_BLOCKING);
+            hmap.setRawData(chunk, Heightmap.Types.MOTION_BLOCKING, chunk.heightmaps.get(Heightmap.Types.MOTION_BLOCKING).getRawData());
         }
 
         World world = getWorld();
@@ -335,7 +339,7 @@ public class CraftChunk implements Chunk {
         boolean[] empty = new boolean[hSection];
         net.minecraft.core.Registry<net.minecraft.world.level.biome.Biome> iregistry = world.getHandle().registryAccess().registryOrThrow(net.minecraft.core.Registry.BIOME_REGISTRY);
         net.minecraft.world.level.chunk.PalettedContainer<Holder<net.minecraft.world.level.biome.Biome>>[] biome = (includeBiome || includeBiomeTempRain) ? new net.minecraft.world.level.chunk.PalettedContainer[hSection] : null;
-        Codec<PalettedContainerRO<Holder<net.minecraft.world.level.biome.Biome>>> biomeCodec = net.minecraft.world.level.chunk.PalettedContainer.codecRO(iregistry.asHolderIdMap(), iregistry.holderByNameCodec(), net.minecraft.world.level.chunk.PalettedContainer.d.SECTION_BIOMES, iregistry.getHolderOrThrow(Biomes.PLAINS));
+        Codec<PalettedContainerRO<Holder<net.minecraft.world.level.biome.Biome>>> biomeCodec = net.minecraft.world.level.chunk.PalettedContainer.codecRO(iregistry.asHolderIdMap(), iregistry.holderByNameCodec(), PalettedContainer.Strategy.SECTION_BIOMES, iregistry.getHolderOrThrow(Biomes.PLAINS));
 
         for (int i = 0; i < hSection; i++) {
             blockIDs[i] = emptyBlockIDs;
@@ -348,7 +352,7 @@ public class CraftChunk implements Chunk {
             }
         }
 
-        return new CraftChunkSnapshot(x, z, world.getMinHeight(), world.getMaxHeight(), world.getName(), world.getFullTime(), blockIDs, skyLight, emitLight, empty, new net.minecraft.world.level.levelgen.Heightmap(actual, net.minecraft.world.level.levelgen.Heightmap.Type.MOTION_BLOCKING), iregistry, biome);
+        return new CraftChunkSnapshot(x, z, world.getMinHeight(), world.getMaxHeight(), world.getName(), world.getFullTime(), blockIDs, skyLight, emitLight, empty, new net.minecraft.world.level.levelgen.Heightmap(actual, Heightmap.Types.MOTION_BLOCKING), iregistry, biome);
     }
 
     static void validateChunkCoordinates(int minY, int maxY, int x, int y, int z) {

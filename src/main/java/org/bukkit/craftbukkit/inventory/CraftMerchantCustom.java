@@ -24,7 +24,7 @@ public class CraftMerchantCustom extends CraftMerchant {
     public static class MinecraftMerchant implements net.minecraft.world.item.trading.Merchant {
 
         private final net.minecraft.network.chat.Component title;
-        private final net.minecraft.world.item.trading.MerchantOfferList trades = new net.minecraft.world.item.trading.MerchantOfferList();
+        private final net.minecraft.world.item.trading.MerchantOffers trades = new net.minecraft.world.item.trading.MerchantOffers();
         private net.minecraft.world.entity.player.Player tradingPlayer;
         protected CraftMerchant craftMerchant;
 
@@ -49,7 +49,7 @@ public class CraftMerchantCustom extends CraftMerchant {
         }
 
         @Override
-        public net.minecraft.world.item.trading.MerchantOfferList getOffers() {
+        public net.minecraft.world.item.trading.MerchantOffers getOffers() {
             return this.trades;
         }
 
@@ -87,7 +87,7 @@ public class CraftMerchantCustom extends CraftMerchant {
         }
 
         @Override
-        public void overrideOffers(net.minecraft.world.item.trading.MerchantOfferList merchantrecipelist) {
+        public void overrideOffers(net.minecraft.world.item.trading.MerchantOffers merchantrecipelist) {
         }
 
         @Override

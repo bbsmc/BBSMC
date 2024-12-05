@@ -12,12 +12,12 @@ import org.bukkit.inventory.MerchantRecipe;
 
 public class CraftAbstractVillager extends CraftAgeable implements AbstractVillager, InventoryHolder {
 
-    public CraftAbstractVillager(CraftServer server, net.minecraft.world.entity.npc.VillagerAbstract entity) {
+    public CraftAbstractVillager(CraftServer server, net.minecraft.world.entity.npc.AbstractVillager entity) {
         super(server, entity);
     }
 
     @Override
-    public net.minecraft.world.entity.npc.VillagerAbstract getHandle() {
+    public net.minecraft.world.entity.npc.AbstractVillager getHandle() {
         return (net.minecraft.world.entity.npc.Villager) entity;
     }
 

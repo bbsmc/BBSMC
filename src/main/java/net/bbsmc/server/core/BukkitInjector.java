@@ -32,7 +32,7 @@ public class BukkitInjector {
 
     }
 
-    private static void registerEnvironment(Registry<LevelStem> registry) {
+    public static void registerEnvironment(Registry<LevelStem> registry) {
         int i = World.Environment.values().length;
         List<World.Environment> worldTypes = Lists.newArrayList();
         for (var entry : registry.entrySet()) {
@@ -47,7 +47,7 @@ public class BukkitInjector {
                 environment = EnumHelper.makeEnum(World.Environment.class, name, i++, ImmutableList.of(Integer.TYPE), List.of(i - 1));
                 worldTypes.add(environment);
                 environments.put(resourceKey, environment);
-                BBSMcServer.log.info("Registered new Forge DimensionType {}", environment);
+                BBSMcServer.log.info("向 Bukkit 注册新的世界维度 {}", environment);
             }
         }
         EnumHelper.addEnums(World.Environment.class, worldTypes);

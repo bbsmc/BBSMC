@@ -90,10 +90,10 @@ public final class CraftScoreboardManager implements ScoreboardManager {
     }
 
     // CraftBukkit method
-    public void getnet.minecraft.world.scores.Scores(net.minecraft.world.scores.criteria.ObjectiveCriteria criteria, String name, Consumer<net.minecraft.world.scores.Score> consumer) {
+    public void getScoreboardScores(net.minecraft.world.scores.criteria.ObjectiveCriteria criteria, String name, Consumer<net.minecraft.world.scores.Score> consumer) {
         for (CraftScoreboard scoreboard : scoreboards) {
             Scoreboard board = scoreboard.board;
-            board.forAllObjectives(criteria, name, (score) -> consumer.accept(score));
+            board.forAllObjectives(criteria, name, consumer::accept);
         }
     }
 }

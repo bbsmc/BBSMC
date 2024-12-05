@@ -33,55 +33,6 @@
  
      public static final Logger LOGGER = LogUtils.getLogger();
 @@ -195,7 +220,7 @@
-     private String localIp;
-     private int port;
-     public final IRegistryCustom.Dimension registryHolder;
--    public final Map<ResourceKey<World>, WorldServer> levels;
-+    private Map<ResourceKey<World>, WorldServer> levels;
-     private PlayerList playerList;
-     private volatile boolean running;
-     private boolean stopped;
-@@ -239,6 +264,21 @@
-     protected SaveData worldData;
-     private volatile boolean isSaving;
- 
-     public static <S extends MinecraftServer> S spin(Function<Thread, S> function) {
-         AtomicReference<S> atomicreference = new AtomicReference();
-         Thread thread = new Thread(() -> {
-@@ -252,14 +292,14 @@
-             thread.setPriority(8);
-         }
- 
--        S s0 = (MinecraftServer) function.apply(thread);
-+        S s0 = function.apply(thread); // CraftBukkit - decompile error
- 
-         atomicreference.set(s0);
-         thread.start();
-         return s0;
-     }
- 
--    public MinecraftServer(Thread thread, Convertable.ConversionSession convertable_conversionsession, ResourcePackRepository resourcepackrepository, WorldStem worldstem, Proxy proxy, DataFixer datafixer, Services services, WorldLoadListenerFactory worldloadlistenerfactory) {
-+    public MinecraftServer(OptionSet options, DataPackConfiguration datapackconfiguration, DynamicOps<NBTBase> registryreadops, Thread thread, Convertable.ConversionSession convertable_conversionsession, ResourcePackRepository resourcepackrepository, WorldStem worldstem, Proxy proxy, DataFixer datafixer, Services services, WorldLoadListenerFactory worldloadlistenerfactory) {
-         super("Server");
-         this.metricsRecorder = InactiveMetricsRecorder.INSTANCE;
-         this.profiler = this.metricsRecorder.getProfiler();
-@@ -280,7 +320,7 @@
-         this.frameTimer = new CircularTimer();
-         this.registryHolder = worldstem.registryAccess();
-         this.worldData = worldstem.worldData();
--        if (!this.worldData.worldGenSettings().dimensions().containsKey(WorldDimension.OVERWORLD)) {
-+        if (false && !this.worldData.worldGenSettings().dimensions().containsKey(WorldDimension.OVERWORLD)) { // CraftBukkit - initialised later
-             throw new IllegalStateException("Missing Overworld dimension data");
-         } else {
-             this.proxy = proxy;
-@@ -301,13 +341,41 @@
-             this.serverThread = thread;
-             this.executor = SystemUtils.backgroundExecutor();
-         }
-+        // CraftBukkit start
-+        this.options = options;
-+        this.datapackconfiguration = datapackconfiguration;
-+        this.registryreadops = registryreadops;
 +        this.vanillaCommandDispatcher = worldstem.dataPackResources().commands; // CraftBukkit
 +        // Try to see if we're actually running in a terminal, disable jline if not
 +        if (System.console() == null && System.getProperty("jline.terminal") == null) {
@@ -487,17 +438,6 @@
 @@ -585,12 +825,33 @@
          this.stopServer();
      }
- 
-+    // CraftBukkit start
-+    private boolean hasStopped = false;
-+    private final Object stopLock = new Object();
-+    public final boolean hasStopped() {
-+        synchronized (stopLock) {
-+            return hasStopped;
-+        }
-+    }
-+    // CraftBukkit end
-+
      public void stopServer() {
 +        // CraftBukkit start - prevent double stopping on multiple threads
 +        synchronized(stopLock) {
@@ -638,22 +578,6 @@
          return (WorldServer) this.levels.get(resourcekey);
      }
  
-+    // CraftBukkit start
-+    public void addLevel(WorldServer level) {
-+        Map<ResourceKey<World>, WorldServer> oldLevels = this.levels;
-+        Map<ResourceKey<World>, WorldServer> newLevels = Maps.newLinkedHashMap(oldLevels);
-+        newLevels.put(level.dimension(), level);
-+        this.levels = Collections.unmodifiableMap(newLevels);
-+    }
-+
-+    public void removeLevel(WorldServer level) {
-+        Map<ResourceKey<World>, WorldServer> oldLevels = this.levels;
-+        Map<ResourceKey<World>, WorldServer> newLevels = Maps.newLinkedHashMap(oldLevels);
-+        newLevels.remove(level.dimension());
-+        this.levels = Collections.unmodifiableMap(newLevels);
-+    }
-+    // CraftBukkit end
-+
      public Set<ResourceKey<World>> levelKeys() {
          return this.levels.keySet();
      }
@@ -701,22 +625,6 @@
  
      }
  
-+    // CraftBukkit start
-+    @Override
-+    public boolean isSameThread() {
-+        return super.isSameThread() || this.isStopped(); // CraftBukkit - MC-142590
-+    }
-+
-+    public boolean isDebugging() {
-+        return false;
-+    }
-+
-+    @Deprecated
-+    public static MinecraftServer getServer() {
-+        return (Bukkit.getServer() instanceof CraftServer) ? ((CraftServer) Bukkit.getServer()).getServer() : null;
-+    }
-+    // CraftBukkit end
-+
      private void startMetricsRecordingTick() {
          if (this.willStartRecordingMetrics) {
              this.metricsRecorder = ActiveMetricsRecorder.createStarted(new ServerMetricsSamplersProvider(SystemUtils.timeSource, this.isDedicatedServer()), SystemUtils.timeSource, SystemUtils.ioPool(), new MetricsPersister("server"), this.onMetricsRecordingStopped, (path) -> {
@@ -724,10 +632,6 @@
  
      }
  
-+    // CraftBukkit start
-+    public final java.util.concurrent.ExecutorService chatExecutor = java.util.concurrent.Executors.newCachedThreadPool(
-+            new com.google.common.util.concurrent.ThreadFactoryBuilder().setDaemon(true).setNameFormat("Async Chat Thread - #%d").build());
-+
      public ChatDecorator getChatDecorator() {
 -        return ChatDecorator.PLAIN;
 +        return (entityplayer, ichatbasecomponent) -> {

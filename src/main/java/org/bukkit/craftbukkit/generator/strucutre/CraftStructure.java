@@ -8,7 +8,7 @@ import org.bukkit.generator.structure.StructureType;
 
 public class CraftStructure extends Structure {
 
-    public static Structure minecraftToBukkit(net.minecraft.world.level.levelgen.structure.Structure minecraft, net.minecraft.core.RegistryCustom registryHolder) {
+    public static Structure minecraftToBukkit(net.minecraft.world.level.levelgen.structure.Structure minecraft, net.minecraft.core.RegistryAccess registryHolder) {
         if (minecraft == null) {
             return null;
         }

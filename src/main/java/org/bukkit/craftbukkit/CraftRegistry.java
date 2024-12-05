@@ -16,7 +16,7 @@ import org.bukkit.generator.structure.StructureType;
 
 public class CraftRegistry<B extends Keyed, M> implements Registry<B> {
 
-    public static <B extends Keyed> Registry<?> createRegistry(Class<B> bukkitClass, net.minecraft.core.RegistryCustom registryHolder) {
+    public static <B extends Keyed> Registry<?> createRegistry(Class<B> bukkitClass, net.minecraft.core.RegistryAccess registryHolder) {
         if (bukkitClass == Structure.class) {
             return new CraftRegistry<>(registryHolder.registryOrThrow(net.minecraft.core.Registry.STRUCTURE_REGISTRY), CraftStructure::new);
         }

@@ -28,7 +28,7 @@ public abstract class CraftContainer<T extends net.minecraft.world.level.block.e
     @Override
     public String getCustomName() {
         T container = this.getSnapshot();
-        return container.name != null ? CraftChatMessage.fromComponent(container.getCustomName()) : null;
+        return ((T) container).getName() != null ? CraftChatMessage.fromComponent(container.getCustomName()) : null;
     }
 
     @Override
@@ -40,7 +40,7 @@ public abstract class CraftContainer<T extends net.minecraft.world.level.block.e
     public void applyTo(T container) {
         super.applyTo(container);
 
-        if (this.getSnapshot().name == null) {
+        if (this.getSnapshot().getName() == null) {
             container.setCustomName(null);
         }
     }

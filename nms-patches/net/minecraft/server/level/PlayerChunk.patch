@@ -28,21 +28,6 @@
 @@ -92,6 +96,20 @@
          this.changedBlocksPerSection = new ShortSet[levelheightaccessor.getSectionsCount()];
      }
- 
-+    // CraftBukkit start
-+    public Chunk getFullChunkNow() {
-+        // Note: We use the oldTicketLevel for isLoaded checks.
-+        if (!getFullChunkStatus(this.oldTicketLevel).isOrAfter(PlayerChunk.State.BORDER)) return null;
-+        return this.getFullChunkNowUnchecked();
-+    }
-+
-+    public Chunk getFullChunkNowUnchecked() {
-+        CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>> statusFuture = this.getFutureIfPresentUnchecked(ChunkStatus.FULL);
-+        Either<IChunkAccess, PlayerChunk.Failure> either = (Either<IChunkAccess, PlayerChunk.Failure>) statusFuture.getNow(null);
-+        return (either == null) ? null : (Chunk) either.left().orElse(null);
-+    }
-+    // CraftBukkit end
-+
      public CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>> getFutureIfPresentUnchecked(ChunkStatus chunkstatus) {
          CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>> completablefuture = (CompletableFuture) this.futures.get(chunkstatus.getIndex());
  

@@ -1396,11 +1396,11 @@ public final class CraftServer implements Server {
     @Override
     @Deprecated
     public CraftMapView getMap(int id) {
-        net.minecraft.world.level.saveddata.maps.MapItemSavedData worldmap = console.getLevel(net.minecraft.world.level.Level.OVERWORLD).getMapData("map_" + id);
-        if (worldmap == null) {
+        net.minecraft.world.level.saveddata.maps.MapItemSavedData worldMap = console.getLevel(net.minecraft.world.level.Level.OVERWORLD).getMapData("map_" + id);
+        if (worldMap == null) {
             return null;
         }
-        return worldmap.mapView;
+        return worldMap.mapView;
     }
 
     @Override
@@ -2155,6 +2155,7 @@ public final class CraftServer implements Server {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T extends Keyed> Registry<T> getRegistry(Class<T> aClass) {
         return (Registry<T>) registries.computeIfAbsent(aClass, key -> CraftRegistry.createRegistry(aClass, console.registryHolder));
     }

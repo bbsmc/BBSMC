@@ -12,7 +12,7 @@ import org.bukkit.craftbukkit.block.CraftBlock;
 import org.bukkit.craftbukkit.block.CraftBlockEntityState;
 import org.bukkit.craftbukkit.block.CraftBlockState;
 
-public class BlockStateListPopulator extends Dummynet.minecraft.world.level.LevelAccessor {
+public class BlockStateListPopulator extends DummyGeneratorAccess {
     private final net.minecraft.world.level.LevelAccessor world;
     private final Map<net.minecraft.core.BlockPos, net.minecraft.world.level.block.state.BlockState> dataMap = new HashMap<>();
     private final Map<net.minecraft.core.BlockPos, net.minecraft.world.level.block.entity.BlockEntity> entityMap = new HashMap<>();
@@ -34,9 +34,9 @@ public class BlockStateListPopulator extends Dummynet.minecraft.world.level.Leve
     }
 
     @Override
-    public net.minecraft.world.level.material.FluidState getnet.minecraft.world.level.material.FluidStateState(net.minecraft.core.BlockPos bp) {
+    public net.minecraft.world.level.material.FluidState getFluidState(net.minecraft.core.BlockPos bp) {
         net.minecraft.world.level.block.state.BlockState blockData = dataMap.get(bp);
-        return (blockData != null) ? blockData.getnet.minecraft.world.level.material.FluidStateState() : world.getnet.minecraft.world.level.material.FluidStateState(bp);
+        return (blockData != null) ? blockData.getFluidState() : world.getFluidState(bp);
     }
 
     @Override

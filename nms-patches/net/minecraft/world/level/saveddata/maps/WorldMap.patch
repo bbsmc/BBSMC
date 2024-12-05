@@ -17,31 +17,6 @@
  public class WorldMap extends PersistentBase {
  
      private static final Logger LOGGER = LogUtils.getLogger();
-@@ -53,6 +63,13 @@
-     private final Map<String, WorldMapFrame> frameMarkers = Maps.newHashMap();
-     private int trackedDecorationCount;
- 
-+    // CraftBukkit start
-+    public final CraftMapView mapView;
-+    private CraftServer server;
-+    private UUID uniqueId = null;
-+    public String id;
-+    // CraftBukkit end
-+
-     private WorldMap(int i, int j, byte b0, boolean flag, boolean flag1, boolean flag2, ResourceKey<World> resourcekey) {
-         this.scale = b0;
-         this.x = i;
-@@ -62,6 +79,10 @@
-         this.unlimitedTracking = flag1;
-         this.locked = flag2;
-         this.setDirty();
-+        // CraftBukkit start
-+        mapView = new CraftMapView(this);
-+        server = (CraftServer) org.bukkit.Bukkit.getServer();
-+        // CraftBukkit end
-     }
- 
-     public static WorldMap createFresh(double d0, double d1, byte b0, boolean flag, boolean flag1, ResourceKey<World> resourcekey) {
 @@ -79,12 +100,30 @@
      }
  

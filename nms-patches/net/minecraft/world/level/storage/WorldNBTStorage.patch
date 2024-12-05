@@ -31,37 +31,3 @@
              int i = nbttagcompound.contains("DataVersion", 3) ? nbttagcompound.getInt("DataVersion") : -1;
  
              entityhuman.load(GameProfileSerializer.update(this.fixerUpper, DataFixTypes.PLAYER, nbttagcompound, i));
-@@ -63,6 +80,22 @@
-         return nbttagcompound;
-     }
- 
-+    // CraftBukkit start
-+    public NBTTagCompound getPlayerData(String s) {
-+        try {
-+            File file1 = new File(this.playerDir, s + ".dat");
-+
-+            if (file1.exists()) {
-+                return NBTCompressedStreamTools.readCompressed((InputStream) (new FileInputStream(file1)));
-+            }
-+        } catch (Exception exception) {
-+            LOGGER.warn("Failed to load player data for " + s);
-+        }
-+
-+        return null;
-+    }
-+    // CraftBukkit end
-+
-     public String[] getSeenPlayers() {
-         String[] astring = this.playerDir.list();
- 
-@@ -78,4 +111,10 @@
- 
-         return astring;
-     }
-+
-+    // CraftBukkit start
-+    public File getPlayerDir() {
-+        return playerDir;
-+    }
-+    // CraftBukkit end
- }

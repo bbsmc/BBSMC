@@ -91,8 +91,8 @@ public class CraftStructureManager implements StructureManager {
         Validate.notNull(structure, "structure cannot be null");
         net.minecraft.resources.ResourceLocation minecraftKey = createAndValidateMinecraftStructureKey(structureKey);
 
-        final Optional<net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate> optionalnet.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate = Optional.of(((CraftStructure) structure).getHandle());
-        final Optional<net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate> previousStructure = structureManager.structureRepository.put(minecraftKey, optionalnet.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate);
+        final Optional<net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate> optionalDefinedStructure = Optional.of(((CraftStructure) structure).getHandle());
+        final Optional<net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate> previousStructure = structureManager.structureRepository.put(minecraftKey, optionalDefinedStructure);
         return previousStructure == null ? null : previousStructure.map(CraftStructure::new).orElse(null);
     }
 

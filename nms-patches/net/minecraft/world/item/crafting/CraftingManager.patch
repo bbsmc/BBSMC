@@ -53,20 +53,6 @@
 +        this.byName = Maps.newHashMap(builder.build()); // CraftBukkit
          CraftingManager.LOGGER.info("Loaded {} recipes", map1.size());
      }
- 
-+    // CraftBukkit start
-+    public void addRecipe(IRecipe<?> irecipe) {
-+        Object2ObjectLinkedOpenHashMap<MinecraftKey, IRecipe<?>> map = this.recipes.get(irecipe.getType()); // CraftBukkit
-+
-+        if (byName.containsKey(irecipe.getId()) || map.containsKey(irecipe.getId())) {
-+            throw new IllegalStateException("Duplicate recipe ignored with ID " + irecipe.getId());
-+        } else {
-+            map.putAndMoveToFirst(irecipe.getId(), irecipe); // CraftBukkit - SPIGOT-4638: last recipe gets priority
-+            byName.put(irecipe.getId(), irecipe);
-+        }
-+    }
-+    // CraftBukkit end
-+
      public boolean hadErrorsLoading() {
          return this.hasErrors;
      }
@@ -140,26 +126,6 @@
 -        this.byName = builder.build();
 +        this.byName = Maps.newHashMap(builder.build()); // CraftBukkit
 +    }
-+
-+    // CraftBukkit start
-+    public boolean removeRecipe(MinecraftKey mcKey) {
-+        for (Object2ObjectLinkedOpenHashMap<MinecraftKey, IRecipe<?>> recipes : recipes.values()) {
-+            recipes.remove(mcKey);
-+        }
-+
-+        return byName.remove(mcKey) != null;
-+    }
-+
-+    public void clearRecipes() {
-+        this.recipes = Maps.newHashMap();
-+
-+        for (Recipes<?> recipeType : IRegistry.RECIPE_TYPE) {
-+            this.recipes.put(recipeType, new Object2ObjectLinkedOpenHashMap<>());
-+        }
-+
-+        this.byName = Maps.newHashMap();
-     }
-+    // CraftBukkit end
  
      public static <C extends IInventory, T extends IRecipe<C>> CraftingManager.a<C, T> createCheck(final Recipes<T> recipes) {
          return new CraftingManager.a<C, T>() {

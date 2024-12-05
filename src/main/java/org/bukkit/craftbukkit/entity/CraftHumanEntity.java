@@ -2,12 +2,8 @@ package org.bukkit.craftbukkit.entity;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Set;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemCooldowns;
 import net.minecraft.world.level.block.Blocks;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -44,6 +40,12 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.Set;
 
 public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
     private CraftInventoryPlayer inventory;
@@ -255,7 +257,7 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
     public InventoryView openInventory(Inventory inventory) {
         if (!(getHandle() instanceof net.minecraft.server.level.ServerPlayer)) return null;
         net.minecraft.server.level.ServerPlayer player = (net.minecraft.server.level.ServerPlayer) getHandle();
-        net.minecraft.world.inventory.AbstractContainerMenu formernet.minecraft.world.inventory.AbstractContainerMenu = getHandle().containerMenu;
+        net.minecraft.world.inventory.AbstractContainerMenu formerContainer = getHandle().containerMenu;
 
         net.minecraft.world.MenuProvider iinventory = null;
         if (inventory instanceof CraftInventoryDoubleChest) {
@@ -270,32 +272,31 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
         }
 
         if (iinventory instanceof net.minecraft.world.MenuProvider) {
-            if (iinventory instanceof net.minecraft.world.level.block.entity.BlockEntity) {
-                net.minecraft.world.level.block.entity.BlockEntity te = (net.minecraft.world.level.block.entity.BlockEntity) iinventory;
+            if (iinventory instanceof net.minecraft.world.level.block.entity.BlockEntity te) {
                 if (!te.hasLevel()) {
                     te.setLevel(getHandle().level);
                 }
             }
         }
 
-        net.minecraft.world.inventory.AbstractContainerMenus<?> container = Craftnet.minecraft.world.inventory.AbstractContainerMenu.getNotchInventoryType(inventory);
+        net.minecraft.world.inventory.MenuType<?> container = CraftContainer.getNotchInventoryType(inventory);
         if (iinventory instanceof net.minecraft.world.MenuProvider) {
             getHandle().openMenu(iinventory);
         } else {
             openCustomInventory(inventory, player, container);
         }
 
-        if (getHandle().containerMenu == formernet.minecraft.world.inventory.AbstractContainerMenu) {
+        if (getHandle().containerMenu == formerContainer) {
             return null;
         }
         getHandle().containerMenu.checkReachable = false;
         return getHandle().containerMenu.getBukkitView();
     }
 
-    private static void openCustomInventory(Inventory inventory, net.minecraft.server.level.ServerPlayer player, net.minecraft.world.inventory.AbstractContainerMenus<?> windowType) {
+    private static void openCustomInventory(Inventory inventory, net.minecraft.server.level.ServerPlayer player, net.minecraft.world.inventory.MenuType<?> windowType) {
         if (player.connection == null) return;
         Preconditions.checkArgument(windowType != null, "Unknown windowType");
-        net.minecraft.world.inventory.AbstractContainerMenu container = new Craftnet.minecraft.world.inventory.AbstractContainerMenu(inventory, player, player.nextnet.minecraft.world.inventory.AbstractContainerMenuCounter());
+        net.minecraft.world.inventory.AbstractContainerMenu container = new CraftContainer(inventory, player, player.bbsmc$nextContainerCounter());
 
         container = CraftEventFactory.callInventoryOpenEvent(player, container);
         if (container == null) return;
@@ -349,18 +350,17 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
 
     @Override
     public void openInventory(InventoryView inventory) {
-        if (!(getHandle() instanceof net.minecraft.server.level.ServerPlayer)) return; // TODO: NPC support?
+        if (!(getHandle() instanceof net.minecraft.server.level.ServerPlayer player)) return; // TODO: NPC support?
         if (((net.minecraft.server.level.ServerPlayer) getHandle()).connection == null) return;
         if (getHandle().containerMenu != getHandle().inventoryMenu) {
             // fire INVENTORY_CLOSE if one already open
-            ((net.minecraft.server.level.ServerPlayer) getHandle()).connection.handlenet.minecraft.world.inventory.AbstractContainerMenuClose(new net.minecraft.network.protocol.game.Serverboundnet.minecraft.world.inventory.AbstractContainerMenuClosePacket(getHandle().containerMenu.containerId));
+            ((net.minecraft.server.level.ServerPlayer) getHandle()).connection.handleContainerClose(new net.minecraft.network.protocol.game.ServerboundContainerClosePacket(getHandle().containerMenu.containerId));
         }
-        net.minecraft.server.level.ServerPlayer player = (net.minecraft.server.level.ServerPlayer) getHandle();
         net.minecraft.world.inventory.AbstractContainerMenu container;
         if (inventory instanceof CraftInventoryView) {
             container = ((CraftInventoryView) inventory).getHandle();
         } else {
-            container = new Craftnet.minecraft.world.inventory.AbstractContainerMenu(inventory, this.getHandle(), player.nextnet.minecraft.world.inventory.AbstractContainerMenuCounter());
+            container = new CraftContainer(inventory, this.getHandle(), player.bbsmc$nextContainerCounter());
         }
 
         // Trigger an INVENTORY_OPEN event
@@ -370,7 +370,7 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
         }
 
         // Now open the window
-        net.minecraft.world.inventory.AbstractContainerMenus<?> windowType = Craftnet.minecraft.world.inventory.AbstractContainerMenu.getNotchInventoryType(inventory.getTopInventory());
+        net.minecraft.world.inventory.MenuType<?> windowType = CraftContainer.getNotchInventoryType(inventory.getTopInventory());
         String title = inventory.getTitle();
         player.connection.send(new net.minecraft.network.protocol.game.ClientboundOpenScreenPacket(container.containerId, windowType, CraftChatMessage.fromString(title)[0]));
         player.containerMenu = container;
@@ -419,7 +419,7 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
 
     @Override
     public void closeInventory() {
-        getHandle().closenet.minecraft.world.inventory.AbstractContainerMenu();
+        getHandle().closeContainer();
     }
 
     @Override
@@ -466,7 +466,7 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
         Preconditions.checkArgument(material != null, "Material cannot be null");
         Preconditions.checkArgument(material.isItem(), "Material %s is not an item", material);
 
-        net.minecraft.world.item.ItemCooldowns.Info cooldown = getHandle().getCooldowns().cooldowns.get(CraftMagicNumbers.getItem(material));
+        ItemCooldowns.CooldownInstance cooldown = getHandle().getCooldowns().cooldowns.get(CraftMagicNumbers.getItem(material));
         return (cooldown == null) ? 0 : Math.max(0, cooldown.endTime - getHandle().getCooldowns().tickCount);
     }
 

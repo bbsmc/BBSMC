@@ -1,6 +1,7 @@
 package org.bukkit.craftbukkit.entity;
 
 import com.google.common.base.Preconditions;
+import net.minecraft.world.entity.monster.SpellcasterIllager;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.Spellcaster;
 import org.bukkit.entity.Spellcaster.Spell;
@@ -33,11 +34,11 @@ public class CraftSpellcaster extends CraftIllager implements Spellcaster {
         getHandle().setIsCastingSpell(toNMSSpell(spell));
     }
 
-    public static Spell toBukkitSpell(net.minecraft.world.entity.monster.SpellcasterIllager.Spell spell) {
+    public static Spell toBukkitSpell(SpellcasterIllager.IllagerSpell spell) {
         return Spell.valueOf(spell.name());
     }
 
-    public static net.minecraft.world.entity.monster.SpellcasterIllager.Spell toNMSSpell(Spell spell) {
-        return net.minecraft.world.entity.monster.SpellcasterIllager.Spell.byId(spell.ordinal());
+    public static SpellcasterIllager.IllagerSpell toNMSSpell(Spell spell) {
+        return SpellcasterIllager.IllagerSpell.byId(spell.ordinal());
     }
 }

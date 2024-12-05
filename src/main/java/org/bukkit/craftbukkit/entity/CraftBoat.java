@@ -100,7 +100,7 @@ public class CraftBoat extends CraftVehicle implements Boat {
         return EntityType.BOAT;
     }
 
-    public static Boat.Type boatTypeFromNms(net.minecraft.world.entity.vehicle.Boat.EnumBoatType boatType) {
+    public static Boat.Type boatTypeFromNms(net.minecraft.world.entity.vehicle.Boat.Type boatType) {
         return switch (boatType) {
             default -> throw new EnumConstantNotPresentException(Type.class, boatType.name());
             case OAK -> Type.OAK;
@@ -113,20 +113,20 @@ public class CraftBoat extends CraftVehicle implements Boat {
         };
     }
 
-    public static net.minecraft.world.entity.vehicle.Boat.EnumBoatType boatTypeToNms(Boat.Type type) {
+    public static net.minecraft.world.entity.vehicle.Boat.Type boatTypeToNms(Boat.Type type) {
         return switch (type) {
-            default -> throw new EnumConstantNotPresentException(net.minecraft.world.entity.vehicle.Boat.EnumBoatType.class, type.name());
-            case MANGROVE -> net.minecraft.world.entity.vehicle.Boat.EnumBoatType.MANGROVE;
-            case SPRUCE -> net.minecraft.world.entity.vehicle.Boat.EnumBoatType.SPRUCE;
-            case DARK_OAK -> net.minecraft.world.entity.vehicle.Boat.EnumBoatType.DARK_OAK;
-            case JUNGLE -> net.minecraft.world.entity.vehicle.Boat.EnumBoatType.JUNGLE;
-            case ACACIA -> net.minecraft.world.entity.vehicle.Boat.EnumBoatType.ACACIA;
-            case BIRCH -> net.minecraft.world.entity.vehicle.Boat.EnumBoatType.BIRCH;
-            case OAK -> net.minecraft.world.entity.vehicle.Boat.EnumBoatType.OAK;
+            default -> throw new EnumConstantNotPresentException(net.minecraft.world.entity.vehicle.Boat.Type.class, type.name());
+            case MANGROVE -> net.minecraft.world.entity.vehicle.Boat.Type.MANGROVE;
+            case SPRUCE -> net.minecraft.world.entity.vehicle.Boat.Type.SPRUCE;
+            case DARK_OAK -> net.minecraft.world.entity.vehicle.Boat.Type.DARK_OAK;
+            case JUNGLE -> net.minecraft.world.entity.vehicle.Boat.Type.JUNGLE;
+            case ACACIA -> net.minecraft.world.entity.vehicle.Boat.Type.ACACIA;
+            case BIRCH -> net.minecraft.world.entity.vehicle.Boat.Type.BIRCH;
+            case OAK -> net.minecraft.world.entity.vehicle.Boat.Type.OAK;
         };
     }
 
-    public static Status boatStatusFromNms(net.minecraft.world.entity.vehicle.Boat.EnumStatus enumStatus) {
+    public static Status boatStatusFromNms(net.minecraft.world.entity.vehicle.Boat.Status enumStatus) {
         return switch (enumStatus) {
             default -> throw new EnumConstantNotPresentException(Status.class, enumStatus.name());
             case IN_AIR -> Status.IN_AIR;
@@ -138,7 +138,7 @@ public class CraftBoat extends CraftVehicle implements Boat {
     }
 
     @Deprecated
-    public static TreeSpecies getTreeSpecies(net.minecraft.world.entity.vehicle.Boat.EnumBoatType boatType) {
+    public static TreeSpecies getTreeSpecies(net.minecraft.world.entity.vehicle.Boat.Type boatType) {
         switch (boatType) {
             case SPRUCE:
                 return TreeSpecies.REDWOOD;
@@ -157,21 +157,21 @@ public class CraftBoat extends CraftVehicle implements Boat {
     }
 
     @Deprecated
-    public static net.minecraft.world.entity.vehicle.Boat.EnumBoatType getBoatType(TreeSpecies species) {
+    public static net.minecraft.world.entity.vehicle.Boat.Type getBoatType(TreeSpecies species) {
         switch (species) {
             case REDWOOD:
-                return net.minecraft.world.entity.vehicle.Boat.EnumBoatType.SPRUCE;
+                return net.minecraft.world.entity.vehicle.Boat.Type.SPRUCE;
             case BIRCH:
-                return net.minecraft.world.entity.vehicle.Boat.EnumBoatType.BIRCH;
+                return net.minecraft.world.entity.vehicle.Boat.Type.BIRCH;
             case JUNGLE:
-                return net.minecraft.world.entity.vehicle.Boat.EnumBoatType.JUNGLE;
+                return net.minecraft.world.entity.vehicle.Boat.Type.JUNGLE;
             case ACACIA:
-                return net.minecraft.world.entity.vehicle.Boat.EnumBoatType.ACACIA;
+                return net.minecraft.world.entity.vehicle.Boat.Type.ACACIA;
             case DARK_OAK:
-                return net.minecraft.world.entity.vehicle.Boat.EnumBoatType.DARK_OAK;
+                return net.minecraft.world.entity.vehicle.Boat.Type.DARK_OAK;
             case GENERIC:
             default:
-                return net.minecraft.world.entity.vehicle.Boat.EnumBoatType.OAK;
+                return net.minecraft.world.entity.vehicle.Boat.Type.OAK;
         }
     }
 }

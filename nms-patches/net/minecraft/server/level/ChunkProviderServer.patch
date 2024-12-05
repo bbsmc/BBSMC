@@ -3,17 +3,6 @@
 @@ -84,6 +84,16 @@
          this.clearCache();
      }
- 
-+    // CraftBukkit start - properly implement isChunkLoaded
-+    public boolean isChunkLoaded(int chunkX, int chunkZ) {
-+        PlayerChunk chunk = this.chunkMap.getUpdatingChunkIfPresent(ChunkCoordIntPair.asLong(chunkX, chunkZ));
-+        if (chunk == null) {
-+            return false;
-+        }
-+        return chunk.getFullChunkNow() != null;
-+    }
-+    // CraftBukkit end
-+
      @Override
      public LightEngineThreaded getLightEngine() {
          return this.lightEngine;
@@ -77,35 +66,6 @@
              return either != null && either.left().isPresent();
          }
 @@ -328,11 +346,31 @@
- 
-     @Override
-     public void close() throws IOException {
--        this.save(true);
-+        // CraftBukkit start
-+        close(true);
-+    }
-+
-+    public void close(boolean save) throws IOException {
-+        if (save) {
-+            this.save(true);
-+        }
-+        // CraftBukkit end
-         this.lightEngine.close();
-         this.chunkMap.close();
-     }
- 
-+    // CraftBukkit start - modelled on below
-+    public void purgeUnload() {
-+        this.level.getProfiler().push("purge");
-+        this.distanceManager.purgeStaleTickets();
-+        this.runDistanceManagerUpdates();
-+        this.level.getProfiler().popPush("unload");
-+        this.chunkMap.tick(() -> true);
-+        this.level.getProfiler().pop();
-+        this.clearCache();
-+    }
-+    // CraftBukkit end
-+
      @Override
      public void tick(BooleanSupplier booleansupplier, boolean flag) {
          this.level.getProfiler().push("purge");

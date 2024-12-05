@@ -578,17 +578,6 @@
          if (this.isSleeping()) {
              this.getLevel().getChunkSource().broadcastAndSend(this, new PacketPlayOutAnimation(this, 2));
          }
-@@ -1037,8 +1366,9 @@
-         this.connection.send(new PacketPlayOutOpenSignEditor(tileentitysign.getBlockPos()));
-     }
- 
--    public void nextContainerCounter() {
-+    public int nextContainerCounter() { // CraftBukkit - void -> int
-         this.containerCounter = this.containerCounter % 100 + 1;
-+        return containerCounter; // CraftBukkit
-     }
- 
-     @Override
 @@ -1046,13 +1376,35 @@
          if (itileinventory == null) {
              return OptionalInt.empty();

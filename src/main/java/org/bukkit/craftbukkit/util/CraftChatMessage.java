@@ -9,7 +9,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import net.minecraft.network.chat.ChatClickable.EnumClickAction;
+
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.contents.LiteralContents;
 import net.minecraft.network.chat.contents.TranslatableContents;
@@ -118,7 +120,7 @@ public final class CraftChatMessage {
                         if (!(match.startsWith("http://") || match.startsWith("https://"))) {
                             match = "http://" + match;
                         }
-                        modifier = modifier.withClickEvent(new net.minecraft.network.chat.ClickEvent(EnumClickAction.OPEN_URL, match));
+                        modifier = modifier.withClickEvent(new net.minecraft.network.chat.ClickEvent(ClickEvent.Action.OPEN_URL, match));
                         appendNewComponent(matcher.end(groupId));
                         modifier = modifier.withClickEvent((net.minecraft.network.chat.ClickEvent) null);
                     }
@@ -176,7 +178,7 @@ public final class CraftChatMessage {
     }
 
     public static String toJSON(net.minecraft.network.chat.Component component) {
-        return net.minecraft.network.chat.Component.ChatSerializer.toJson(component);
+        return Component.Serializer.toJson(component);
     }
 
     public static String toJSONOrNull(net.minecraft.network.chat.Component component) {
@@ -187,7 +189,7 @@ public final class CraftChatMessage {
     public static net.minecraft.network.chat.Component fromJSON(String jsonMessage) throws JsonParseException {
         // Note: This also parses plain Strings to text components.
         // Note: An empty message (empty, or only consisting of whitespace) results in null rather than a parse exception.
-        return net.minecraft.network.chat.Component.ChatSerializer.fromJson(jsonMessage);
+        return Component.Serializer.fromJson(jsonMessage);
     }
 
     public static net.minecraft.network.chat.Component fromJSONOrNull(String jsonMessage) {

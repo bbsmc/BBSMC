@@ -15,12 +15,6 @@
      public float saturationLevel = 5.0F;
      public float exhaustionLevel;
      private int tickTimer;
-+    // CraftBukkit start
-+    private EntityHuman entityhuman;
-+    public int saturatedRegenRate = 10;
-+    public int unsaturatedRegenRate = 80;
-+    public int starvationRate = 80;
-+    // CraftBukkit end
      private int lastFoodLevel = 20;
  
 -    public FoodMetaData() {}

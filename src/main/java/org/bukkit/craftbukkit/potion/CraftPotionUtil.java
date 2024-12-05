@@ -98,12 +98,12 @@ public class CraftPotionUtil {
     }
 
     public static net.minecraft.world.effect.MobEffectInstance fromBukkit(PotionEffect effect) {
-        net.minecraft.world.effect.MobEffectInstanceList type = net.minecraft.world.effect.MobEffectInstanceList.byId(effect.getType().getId());
+        net.minecraft.world.effect.MobEffect type = net.minecraft.world.effect.MobEffect.byId(effect.getType().getId());
         return new net.minecraft.world.effect.MobEffectInstance(type, effect.getDuration(), effect.getAmplifier(), effect.isAmbient(), effect.hasParticles());
     }
 
     public static PotionEffect toBukkit(net.minecraft.world.effect.MobEffectInstance effect) {
-        PotionEffectType type = PotionEffectType.getById(net.minecraft.world.effect.MobEffectInstanceList.getId(effect.getEffect()));
+        PotionEffectType type = PotionEffectType.getById(net.minecraft.world.effect.MobEffect.getId(effect.getEffect()));
         int amp = effect.getAmplifier();
         int duration = effect.getDuration();
         boolean ambient = effect.isAmbient();
@@ -111,8 +111,8 @@ public class CraftPotionUtil {
         return new PotionEffect(type, duration, amp, ambient, particles);
     }
 
-    public static boolean equals(net.minecraft.world.effect.MobEffectInstanceList mobEffect, PotionEffectType type) {
-        PotionEffectType typeV = PotionEffectType.getById(net.minecraft.world.effect.MobEffectInstanceList.getId(mobEffect));
+    public static boolean equals(net.minecraft.world.effect.MobEffect mobEffect, PotionEffectType type) {
+        PotionEffectType typeV = PotionEffectType.getById(net.minecraft.world.effect.MobEffect.getId(mobEffect));
         return typeV.equals(type);
     }
 }

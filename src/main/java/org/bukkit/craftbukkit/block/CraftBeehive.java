@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.block.entity.TileEntityBeehive.ReleaseStatus;
+import net.minecraft.world.level.block.entity.BeehiveBlockEntity;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Beehive;
@@ -64,7 +64,7 @@ public class CraftBeehive extends CraftBlockEntityState<net.minecraft.world.leve
 
         if (isPlaced()) {
             net.minecraft.world.level.block.entity.BeehiveBlockEntity beehive = ((net.minecraft.world.level.block.entity.BeehiveBlockEntity) this.getTileEntityFromWorld());
-            for (Entity bee : beehive.releaseBees(this.getHandle(), ReleaseStatus.BEE_RELEASED, true)) {
+            for (Entity bee : beehive.releaseBees(this.getHandle(), BeehiveBlockEntity.BeeReleaseStatus.BEE_RELEASED, true)) {
                 bees.add((Bee) bee.getBukkitEntity());
             }
         }

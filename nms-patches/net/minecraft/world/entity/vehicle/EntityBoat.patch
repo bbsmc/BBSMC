@@ -19,15 +19,6 @@
 @@ -91,6 +100,14 @@
      private float bubbleAngle;
      private float bubbleAngleO;
- 
-+    // CraftBukkit start
-+    // PAIL: Some of these haven't worked since a few updates, and since 1.9 they are less and less applicable.
-+    public double maxSpeed = 0.4D;
-+    public double occupiedDeceleration = 0.2D;
-+    public double unoccupiedDeceleration = -1;
-+    public boolean landBoats = false;
-+    // CraftBukkit end
-+
      public EntityBoat(EntityTypes<? extends EntityBoat> entitytypes, World world) {
          super(entitytypes, world);
          this.paddlePositions = new float[2];

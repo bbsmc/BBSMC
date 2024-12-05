@@ -2,6 +2,7 @@ package org.bukkit.craftbukkit.scoreboard;
 
 import com.google.common.collect.ImmutableBiMap;
 import net.minecraft.world.scores.Scoreboard;
+import net.minecraft.world.scores.criteria.ObjectiveCriteria;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.RenderType;
 
@@ -39,11 +40,11 @@ final class CraftScoreboardTranslations {
         return Scoreboard.getDisplaySlotByName(SLOTS.get(slot));
     }
 
-    static RenderType toBukkitRender(net.minecraft.world.scores.criteria.ObjectiveCriteria.EnumScoreboardHealthDisplay display) {
+    static RenderType toBukkitRender(ObjectiveCriteria.RenderType display) {
         return RenderType.valueOf(display.name());
     }
 
-    static net.minecraft.world.scores.criteria.ObjectiveCriteria.EnumScoreboardHealthDisplay fromBukkitRender(RenderType render) {
-        return net.minecraft.world.scores.criteria.ObjectiveCriteria.EnumScoreboardHealthDisplay.valueOf(render.name());
+    static net.minecraft.world.scores.criteria.ObjectiveCriteria.RenderType fromBukkitRender(RenderType render) {
+        return net.minecraft.world.scores.criteria.ObjectiveCriteria.RenderType.valueOf(render.name());
     }
 }

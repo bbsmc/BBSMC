@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import net.minecraft.world.BossEvent;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
@@ -49,33 +51,33 @@ public class CraftBossBar implements BossBar {
         this.flags.put(BarFlag.CREATE_FOG, new FlagContainer(handle::shouldCreateWorldFog, handle::setCreateWorldFog));
     }
 
-    private BarColor convertColor(net.minecraft.world.BossEvent.BarColor color) {
+    private BarColor convertColor(BossEvent.BossBarColor color) {
         BarColor bukkitColor = BarColor.valueOf(color.name());
         return (bukkitColor == null) ? BarColor.WHITE : bukkitColor;
     }
 
-    private net.minecraft.world.BossEvent.BarColor convertColor(BarColor color) {
-        net.minecraft.world.BossEvent.BarColor nmsColor = net.minecraft.world.BossEvent.BarColor.valueOf(color.name());
-        return (nmsColor == null) ? net.minecraft.world.BossEvent.BarColor.WHITE : nmsColor;
+    private BossEvent.BossBarColor convertColor(BarColor color) {
+        BossEvent.BossBarColor nmsColor = BossEvent.BossBarColor.valueOf(color.name());
+        return (nmsColor == null) ? BossEvent.BossBarColor.WHITE : nmsColor;
     }
 
-    private net.minecraft.world.BossEvent.BarStyle convertStyle(BarStyle style) {
+    private BossEvent.BossBarOverlay convertStyle(BarStyle style) {
         switch (style) {
             default:
             case SOLID:
-                return net.minecraft.world.BossEvent.BarStyle.PROGRESS;
+                return net.minecraft.world.BossEvent.BossBarOverlay.PROGRESS;
             case SEGMENTED_6:
-                return net.minecraft.world.BossEvent.BarStyle.NOTCHED_6;
+                return net.minecraft.world.BossEvent.BossBarOverlay.NOTCHED_6;
             case SEGMENTED_10:
-                return net.minecraft.world.BossEvent.BarStyle.NOTCHED_10;
+                return net.minecraft.world.BossEvent.BossBarOverlay.NOTCHED_10;
             case SEGMENTED_12:
-                return net.minecraft.world.BossEvent.BarStyle.NOTCHED_12;
+                return net.minecraft.world.BossEvent.BossBarOverlay.NOTCHED_12;
             case SEGMENTED_20:
-                return net.minecraft.world.BossEvent.BarStyle.NOTCHED_20;
+                return net.minecraft.world.BossEvent.BossBarOverlay.NOTCHED_20;
         }
     }
 
-    private BarStyle convertStyle(net.minecraft.world.BossEvent.BarStyle style) {
+    private BarStyle convertStyle(BossEvent.BossBarOverlay style) {
         switch (style) {
             default:
             case PROGRESS:

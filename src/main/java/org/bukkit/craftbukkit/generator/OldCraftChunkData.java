@@ -118,7 +118,7 @@ public final class OldCraftChunkData implements ChunkGenerator.ChunkData {
             return;
         }
         for (int y = yMin; y < yMax; y++) {
-            net.minecraft.world.level.chunk.LevelChunkSection section = getnet.minecraft.world.level.chunk.LevelChunkSection(y, true);
+            net.minecraft.world.level.chunk.LevelChunkSection section = getChunkSection(y, true);
             int offsetBase = y & 0xf;
             for (int x = xMin; x < xMax; x++) {
                 for (int z = zMin; z < zMax; z++) {
@@ -132,7 +132,7 @@ public final class OldCraftChunkData implements ChunkGenerator.ChunkData {
         if (x != (x & 0xf) || y < minHeight || y >= maxHeight || z != (z & 0xf)) {
             return Blocks.AIR.defaultBlockState();
         }
-        net.minecraft.world.level.chunk.LevelChunkSection section = getnet.minecraft.world.level.chunk.LevelChunkSection(y, false);
+        net.minecraft.world.level.chunk.LevelChunkSection section = getChunkSection(y, false);
         if (section == null) {
             return Blocks.AIR.defaultBlockState();
         } else {
@@ -149,7 +149,7 @@ public final class OldCraftChunkData implements ChunkGenerator.ChunkData {
         if (x != (x & 0xf) || y < minHeight || y >= maxHeight || z != (z & 0xf)) {
             return;
         }
-        net.minecraft.world.level.chunk.LevelChunkSection section = getnet.minecraft.world.level.chunk.LevelChunkSection(y, true);
+        net.minecraft.world.level.chunk.LevelChunkSection section = getChunkSection(y, true);
         section.setBlockState(x, y & 0xf, z, type);
 
         // SPIGOT-1753: Capture light blocks, for light updates
@@ -168,7 +168,7 @@ public final class OldCraftChunkData implements ChunkGenerator.ChunkData {
         }
     }
 
-    private net.minecraft.world.level.chunk.LevelChunkSection getnet.minecraft.world.level.chunk.LevelChunkSection(int y, boolean create) {
+    private net.minecraft.world.level.chunk.LevelChunkSection getChunkSection(int y, boolean create) {
         int offset = (y - minHeight) >> 4;
         net.minecraft.world.level.chunk.LevelChunkSection section = sections[offset];
         if (create && section == null) {
