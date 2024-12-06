@@ -97,7 +97,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
             ITEM_MATERIAL.put(item, Material.getMaterial(net.minecraft.core.Registry.ITEM.getKey(item).getPath().toUpperCase(Locale.ROOT)));
         }
 
-        for (net.minecraft.world.level.material.FluidState fluid : net.minecraft.core.Registry.FLUID) {
+        for (net.minecraft.world.level.material.Fluid fluid : net.minecraft.core.Registry.FLUID) {
             FLUID_MATERIAL.put(fluid, Registry.FLUID.get(CraftNamespacedKey.fromMinecraft(net.minecraft.core.Registry.FLUID.getKey(fluid))));
         }
 
@@ -127,7 +127,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
         return ITEM_MATERIAL.getOrDefault(item, Material.AIR);
     }
 
-    public static Fluid getFluid(net.minecraft.world.level.material.FluidState fluid) {
+    public static Fluid getFluid(net.minecraft.world.level.material.Fluid fluid) {
         return FLUID_MATERIAL.get(fluid);
     }
 
@@ -147,7 +147,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
         return MATERIAL_BLOCK.get(material);
     }
 
-    public static net.minecraft.world.level.material.FluidState getFluid(Fluid fluid) {
+    public static net.minecraft.world.level.material.Fluid getFluid(Fluid fluid) {
         return MATERIAL_FLUID.get(fluid);
     }
 
@@ -257,7 +257,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
 
         JsonElement jsonelement = net.minecraft.server.ServerAdvancementManager.GSON.fromJson(advancement, JsonElement.class);
         JsonObject jsonobject = net.minecraft.util.GsonHelper.convertToJsonObject(jsonelement, "advancement");
-        net.minecraft.advancements.Advancement.SerializedAdvancement nms = net.minecraft.advancements.Advancement.SerializedAdvancement.fromJson(jsonobject, new net.minecraft.advancements.critereon.DeserializationContext(minecraftkey, MinecraftServer.getServer().getPredicateManager()));
+        net.minecraft.advancements.Advancement.Builder nms = net.minecraft.advancements.Advancement.Builder.fromJson(jsonobject, new net.minecraft.advancements.critereon.DeserializationContext(minecraftkey, MinecraftServer.getServer().getPredicateManager()));
         if (nms != null) {
             MinecraftServer.getServer().getAdvancements().advancements.add(Maps.newHashMap(Collections.singletonMap(minecraftkey, nms)));
             Advancement bukkit = Bukkit.getAdvancement(key);

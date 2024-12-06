@@ -1,0 +1,22 @@
+--- a/net/minecraft/world/inventory/StonecutterMenu.java
++++ b/net/minecraft/world/inventory/StonecutterMenu.java
+@@ -14,6 +_,7 @@
+ import net.minecraft.world.item.crafting.StonecutterRecipe;
+ import net.minecraft.world.level.Level;
+ import net.minecraft.world.level.block.Blocks;
++import org.bukkit.inventory.InventoryView;
+ 
+ public class StonecutterMenu extends AbstractContainerMenu {
+    public static final int f_150665_ = 0;
+@@ -150,6 +_,11 @@
+       }
+ 
+       this.m_38946_();
++   }
++
++   @Override
++   public InventoryView getBukkitView() {
++      return null;
+    }
+ 
+    public MenuType<?> m_6772_() {

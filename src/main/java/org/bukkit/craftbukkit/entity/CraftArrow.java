@@ -98,7 +98,7 @@ public class CraftArrow extends AbstractProjectile implements AbstractArrow {
     @Override
     public void setPickupStatus(PickupStatus status) {
         Preconditions.checkNotNull(status, "status");
-        getHandle().pickup = net.minecraft.world.entity.projectile.AbstractArrow.PickupStatus.byOrdinal(status.ordinal());
+        getHandle().pickup = net.minecraft.world.entity.projectile.AbstractArrow.Pickup.byOrdinal(status.ordinal());
     }
 
     @Override

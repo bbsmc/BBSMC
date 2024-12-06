@@ -1,0 +1,77 @@
+--- a/net/minecraft/world/inventory/LecternMenu.java
++++ b/net/minecraft/world/inventory/LecternMenu.java
+@@ -2,8 +_,10 @@
+ 
+ import net.minecraft.world.Container;
+ import net.minecraft.world.SimpleContainer;
++import net.minecraft.world.entity.player.Inventory;
+ import net.minecraft.world.entity.player.Player;
+ import net.minecraft.world.item.ItemStack;
++import net.minecraft.world.level.block.entity.LecternBlockEntity;
+ 
+ public class LecternMenu extends AbstractContainerMenu {
+    private static final int f_150610_ = 1;
+@@ -15,11 +_,26 @@
+    private final Container f_39819_;
+    private final ContainerData f_39820_;
+ 
+-   public LecternMenu(int p_39822_) {
+-      this(p_39822_, new SimpleContainer(1), new SimpleContainerData(1));
+-   }
+-
+-   public LecternMenu(int p_39824_, Container p_39825_, ContainerData p_39826_) {
++   // BBSMC start
++   private org.bukkit.craftbukkit.inventory.CraftInventoryView bukkitEntity = null;
++   private org.bukkit.entity.Player player;
++
++   @Override
++   public org.bukkit.craftbukkit.inventory.CraftInventoryView getBukkitView() {
++      if (bukkitEntity!= null) {
++         return bukkitEntity;
++      }
++
++      org.bukkit.craftbukkit.inventory.CraftInventoryLectern inventory = new org.bukkit.craftbukkit.inventory.CraftInventoryLectern(this.f_39819_);
++      bukkitEntity = new org.bukkit.craftbukkit.inventory.CraftInventoryView(this.player, inventory, this);
++      return bukkitEntity;
++   }
++
++   public LecternMenu(int p_39822_, Inventory playerInventory) {
++      this(p_39822_, new SimpleContainer(1), new SimpleContainerData(1), playerInventory);
++   }
++
++   public LecternMenu(int p_39824_, Container p_39825_, ContainerData p_39826_, Inventory playerInventory) {
+       super(MenuType.f_39973_, p_39824_);
+       m_38869_(p_39825_, 1);
+       m_38886_(p_39826_, 1);
+@@ -32,7 +_,9 @@
+          }
+       });
+       this.m_38884_(p_39826_);
++      this.player = (org.bukkit.entity.Player) playerInventory.f_35978_.getBukkitEntity();
+    }
++   // BBSMC end
+ 
+    public boolean m_6366_(Player p_39833_, int p_39834_) {
+       if (p_39834_ >= 100) {
+@@ -54,6 +_,12 @@
+                   return false;
+                }
+ 
++               org.bukkit.event.player.PlayerTakeLecternBookEvent event = new org.bukkit.event.player.PlayerTakeLecternBookEvent(player, ((org.bukkit.craftbukkit.inventory.CraftInventoryLectern) getBukkitView().getTopInventory()).getHolder());
++               org.bukkit.Bukkit.getServer().getPluginManager().callEvent(event);
++               if (event.isCancelled()) {
++                  return false;
++               }
++
+                ItemStack itemstack = this.f_39819_.m_8016_(0);
+                this.f_39819_.m_6596_();
+                if (!p_39833_.m_150109_().m_36054_(itemstack)) {
+@@ -77,6 +_,8 @@
+    }
+ 
+    public boolean m_6875_(Player p_39831_) {
++      if (f_39819_ instanceof LecternBlockEntity.LecternInventory && !((LecternBlockEntity.LecternInventory) f_39819_).getLectern().m_59567_()) return false; // CraftBukkit
++      if (!this.checkReachable) return true; // CraftBukkit
+       return this.f_39819_.m_6542_(p_39831_);
+    }
+ 

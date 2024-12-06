@@ -1,5 +1,31 @@
 --- a/net/minecraft/world/level/entity/PersistentEntitySectionManager.java
 +++ b/net/minecraft/world/level/entity/PersistentEntitySectionManager.java
+@@ -32,7 +_,7 @@
+    static final Logger f_157490_ = LogUtils.getLogger();
+    final Set<UUID> f_157491_ = Sets.newHashSet();
+    final LevelCallback<T> f_157492_;
+-   private final EntityPersistentStorage<T> f_157493_;
++   public final EntityPersistentStorage<T> f_157493_;
+    private final EntityLookup<T> f_157494_;
+    final EntitySectionStorage<T> f_157495_;
+    private final LevelEntityGetter<T> f_157496_;
+@@ -41,6 +_,16 @@
+    private final LongSet f_157499_ = new LongOpenHashSet();
+    private final Queue<ChunkEntities<T>> f_157500_ = Queues.newConcurrentLinkedQueue();
+ 
++   // BBSMC start
++   public java.util.List<net.minecraft.world.entity.Entity> getEntities(net.minecraft.world.level.ChunkPos chunkCoordIntPair) {
++      return f_157495_.m_156888_(chunkCoordIntPair.m_45588_()).flatMap(EntitySection::m_156845_).map(entity -> (net.minecraft.world.entity.Entity) entity).collect(java.util.stream.Collectors.toList());
++   }
++
++   public boolean isPending(long pair) {
++      return f_157498_.get(pair) == ChunkLoadStatus.PENDING;
++   }
++   // BBSMC end
++
+    public PersistentEntitySectionManager(Class<T> p_157503_, LevelCallback<T> p_157504_, EntityPersistentStorage<T> p_157505_) {
+       this.f_157494_ = new EntityLookup<>();
+       this.f_157495_ = new EntitySectionStorage<>(p_157503_, this.f_157497_);
 @@ -71,7 +_,16 @@
        return this.m_157538_(p_157534_, false);
     }
@@ -32,6 +58,15 @@
        });
     }
  
+@@ -177,7 +_,7 @@
+       });
+    }
+ 
+-   private void m_157555_(long p_157556_) {
++   public void m_157555_(long p_157556_) {
+       PersistentEntitySectionManager.ChunkLoadStatus persistententitysectionmanager$chunkloadstatus = this.f_157498_.get(p_157556_);
+       if (persistententitysectionmanager$chunkloadstatus == PersistentEntitySectionManager.ChunkLoadStatus.FRESH) {
+          this.m_157562_(p_157556_);
 @@ -247,6 +_,7 @@
        while((chunkentities = this.f_157500_.poll()) != null) {
           chunkentities.m_156792_().forEach((p_157593_) -> {
@@ -40,6 +75,26 @@
           });
           this.f_157498_.put(chunkentities.m_156791_().m_45588_(), PersistentEntitySectionManager.ChunkLoadStatus.LOADED);
        }
+@@ -299,10 +_,18 @@
+       this.f_157493_.m_182219_(true);
+    }
+ 
++   // BBSMC start
+    public void close() throws IOException {
+-      this.m_157561_();
++      this.close(true);
++   }
++
++   public void close(boolean save) throws IOException {
++      if (save) {
++         this.m_157561_();
++      }
+       this.f_157493_.close();
+    }
++   // BBSMC end
+ 
+    public boolean m_157550_(UUID p_157551_) {
+       return this.f_157491_.contains(p_157551_);
 @@ -349,11 +_,13 @@
  
     class Callback implements EntityInLevelCallback {

@@ -1,0 +1,62 @@
+--- a/net/minecraft/world/level/block/ComposterBlock.java
++++ b/net/minecraft/world/level/block/ComposterBlock.java
+@@ -36,6 +_,7 @@
+ import net.minecraft.world.phys.shapes.CollisionContext;
+ import net.minecraft.world.phys.shapes.Shapes;
+ import net.minecraft.world.phys.shapes.VoxelShape;
++import org.bukkit.craftbukkit.inventory.CraftBlockInventoryHolder;
+ 
+ public class ComposterBlock extends Block implements WorldlyContainerHolder {
+    public static final int f_153088_ = 8;
+@@ -306,11 +_,16 @@
+       }
+    }
+ 
+-   static class EmptyContainer extends SimpleContainer implements WorldlyContainer {
++   public static class EmptyContainer extends SimpleContainer implements WorldlyContainer {
+       public EmptyContainer() {
+          super(0);
+       }
+ 
++      public EmptyContainer(LevelAccessor levelAccessor, BlockPos blockPos) {
++         super(0);
++         this.bukkitOwner = new CraftBlockInventoryHolder(levelAccessor, blockPos, this); // CraftBukkit
++      }
++
+       public int[] m_7071_(Direction p_52012_) {
+          return new int[0];
+       }
+@@ -324,7 +_,7 @@
+       }
+    }
+ 
+-   static class InputContainer extends SimpleContainer implements WorldlyContainer {
++   public static class InputContainer extends SimpleContainer implements WorldlyContainer {
+       private final BlockState f_52017_;
+       private final LevelAccessor f_52018_;
+       private final BlockPos f_52019_;
+@@ -332,6 +_,7 @@
+ 
+       public InputContainer(BlockState p_52022_, LevelAccessor p_52023_, BlockPos p_52024_) {
+          super(1);
++         this.bukkitOwner = new CraftBlockInventoryHolder(p_52023_, p_52024_, this); // CraftBukkit
+          this.f_52017_ = p_52022_;
+          this.f_52018_ = p_52023_;
+          this.f_52019_ = p_52024_;
+@@ -365,7 +_,7 @@
+       }
+    }
+ 
+-   static class OutputContainer extends SimpleContainer implements WorldlyContainer {
++   public static class OutputContainer extends SimpleContainer implements WorldlyContainer {
+       private final BlockState f_52037_;
+       private final LevelAccessor f_52038_;
+       private final BlockPos f_52039_;
+@@ -376,6 +_,7 @@
+          this.f_52037_ = p_52042_;
+          this.f_52038_ = p_52043_;
+          this.f_52039_ = p_52044_;
++         this.bukkitOwner = new CraftBlockInventoryHolder(p_52043_, p_52044_, this); // CraftBukkit
+       }
+ 
+       public int m_6893_() {

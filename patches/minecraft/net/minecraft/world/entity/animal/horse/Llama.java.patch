@@ -1,0 +1,15 @@
+--- a/net/minecraft/world/entity/animal/horse/Llama.java
++++ b/net/minecraft/world/entity/animal/horse/Llama.java
+@@ -67,6 +_,12 @@
+    @Nullable
+    private Llama f_30743_;
+ 
++   // BBSMC start
++   public void setStrengthPublic(int i) {
++      this.m_30840_(i);
++   }
++   // BBSMC end
++
+    public Llama(EntityType<? extends Llama> p_30750_, Level p_30751_) {
+       super(p_30750_, p_30751_);
+    }

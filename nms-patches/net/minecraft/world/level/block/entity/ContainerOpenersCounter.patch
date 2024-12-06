@@ -11,21 +11,7 @@
 @@ -22,11 +23,36 @@
  
      protected abstract void openerCountChanged(World world, BlockPosition blockposition, IBlockData iblockdata, int i, int j);
- 
-+    // CraftBukkit start
-+    public void onAPIOpen(World world, BlockPosition blockposition, IBlockData iblockdata) {
-+        onOpen(world, blockposition, iblockdata);
-+    }
-+
-+    public void onAPIClose(World world, BlockPosition blockposition, IBlockData iblockdata) {
-+        onClose(world, blockposition, iblockdata);
-+    }
-+
-+    public void openerAPICountChanged(World world, BlockPosition blockposition, IBlockData iblockdata, int i, int j) {
-+        openerCountChanged(world, blockposition, iblockdata, i, j);
-+    }
-+    // CraftBukkit end
-+
+     
      protected abstract boolean isOwnContainer(EntityHuman entityhuman);
  
      public void incrementOpeners(EntityHuman entityhuman, World world, BlockPosition blockposition, IBlockData iblockdata) {

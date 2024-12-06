@@ -1,5 +1,43 @@
 --- a/net/minecraft/server/level/ServerChunkCache.java
 +++ b/net/minecraft/server/level/ServerChunkCache.java
+@@ -56,8 +_,8 @@
+    public final ChunkMap f_8325_;
+    private final DimensionDataStorage f_8333_;
+    private long f_8334_;
+-   private boolean f_8335_ = true;
+-   private boolean f_8336_ = true;
++   public boolean f_8335_ = true;
++   public boolean f_8336_ = true;
+    private static final int f_143226_ = 4;
+    private final long[] f_8337_ = new long[4];
+    private final ChunkStatus[] f_8338_ = new ChunkStatus[4];
+@@ -66,6 +_,26 @@
+    @VisibleForDebug
+    private NaturalSpawner.SpawnState f_8340_;
+ 
++   // BBSMC start
++   public void purgeUnload() {
++      this.f_8329_.m_46473_().m_6180_("purge");
++      this.f_8327_.m_140776_();
++      this.m_8489_();
++      this.f_8329_.m_46473_().m_6182_("unload");
++      this.f_8325_.m_140280_(() -> true);
++      this.f_8329_.m_46473_().m_7238_();
++      this.m_8488_();
++   }
++
++   public boolean isChunkLoaded(int chunkX, int chunkZ) {
++      net.minecraft.server.level.ChunkHolder chunk = this.f_8325_.m_140174_(ChunkPos.m_45589_(chunkX, chunkZ));
++      if (chunk == null) {
++         return false;
++      }
++      return chunk.getFullChunkNow() != null;
++   }
++   // BBSMC end
++
+    public ServerChunkCache(ServerLevel p_214982_, LevelStorageSource.LevelStorageAccess p_214983_, DataFixer p_214984_, StructureTemplateManager p_214985_, Executor p_214986_, ChunkGenerator p_214987_, int p_214988_, int p_214989_, boolean p_214990_, ChunkProgressListener p_214991_, ChunkStatusUpdateListener p_214992_, Supplier<DimensionDataStorage> p_214993_) {
+       this.f_8329_ = p_214982_;
+       this.f_8332_ = new ServerChunkCache.MainThreadExecutor(p_214982_);
 @@ -161,6 +_,7 @@
           if (chunkholder == null) {
              return null;
@@ -8,6 +46,27 @@
              Either<ChunkAccess, ChunkHolder.ChunkLoadingFailure> either = chunkholder.m_140080_(ChunkStatus.f_62326_).getNow((Either<ChunkAccess, ChunkHolder.ChunkLoadingFailure>)null);
              if (either == null) {
                 return null;
+@@ -294,11 +_,19 @@
+       this.f_8325_.m_140318_(p_8420_);
+    }
+ 
++   // BBSMC start
+    public void close() throws IOException {
+-      this.m_8419_(true);
++      close(true);
++   }
++
++   public void close(boolean save) throws IOException {
++      if (save) {
++         this.m_8419_(true);
++      }
+       this.f_8331_.close();
+       this.f_8325_.close();
+    }
++   // BBSMC end
+ 
+    public void m_201698_(BooleanSupplier p_201913_, boolean p_201914_) {
+       this.f_8329_.m_46473_().m_6180_("purge");
 @@ -349,7 +_,7 @@
           for(ServerChunkCache.ChunkAndHolder serverchunkcache$chunkandholder : list) {
              LevelChunk levelchunk1 = serverchunkcache$chunkandholder.f_184028_;

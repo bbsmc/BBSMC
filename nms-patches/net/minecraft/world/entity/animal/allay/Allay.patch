@@ -13,20 +13,12 @@
      private float dancingAnimationTicks;
      private float spinningAnimationTicks;
      private float spinningAnimationTicks0;
-+    public boolean forceDancing = false; // CraftBukkit
  
      public Allay(EntityTypes<? extends Allay> entitytypes, World world) {
          super(entitytypes, world);
 @@ -112,6 +113,12 @@
          this.dynamicJukeboxListener = new DynamicGameEventListener<>(new Allay.b(entitypositionsource, GameEvent.JUKEBOX_PLAY.getNotificationRadius()));
      }
- 
-+    // CraftBukkit start
-+    public void setCanDuplicate(boolean canDuplicate) {
-+        this.entityData.set(Allay.DATA_CAN_DUPLICATE, canDuplicate);
-+    }
-+    // CraftBukkit end
-+
      @Override
      protected BehaviorController.b<Allay> brainProvider() {
          return BehaviorController.provider(Allay.MEMORY_TYPES, Allay.SENSOR_TYPES);
@@ -101,8 +93,6 @@
          return Allay.DUPLICATION_ITEM.test(itemstack);
      }
  
--    private void duplicateAllay() {
-+    public Allay duplicateAllay() { // CraftBukkit - return allay and private -> public
          Allay allay = (Allay) EntityTypes.ALLAY.create(this.level);
  
          if (allay != null) {
@@ -113,8 +103,6 @@
 -            this.level.addFreshEntity(allay);
 +            this.level.addFreshEntity(allay, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.DUPLICATION); // CraftBukkit - reason for duplicated allay
          }
--
-+        return allay; // CraftBukkit
      }
  
 -    private void resetDuplicationCooldown() {

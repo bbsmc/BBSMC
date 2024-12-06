@@ -1,5 +1,13 @@
 --- a/net/minecraft/world/inventory/GrindstoneMenu.java
 +++ b/net/minecraft/world/inventory/GrindstoneMenu.java
+@@ -16,6 +_,7 @@
+ import net.minecraft.world.level.Level;
+ import net.minecraft.world.level.block.Blocks;
+ import net.minecraft.world.phys.Vec3;
++import org.bukkit.inventory.InventoryView;
+ 
+ public class GrindstoneMenu extends AbstractContainerMenu {
+    public static final int f_150565_ = 35;
 @@ -34,6 +_,7 @@
        }
     };
@@ -87,3 +95,15 @@
              itemstack.m_41663_(enchantment, entry.getValue());
           }
        }
+@@ -222,6 +_,11 @@
+ 
+    public boolean m_6875_(Player p_39572_) {
+       return m_38889_(this.f_39561_, p_39572_, Blocks.f_50623_);
++   }
++
++   @Override
++   public InventoryView getBukkitView() {
++      return null;
+    }
+ 
+    public ItemStack m_7648_(Player p_39588_, int p_39589_) {

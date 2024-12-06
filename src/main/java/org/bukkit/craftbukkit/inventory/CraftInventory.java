@@ -3,6 +3,8 @@ package org.bukkit.craftbukkit.inventory;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
+
+import net.minecraft.world.level.block.ComposterBlock;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -481,7 +483,7 @@ public class CraftInventory implements Inventory {
             return InventoryType.GRINDSTONE;
         } else if (this instanceof CraftInventoryStonecutter) {
             return InventoryType.STONECUTTER;
-        } else if (inventory instanceof net.minecraft.world.level.block.ComposterBlock.ContainerEmpty || inventory instanceof net.minecraft.world.level.block.ComposterBlock.ContainerInput || inventory instanceof net.minecraft.world.level.block.ComposterBlock.ContainerOutput) {
+        } else if (inventory instanceof ComposterBlock.EmptyContainer || inventory instanceof ComposterBlock.InputContainer || inventory instanceof ComposterBlock.OutputContainer) {
             return InventoryType.COMPOSTER;
         } else {
             return InventoryType.CHEST;

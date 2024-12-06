@@ -1,5 +1,26 @@
 --- a/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/net/minecraft/server/dedicated/DedicatedServer.java
+@@ -54,6 +_,7 @@
+ import net.minecraft.world.level.Level;
+ import net.minecraft.world.level.block.entity.SkullBlockEntity;
+ import net.minecraft.world.level.storage.LevelStorageSource;
++import org.bukkit.command.CommandSender;
+ import org.slf4j.Logger;
+ 
+ public class DedicatedServer extends MinecraftServer implements ServerInterface {
+@@ -63,10 +_,10 @@
+    public final List<ConsoleInput> f_139600_ = Collections.synchronizedList(Lists.newArrayList());
+    @Nullable
+    private QueryThreadGs4 f_139601_;
+-   private final RconConsoleSource f_139602_;
++   public final RconConsoleSource f_139602_;
+    @Nullable
+    private RconThread f_139603_;
+-   private final DedicatedServerSettings f_139604_;
++   public final DedicatedServerSettings f_139604_;
+    @Nullable
+    private MinecraftServerGui f_139605_;
+    @Nullable
 @@ -82,6 +_,7 @@
     public boolean m_7038_() throws IOException {
        Thread thread = new Thread("Server console handler") {
@@ -46,3 +67,15 @@
     }
  
     public DedicatedPlayerList m_6846_() {
+@@ -407,6 +_,11 @@
+ 
+    public boolean m_6102_() {
+       return this.m_7913_().f_139718_;
++   }
++
++   @Override
++   public CommandSender getBukkitSender(CommandSourceStack wrapper) {
++      return null;
+    }
+ 
+    public int m_6329_() {

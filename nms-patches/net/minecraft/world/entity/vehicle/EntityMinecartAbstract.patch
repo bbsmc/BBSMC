@@ -19,18 +19,7 @@
 @@ -90,6 +99,17 @@
      private double lyd;
      private double lzd;
- 
-+    // CraftBukkit start
-+    public boolean slowWhenEmpty = true;
-+    private double derailedX = 0.5;
-+    private double derailedY = 0.5;
-+    private double derailedZ = 0.5;
-+    private double flyingX = 0.95;
-+    private double flyingY = 0.95;
-+    private double flyingZ = 0.95;
-+    public double maxSpeed = 0.4D;
-+    // CraftBukkit end
-+
+
      protected EntityMinecartAbstract(EntityTypes<?> entitytypes, World world) {
          super(entitytypes, world);
          this.blocksBuilding = true;
@@ -211,26 +200,4 @@
  
          private EnumMinecartType() {}
      }
-+
-+    // CraftBukkit start - Methods for getting and setting flying and derailed velocity modifiers
-+    public Vector getFlyingVelocityMod() {
-+        return new Vector(flyingX, flyingY, flyingZ);
-+    }
-+
-+    public void setFlyingVelocityMod(Vector flying) {
-+        flyingX = flying.getX();
-+        flyingY = flying.getY();
-+        flyingZ = flying.getZ();
-+    }
-+
-+    public Vector getDerailedVelocityMod() {
-+        return new Vector(derailedX, derailedY, derailedZ);
-+    }
-+
-+    public void setDerailedVelocityMod(Vector derailed) {
-+        derailedX = derailed.getX();
-+        derailedY = derailed.getY();
-+        derailedZ = derailed.getZ();
-+    }
-+    // CraftBukkit end
  }

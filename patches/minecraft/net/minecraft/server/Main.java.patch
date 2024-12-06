@@ -1,5 +1,18 @@
 --- a/net/minecraft/server/Main.java
 +++ b/net/minecraft/server/Main.java
+@@ -15,10 +_,12 @@
+ import java.util.Objects;
+ import java.util.Optional;
+ import java.util.UUID;
++import java.util.concurrent.atomic.AtomicReference;
+ import java.util.function.BooleanSupplier;
+ import joptsimple.OptionParser;
+ import joptsimple.OptionSet;
+ import joptsimple.OptionSpec;
++import net.bbsmc.server.BBSMcServer;
+ import net.minecraft.CrashReport;
+ import net.minecraft.DefaultUncaughtExceptionHandler;
+ import net.minecraft.SharedConstants;
 @@ -78,6 +_,15 @@
        OptionSpec<String> optionspec12 = optionparser.accepts("serverId").withRequiredArg();
        OptionSpec<Void> optionspec13 = optionparser.accepts("jfrProfile");
@@ -63,6 +76,29 @@
           LevelSummary levelsummary = levelstoragesource$levelstorageaccess.m_78308_();
           if (levelsummary != null) {
              if (levelsummary.m_193020_()) {
+@@ -134,6 +_,11 @@
+ 
+          PackRepository packrepository = new PackRepository(PackType.SERVER_DATA, new ServerPacksSource(), new FolderRepositorySource(levelstoragesource$levelstorageaccess.m_78283_(LevelResource.f_78180_).toFile(), PackSource.f_10529_));
+ 
++         // BBSMC start - ServerSetter
++         AtomicReference<DataPackConfig> dataPackConfig = new AtomicReference<>();
++         AtomicReference<DynamicOps<Tag>> dynamicOps = new AtomicReference<>();
++         // BBSMC end
++
+          WorldStem worldstem;
+          try {
+             DataPackConfig datapackconfig = Objects.requireNonNullElse(levelstoragesource$levelstorageaccess.m_78309_(), DataPackConfig.f_45842_);
+@@ -143,6 +_,10 @@
+                return WorldStem.m_214415_(worldloader$initconfig, (p_236717_, p_236718_) -> {
+                   RegistryAccess.Writable registryaccess$writable = RegistryAccess.m_206197_();
+                   DynamicOps<Tag> dynamicops = RegistryOps.m_206813_(NbtOps.f_128958_, registryaccess$writable, p_236717_);
++                  // BBSMC start - ServerSetter
++                  dataPackConfig.set(p_236718_);
++                  dynamicOps.set(dynamicops);
++                  // BBSMC end
+                   WorldData worlddata1 = levelstoragesource$levelstorageaccess.m_211747_(dynamicops, p_236718_, registryaccess$writable.m_211816_());
+                   if (worlddata1 != null) {
+                      return Pair.of(worlddata1, registryaccess$writable.m_203557_());
 @@ -158,6 +_,8 @@
                          worldgensettings = optionset.has(optionspec3) ? dedicatedserverproperties.m_180927_(registryaccess$writable).m_64671_() : dedicatedserverproperties.m_180927_(registryaccess$writable);
                       }
@@ -72,13 +108,14 @@
                       PrimaryLevelData primaryleveldata = new PrimaryLevelData(levelsettings, worldgensettings, Lifecycle.stable());
                       return Pair.of(primaryleveldata, registryaccess$writable.m_203557_());
                    }
-@@ -178,22 +_,33 @@
+@@ -178,22 +_,34 @@
           }
  
           levelstoragesource$levelstorageaccess.m_78287_(registryaccess$frozen, worlddata);
 -         final DedicatedServer dedicatedserver = MinecraftServer.m_129872_((p_236710_) -> {
 -            DedicatedServer dedicatedserver1 = new DedicatedServer(p_236710_, levelstoragesource$levelstorageaccess, packrepository, worldstem, dedicatedserversettings, DataFixers.m_14512_(), services, LoggerChunkProgressListener::new);
 +         final MinecraftServer dedicatedserver = MinecraftServer.m_129872_((p_129697_) -> {
++            BBSMcServer.getServerSetter().load(optionset, dataPackConfig.get(), dynamicOps.get());
 +            MinecraftServer dedicatedserver1;
 +            if (gametestEnabled) {
 +               net.minecraftforge.gametest.ForgeGameTestHooks.registerGametests();
@@ -110,3 +147,12 @@
              }
           };
           thread.setUncaughtExceptionHandler(new DefaultUncaughtExceptionHandler(f_129670_));
+@@ -204,7 +_,7 @@
+ 
+    }
+ 
+-   private static void m_195488_(LevelStorageSource.LevelStorageAccess p_195489_, DataFixer p_195490_, boolean p_195491_, BooleanSupplier p_195492_, WorldGenSettings p_195493_) {
++   public static void m_195488_(LevelStorageSource.LevelStorageAccess p_195489_, DataFixer p_195490_, boolean p_195491_, BooleanSupplier p_195492_, WorldGenSettings p_195493_) {
+       f_129670_.info("Forcing world upgrade!");
+       WorldUpgrader worldupgrader = new WorldUpgrader(p_195489_, p_195490_, p_195493_, p_195491_);
+       Component component = null;

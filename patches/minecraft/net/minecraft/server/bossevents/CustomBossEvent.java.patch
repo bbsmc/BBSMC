@@ -1,0 +1,26 @@
+--- a/net/minecraft/server/bossevents/CustomBossEvent.java
++++ b/net/minecraft/server/bossevents/CustomBossEvent.java
+@@ -15,12 +_,23 @@
+ import net.minecraft.server.level.ServerPlayer;
+ import net.minecraft.util.Mth;
+ import net.minecraft.world.BossEvent;
++import org.bukkit.boss.KeyedBossBar;
+ 
+ public class CustomBossEvent extends ServerBossEvent {
+    private final ResourceLocation f_136256_;
+    private final Set<UUID> f_136257_ = Sets.newHashSet();
+    private int f_136258_;
+    private int f_136259_ = 100;
++   // BBSMC start
++   private KeyedBossBar bossBar;
++
++   public org.bukkit.boss.KeyedBossBar getBukkitEntity() {
++      if (bossBar == null) {
++         bossBar = new org.bukkit.craftbukkit.boss.CraftKeyedBossbar(this);
++      }
++      return bossBar;
++   }
++   // BBSMC end
+ 
+    public CustomBossEvent(ResourceLocation p_136261_, Component p_136262_) {
+       super(p_136262_, BossEvent.BossBarColor.WHITE, BossEvent.BossBarOverlay.PROGRESS);

@@ -58,41 +58,6 @@
 +                    if ((entityhuman == null || !entityhuman.getAbilities().instabuild) && itemstack != ItemStack.EMPTY) { // CraftBukkit
                          itemstack.shrink(1);
                      }
- 
-@@ -130,6 +156,21 @@
- 
-         if (nbttagcompound != null) {
-             NBTTagCompound nbttagcompound1 = nbttagcompound.getCompound("BlockStateTag");
-+            // CraftBukkit start
-+            iblockdata1 = getBlockState(iblockdata1, nbttagcompound1);
-+        }
-+
-+        if (iblockdata1 != iblockdata) {
-+            world.setBlock(blockposition, iblockdata1, 2);
-+        }
-+
-+        return iblockdata1;
-+    }
-+
-+    public static IBlockData getBlockState(IBlockData iblockdata, NBTTagCompound nbttagcompound1) {
-+        IBlockData iblockdata1 = iblockdata;
-+        {
-+            // CraftBukkit end
-             BlockStateList<Block, IBlockData> blockstatelist = iblockdata.getBlock().getStateDefinition();
-             Iterator iterator = nbttagcompound1.getAllKeys().iterator();
- 
-@@ -144,11 +185,6 @@
-                 }
-             }
-         }
--
--        if (iblockdata1 != iblockdata) {
--            world.setBlock(blockposition, iblockdata1, 2);
--        }
--
-         return iblockdata1;
-     }
- 
 @@ -161,8 +197,15 @@
      protected boolean canPlace(BlockActionContext blockactioncontext, IBlockData iblockdata) {
          EntityHuman entityhuman = blockactioncontext.getPlayer();

@@ -25,15 +25,6 @@
 +        // CraftBukkit start
 +        this.bukkitChunk = new org.bukkit.craftbukkit.CraftChunk(this);
      }
- 
-+    public org.bukkit.Chunk bukkitChunk;
-+    public org.bukkit.Chunk getBukkitChunk() {
-+        return bukkitChunk;
-+    }
-+
-+    public boolean mustNotSave;
-+    public boolean needsDecoration;
-+
 +    // CraftBukkit end
 +
      public Chunk(WorldServer worldserver, ProtoChunk protochunk, @Nullable Chunk.c chunk_c) {

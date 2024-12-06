@@ -1,5 +1,13 @@
 --- a/net/minecraft/world/inventory/InventoryMenu.java
 +++ b/net/minecraft/world/inventory/InventoryMenu.java
+@@ -11,6 +_,7 @@
+ import net.minecraft.world.item.ItemStack;
+ import net.minecraft.world.item.crafting.Recipe;
+ import net.minecraft.world.item.enchantment.EnchantmentHelper;
++import org.bukkit.inventory.InventoryView;
+ 
+ public class InventoryMenu extends RecipeBookMenu<CraftingContainer> {
+    public static final int f_150579_ = 0;
 @@ -63,7 +_,7 @@
              }
  
@@ -9,3 +17,15 @@
              }
  
              public boolean m_8010_(Player p_39744_) {
+@@ -125,6 +_,11 @@
+ 
+    public boolean m_6875_(Player p_39712_) {
+       return true;
++   }
++
++   @Override
++   public InventoryView getBukkitView() {
++      return null;
+    }
+ 
+    public ItemStack m_7648_(Player p_39723_, int p_39724_) {

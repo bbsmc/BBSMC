@@ -17,16 +17,6 @@
      private int tickTimer;
      private int lastFoodLevel = 20;
  
--    public FoodMetaData() {}
-+    public FoodMetaData() { throw new AssertionError("Whoopsie, we missed the bukkit."); } // CraftBukkit start - throw an error
-+
-+    // CraftBukkit start - added EntityHuman constructor
-+    public FoodMetaData(EntityHuman entityhuman) {
-+        org.apache.commons.lang.Validate.notNull(entityhuman);
-+        this.entityhuman = entityhuman;
-+    }
-+    // CraftBukkit end
- 
      public void eat(int i, float f) {
          this.foodLevel = Math.min(i + this.foodLevel, 20);
 @@ -26,8 +44,17 @@

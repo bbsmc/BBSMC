@@ -10,6 +10,7 @@ import java.util.UUID;
 
 import net.bbsmc.server.world.entity.CraftEntityClassLookup;
 import net.bbsmc.server.world.entity.impl.CraftFakePlayer;
+import net.minecraft.server.level.ChunkMap;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.GlowSquid;
@@ -183,7 +184,6 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
 
         // Let the server handle cross world teleports
         if (location.getWorld() != null && !location.getWorld().equals(getWorld())) {
-            // Prevent teleportation to an other world during world generation
             Preconditions.checkState(!entity.generation, "Cannot teleport entity to an other world during world generation");
             entity.teleportTo(((CraftWorld) location.getWorld()).getHandle(), new net.minecraft.core.PositionImpl(location.getX(), location.getY(), location.getZ()));
             return true;
@@ -747,7 +747,7 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
         }
 
         net.minecraft.server.level.ServerLevel world = ((CraftWorld) getWorld()).getHandle();
-        net.minecraft.server.level.ChunkTracker.EntityTracker entityTracker = world.getChunkSource().chunkMap.entityMap.get(getEntityId());
+        ChunkMap.TrackedEntity entityTracker = world.getChunkSource().chunkMap.entityMap.get(getEntityId());
 
         if (entityTracker == null) {
             return;

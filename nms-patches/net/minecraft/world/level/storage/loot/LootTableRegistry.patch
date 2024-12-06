@@ -4,7 +4,6 @@
      private static final Logger LOGGER = LogUtils.getLogger();
      private static final Gson GSON = LootSerialization.createLootTableSerializer().create();
      private Map<MinecraftKey, LootTable> tables = ImmutableMap.of();
-+    public Map<LootTable, MinecraftKey> lootTableToKey = ImmutableMap.of(); // CraftBukkit
      private final LootPredicateManager predicateManager;
  
      public LootTableRegistry(LootPredicateManager lootpredicatemanager) {

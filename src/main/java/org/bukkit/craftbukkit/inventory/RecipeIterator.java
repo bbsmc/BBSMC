@@ -1,13 +1,13 @@
 package org.bukkit.craftbukkit.inventory;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
-import java.util.Iterator;
-import java.util.Map;
 import net.minecraft.server.MinecraftServer;
 import org.bukkit.inventory.Recipe;
 
+import java.util.Iterator;
+import java.util.Map;
+
 public class RecipeIterator implements Iterator<Recipe> {
-    private final Iterator<Map.Entry<net.minecraft.world.item.crafting.RecipeType<?>, Object2ObjectLinkedOpenHashMap<net.minecraft.resources.ResourceLocation, net.minecraft.world.item.crafting.Recipe<?>>>> recipes;
+    private final Iterator<Map.Entry<net.minecraft.world.item.crafting.RecipeType<?>, Map<net.minecraft.resources.ResourceLocation, net.minecraft.world.item.crafting.Recipe<?>>>> recipes;
     private Iterator<net.minecraft.world.item.crafting.Recipe<?>> current;
 
     public RecipeIterator() {
@@ -19,12 +19,10 @@ public class RecipeIterator implements Iterator<Recipe> {
         if (current != null && current.hasNext()) {
             return true;
         }
-
         if (recipes.hasNext()) {
             current = recipes.next().getValue().values().iterator();
             return hasNext();
         }
-
         return false;
     }
 
@@ -34,8 +32,12 @@ public class RecipeIterator implements Iterator<Recipe> {
             current = recipes.next().getValue().values().iterator();
             return next();
         }
-
-        return current.next().toBukkitRecipe();
+        net.minecraft.world.item.crafting.Recipe<?> recipe = current.next();
+        try {
+            return recipe.toBukkitRecipe();
+        } catch (Throwable e) {
+            throw new RuntimeException("Error converting recipe " + recipe.getId(), e);
+        }
     }
 
     @Override

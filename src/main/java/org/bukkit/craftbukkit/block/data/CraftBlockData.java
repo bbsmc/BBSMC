@@ -9,7 +9,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.StateHolder;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.SoundGroup;
@@ -218,7 +221,7 @@ public class CraftBlockData implements BlockData {
 
         if (!states.isEmpty()) {
             stateString.append('[');
-            stateString.append(states.entrySet().stream().map(net.minecraft.world.level.block.state.BlockStateHolder.PROPERTY_ENTRY_TO_STRING_FUNCTION).collect(Collectors.joining(",")));
+            stateString.append(states.entrySet().stream().map(StateHolder.PROPERTY_ENTRY_TO_STRING_FUNCTION).collect(Collectors.joining(",")));
             stateString.append(']');
         }
 
@@ -509,7 +512,7 @@ public class CraftBlockData implements BlockData {
                 }
 
                 StringReader reader = new StringReader(data);
-                net.minecraft.commands.arguments.blocks.BlockStateParser.a arg = net.minecraft.commands.arguments.blocks.BlockStateParser.parseForBlock(net.minecraft.core.Registry.BLOCK, reader, false);
+                BlockStateParser.BlockResult arg = net.minecraft.commands.arguments.blocks.BlockStateParser.parseForBlock(net.minecraft.core.Registry.BLOCK, reader, false);
                 Preconditions.checkArgument(!reader.canRead(), "Spurious trailing data: " + data);
 
                 blockData = arg.blockState();

@@ -1,5 +1,44 @@
 --- a/net/minecraft/world/level/block/entity/BeaconBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/BeaconBlockEntity.java
+@@ -3,6 +_,7 @@
+ import com.google.common.collect.ImmutableList;
+ import com.google.common.collect.Lists;
+ import java.util.Arrays;
++import java.util.Collection;
+ import java.util.List;
+ import java.util.Set;
+ import java.util.stream.Collectors;
+@@ -35,6 +_,7 @@
+ import net.minecraft.world.level.block.state.BlockState;
+ import net.minecraft.world.level.levelgen.Heightmap;
+ import net.minecraft.world.phys.AABB;
++import org.bukkit.potion.PotionEffect;
+ 
+ public class BeaconBlockEntity extends BlockEntity implements MenuProvider {
+    private static final int f_155085_ = 4;
+@@ -47,15 +_,15 @@
+    private static final int f_155086_ = 10;
+    List<BeaconBlockEntity.BeaconBeamSection> f_58648_ = Lists.newArrayList();
+    private List<BeaconBlockEntity.BeaconBeamSection> f_58649_ = Lists.newArrayList();
+-   int f_58650_;
++   public int f_58650_;
+    private int f_58651_;
+    @Nullable
+-   MobEffect f_58652_;
+-   @Nullable
+-   MobEffect f_58653_;
+-   @Nullable
+-   private Component f_58654_;
+-   private LockCode f_58655_ = LockCode.f_19102_;
++   public MobEffect f_58652_;
++   @Nullable
++   public MobEffect f_58653_;
++   @Nullable
++   public Component f_58654_;
++   public LockCode f_58655_ = LockCode.f_19102_;
+    private final ContainerData f_58656_ = new ContainerData() {
+       public int m_6413_(int p_58711_) {
+          int i;
 @@ -122,8 +_,8 @@
        for(int i1 = 0; i1 < 10 && blockpos.m_123342_() <= l; ++i1) {
           BlockState blockstate = p_155108_.m_8055_(blockpos);
@@ -11,3 +50,31 @@
              if (p_155111_.f_58649_.size() <= 1) {
                 beaconblockentity$beaconbeamsection = new BeaconBlockEntity.BeaconBeamSection(afloat);
                 p_155111_.f_58649_.add(beaconblockentity$beaconbeamsection);
+@@ -209,7 +_,11 @@
+       return i;
+    }
+ 
+-   public void m_7651_() {
++    public static Collection<Player> getHumansInRange(Level level, BlockPos blockPos, int levels) {
++      return null;
++    }
++
++    public void m_7651_() {
+       m_155103_(this.f_58857_, this.f_58858_, SoundEvents.f_11738_);
+       super.m_7651_();
+    }
+@@ -300,6 +_,14 @@
+    public void m_142339_(Level p_155091_) {
+       super.m_142339_(p_155091_);
+       this.f_58651_ = p_155091_.m_141937_() - 1;
++   }
++
++   public PotionEffect getPrimaryEffect() {
++      return null;
++   }
++
++   public PotionEffect getSecondaryEffect() {
++      return null;
+    }
+ 
+    public static class BeaconBeamSection {

@@ -2,6 +2,7 @@ package org.bukkit.craftbukkit.inventory;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.commands.arguments.item.ItemParser;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.Item;
 import org.apache.commons.lang.Validate;
@@ -351,7 +352,7 @@ public final class CraftItemFactory implements ItemFactory {
     @Override
     public ItemStack createItemStack(String input) throws IllegalArgumentException {
         try {
-            net.minecraft.commands.arguments.item.ItemParser.a arg = net.minecraft.commands.arguments.item.ItemParser.parseForItem(HolderLookup.forRegistry(net.minecraft.core.Registry.ITEM), new StringReader(input));
+            ItemParser.ItemResult arg = net.minecraft.commands.arguments.item.ItemParser.parseForItem(HolderLookup.forRegistry(net.minecraft.core.Registry.ITEM), new StringReader(input));
 
             Item item = arg.item().value();
             net.minecraft.world.item.ItemStack nmsItemStack = new net.minecraft.world.item.ItemStack(item);

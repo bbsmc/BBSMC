@@ -2,6 +2,8 @@ package org.bukkit.craftbukkit.inventory;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import net.minecraft.world.item.crafting.Ingredient;
 import org.bukkit.craftbukkit.util.CraftMagicNumbers;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
@@ -17,9 +19,9 @@ public interface CraftRecipe extends Recipe {
         if (bukkit == null) {
             stack = net.minecraft.world.item.crafting.Ingredient.EMPTY;
         } else if (bukkit instanceof RecipeChoice.MaterialChoice) {
-            stack = new net.minecraft.world.item.crafting.Ingredient(((RecipeChoice.MaterialChoice) bukkit).getChoices().stream().map((mat) -> new net.minecraft.world.item.crafting.Ingredient.StackProvider(CraftItemStack.asNMSCopy(new ItemStack(mat)))));
+            stack = new net.minecraft.world.item.crafting.Ingredient(((RecipeChoice.MaterialChoice) bukkit).getChoices().stream().map((mat) -> new Ingredient.ItemValue(CraftItemStack.asNMSCopy(new ItemStack(mat)))));
         } else if (bukkit instanceof RecipeChoice.ExactChoice) {
-            stack = new net.minecraft.world.item.crafting.Ingredient(((RecipeChoice.ExactChoice) bukkit).getChoices().stream().map((mat) -> new net.minecraft.world.item.crafting.Ingredient.StackProvider(CraftItemStack.asNMSCopy(mat))));
+            stack = new net.minecraft.world.item.crafting.Ingredient(((RecipeChoice.ExactChoice) bukkit).getChoices().stream().map((mat) -> new Ingredient.ItemValue(CraftItemStack.asNMSCopy(mat))));
             stack.exact = true;
         } else {
             throw new IllegalArgumentException("Unknown recipe stack instance " + bukkit);

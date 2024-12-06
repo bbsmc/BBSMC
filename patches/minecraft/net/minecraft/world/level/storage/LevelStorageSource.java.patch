@@ -1,5 +1,13 @@
 --- a/net/minecraft/world/level/storage/LevelStorageSource.java
 +++ b/net/minecraft/world/level/storage/LevelStorageSource.java
+@@ -55,6 +_,7 @@
+ import net.minecraft.world.level.Level;
+ import net.minecraft.world.level.LevelSettings;
+ import net.minecraft.world.level.dimension.DimensionType;
++import net.minecraft.world.level.dimension.LevelStem;
+ import net.minecraft.world.level.levelgen.WorldGenSettings;
+ import net.minecraft.world.level.levelgen.presets.WorldPresets;
+ import org.slf4j.Logger;
 @@ -96,6 +_,13 @@
        }
  
@@ -14,6 +22,52 @@
        DataResult<WorldGenSettings> dataresult = WorldGenSettings.f_64600_.parse(dynamic1);
        return Pair.of(dataresult.resultOrPartial(Util.m_137489_("WorldGenSettings: ", f_78191_::error)).orElseGet(() -> {
           RegistryAccess registryaccess = RegistryAccess.m_206154_(dynamic1);
+@@ -281,9 +_,27 @@
+       return this.f_78195_;
+    }
+ 
++   // BBSMC start
+    public LevelStorageSource.LevelStorageAccess m_78260_(String p_78261_) throws IOException {
+-      return new LevelStorageSource.LevelStorageAccess(p_78261_);
+-   }
++      return createAccess(p_78261_, null);
++   }
++
++   public LevelStorageSource.LevelStorageAccess createAccess(String p_78261_, ResourceKey<LevelStem> actualDimension) throws IOException {
++      return new LevelStorageSource.LevelStorageAccess(p_78261_, actualDimension);
++   }
++
++   public static Path getStorageFolder(Path path, ResourceKey<LevelStem> dimensionType) {
++      if (dimensionType == net.minecraft.world.level.dimension.LevelStem.f_63971_) {
++         return path;
++      } else if (dimensionType == net.minecraft.world.level.dimension.LevelStem.f_63972_) {
++         return path.resolve("DIM-1");
++      } else if (dimensionType == net.minecraft.world.level.dimension.LevelStem.f_63973_) {
++         return path.resolve("DIM1");
++      } else {
++         return path.resolve("dimensions").resolve(dimensionType.m_135782_().m_135827_()).resolve(dimensionType.m_135782_().m_135815_());
++      }
++   }
++   // BBSMC end
+ 
+    public static record LevelCandidates(List<LevelStorageSource.LevelDirectory> f_230840_) implements Iterable<LevelStorageSource.LevelDirectory> {
+       public boolean m_230843_() {
+@@ -327,11 +_,13 @@
+ 
+    public class LevelStorageAccess implements AutoCloseable {
+       final DirectoryLock f_78270_;
+-      final LevelStorageSource.LevelDirectory f_230867_;
++      public final LevelStorageSource.LevelDirectory f_230867_;
+       private final String f_78272_;
+       private final Map<LevelResource, Path> f_78273_ = Maps.newHashMap();
++      public final ResourceKey<LevelStem> dimensionType;
+ 
+-      public LevelStorageAccess(String p_78276_) throws IOException {
++      public LevelStorageAccess(String p_78276_, ResourceKey<LevelStem> dimensionType) throws IOException {
++         this.dimensionType = dimensionType;
+          this.f_78272_ = p_78276_;
+          this.f_230867_ = new LevelStorageSource.LevelDirectory(LevelStorageSource.this.f_78194_.resolve(p_78276_));
+          this.f_78270_ = DirectoryLock.m_13640_(this.f_230867_.f_230850_());
 @@ -372,6 +_,19 @@
           return LevelStorageSource.this.m_230817_(this.f_230867_, LevelStorageSource.m_211737_(p_211748_, p_211749_, p_211750_));
        }

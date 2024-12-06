@@ -7,6 +7,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -51,11 +52,11 @@ public class CraftStructure implements Structure {
         }
 
         RandomSource randomSource = new RandomSourceWrapper(random);
-        net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateInfo definedstructureinfo = new net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateInfo()
+        net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings definedstructureinfo = new net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings()
                 .setMirror(net.minecraft.world.level.block.Mirror.valueOf(mirror.name()))
                 .setRotation(net.minecraft.world.level.block.Rotation.valueOf(structureRotation.name()))
                 .setIgnoreEntities(!includeEntities)
-                .addProcessor(new net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateProcessorRotation(integrity))
+                .addProcessor(new net.minecraft.world.level.levelgen.structure.templatesystem.BlockRotProcessor(integrity))
                 .setRandom(randomSource);
         definedstructureinfo.palette = palette;
 
@@ -96,7 +97,7 @@ public class CraftStructure implements Structure {
     @Override
     public List<Entity> getEntities() {
         List<Entity> entities = new ArrayList<>();
-        for (net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.EntityInfo entity : structure.entityInfoList) {
+        for (StructureTemplate.StructureEntityInfo entity : structure.entityInfoList) {
             net.minecraft.world.entity.EntityType.create(entity.nbt, ((CraftWorld) Bukkit.getServer().getWorlds().get(0)).getHandle()).ifPresent(dummyEntity -> {
                 dummyEntity.setPos(entity.pos.x, entity.pos.y, entity.pos.z);
                 entities.add(dummyEntity.getBukkitEntity());

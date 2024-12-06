@@ -1,0 +1,20 @@
+--- a/net/minecraft/world/level/levelgen/FlatLevelSource.java
++++ b/net/minecraft/world/level/levelgen/FlatLevelSource.java
+@@ -28,10 +_,16 @@
+    });
+    private final FlatLevelGeneratorSettings f_64165_;
+ 
++   // BBSMC start - constructor
+    public FlatLevelSource(Registry<StructureSet> p_209099_, FlatLevelGeneratorSettings p_209100_) {
+-      super(p_209099_, p_209100_.m_209810_(), new FixedBiomeSource(p_209100_.m_204921_()), Util.m_143827_(p_209100_::m_226294_));
++      this(p_209099_, p_209100_, new FixedBiomeSource(p_209100_.m_204921_()));
++   }
++
++   public FlatLevelSource(Registry<StructureSet> p_209099_, FlatLevelGeneratorSettings p_209100_, net.minecraft.world.level.biome.BiomeSource worldChunkManager) {
++      super(p_209099_, p_209100_.m_209810_(), worldChunkManager, Util.m_143827_(p_209100_::m_226294_));
+       this.f_64165_ = p_209100_;
+    }
++   // BBSMC end
+ 
+    protected Codec<? extends ChunkGenerator> m_6909_() {
+       return f_64164_;

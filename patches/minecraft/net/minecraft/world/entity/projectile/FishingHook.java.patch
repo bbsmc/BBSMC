@@ -1,5 +1,34 @@
 --- a/net/minecraft/world/entity/projectile/FishingHook.java
 +++ b/net/minecraft/world/entity/projectile/FishingHook.java
+@@ -50,7 +_,7 @@
+    private boolean f_37099_;
+    private int f_37100_;
+    private static final int f_150136_ = 10;
+-   private static final EntityDataAccessor<Integer> f_37101_ = SynchedEntityData.m_135353_(FishingHook.class, EntityDataSerializers.f_135028_);
++   public static final EntityDataAccessor<Integer> f_37101_ = SynchedEntityData.m_135353_(FishingHook.class, EntityDataSerializers.f_135028_);
+    private static final EntityDataAccessor<Boolean> f_37102_ = SynchedEntityData.m_135353_(FishingHook.class, EntityDataSerializers.f_135035_);
+    private int f_37103_;
+    private int f_37089_;
+@@ -59,11 +_,17 @@
+    private float f_37092_;
+    private boolean f_37093_ = true;
+    @Nullable
+-   private Entity f_37094_;
+-   private FishingHook.FishHookState f_37095_ = FishingHook.FishHookState.FLYING;
++   public Entity f_37094_;
++   public FishingHook.FishHookState f_37095_ = FishingHook.FishHookState.FLYING;
+    private final int f_37096_;
+    private final int f_37097_;
+ 
++   // BBSMC start
++   public int minWaitTime = 100;
++   public int maxWaitTime = 600;
++   public boolean applyLure = true;
++   // BBSMC end
++
+    private FishingHook(EntityType<? extends FishingHook> p_150141_, Level p_150142_, int p_150143_, int p_150144_) {
+       super(p_150141_, p_150142_);
+       this.f_19811_ = true;
 @@ -228,8 +_,8 @@
     private boolean m_37136_(Player p_37137_) {
        ItemStack itemstack = p_37137_.m_21205_();
@@ -71,3 +100,21 @@
        } else {
           return 0;
        }
+@@ -449,7 +_,7 @@
+       super.m_7822_(p_37123_);
+    }
+ 
+-   protected void m_150155_(Entity p_150156_) {
++   public void m_150155_(Entity p_150156_) {
+       Entity entity = this.m_37282_();
+       if (entity != null) {
+          Vec3 vec3 = (new Vec3(entity.m_20185_() - this.m_20185_(), entity.m_20186_() - this.m_20186_(), entity.m_20189_() - this.m_20189_())).m_82490_(0.1D);
+@@ -513,7 +_,7 @@
+ 
+    }
+ 
+-   static enum FishHookState {
++   public static enum FishHookState {
+       FLYING,
+       HOOKED_IN_ENTITY,
+       BOBBING;

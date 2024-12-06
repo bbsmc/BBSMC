@@ -38,7 +38,7 @@ public class CraftTippedArrow extends CraftArrow implements Arrow {
         int effectId = effect.getType().getId();
         net.minecraft.world.effect.MobEffectInstance existing = null;
         for (net.minecraft.world.effect.MobEffectInstance mobEffect : getHandle().effects) {
-            if (net.minecraft.world.effect.MobEffectInstanceList.getId(mobEffect.getEffect()) == effectId) {
+            if (net.minecraft.world.effect.MobEffect.getId(mobEffect.getEffect()) == effectId) {
                 existing = mobEffect;
             }
         }
@@ -88,7 +88,7 @@ public class CraftTippedArrow extends CraftArrow implements Arrow {
         int effectId = effect.getId();
         net.minecraft.world.effect.MobEffectInstance existing = null;
         for (net.minecraft.world.effect.MobEffectInstance mobEffect : getHandle().effects) {
-            if (net.minecraft.world.effect.MobEffectInstanceList.getId(mobEffect.getEffect()) == effectId) {
+            if (net.minecraft.world.effect.MobEffect.getId(mobEffect.getEffect()) == effectId) {
                 existing = mobEffect;
             }
         }

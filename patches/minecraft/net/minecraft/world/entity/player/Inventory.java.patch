@@ -1,5 +1,16 @@
 --- a/net/minecraft/world/entity/player/Inventory.java
 +++ b/net/minecraft/world/entity/player/Inventory.java
+@@ -22,6 +_,10 @@
+ import net.minecraft.world.item.Item;
+ import net.minecraft.world.item.ItemStack;
+ import net.minecraft.world.level.block.state.BlockState;
++import org.bukkit.Location;
++import org.bukkit.craftbukkit.entity.CraftHumanEntity;
++import org.bukkit.entity.HumanEntity;
++import org.bukkit.inventory.InventoryHolder;
+ 
+ public class Inventory implements Container, Nameable {
+    public static final int f_150064_ = 5;
 @@ -129,7 +_,7 @@
  
        for(int k = 0; k < 9; ++k) {
@@ -37,3 +48,57 @@
              crashreportcategory.m_128159_("Item ID", Item.m_41393_(p_36042_.m_41720_()));
              crashreportcategory.m_128159_("Item data", p_36042_.m_41773_());
              crashreportcategory.m_128165_("Item name", () -> {
+@@ -380,6 +_,11 @@
+ 
+    }
+ 
++   @Override
++   public int m_6893_() {
++      return 0;
++   }
++
+    public float m_36020_(BlockState p_36021_) {
+       return this.f_35974_.get(this.f_35977_).m_41691_(p_36021_);
+    }
+@@ -532,6 +_,41 @@
+       } else {
+          return !(p_36009_.m_20280_(this.f_35978_) > 64.0D);
+       }
++   }
++
++   @Override
++   public List<ItemStack> getContents() {
++      return List.of();
++   }
++
++   @Override
++   public void onOpen(CraftHumanEntity who) {
++
++   }
++
++   @Override
++   public void onClose(CraftHumanEntity who) {
++
++   }
++
++   @Override
++   public List<HumanEntity> getViewers() {
++      return List.of();
++   }
++
++   @Override
++   public InventoryHolder getOwner() {
++      return null;
++   }
++
++   @Override
++   public void setMaxStackSize(int size) {
++
++   }
++
++   @Override
++   public Location getLocation() {
++      return null;
+    }
+ 
+    public boolean m_36063_(ItemStack p_36064_) {

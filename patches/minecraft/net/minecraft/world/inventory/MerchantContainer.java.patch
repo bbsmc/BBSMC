@@ -1,0 +1,72 @@
+--- a/net/minecraft/world/inventory/MerchantContainer.java
++++ b/net/minecraft/world/inventory/MerchantContainer.java
+@@ -9,13 +_,19 @@
+ import net.minecraft.world.item.trading.Merchant;
+ import net.minecraft.world.item.trading.MerchantOffer;
+ import net.minecraft.world.item.trading.MerchantOffers;
++import org.bukkit.Location;
++import org.bukkit.craftbukkit.entity.CraftHumanEntity;
++import org.bukkit.entity.HumanEntity;
++import org.bukkit.inventory.InventoryHolder;
++
++import java.util.List;
+ 
+ public class MerchantContainer implements Container {
+    private final Merchant f_39997_;
+    private final NonNullList<ItemStack> f_39998_ = NonNullList.m_122780_(3, ItemStack.f_41583_);
+    @Nullable
+    private MerchantOffer f_39999_;
+-   private int f_40000_;
++   public int f_40000_;
+    private int f_40001_;
+ 
+    public MerchantContainer(Merchant p_40003_) {
+@@ -74,8 +_,48 @@
+ 
+    }
+ 
++   @Override
++   public int m_6893_() {
++      return 0;
++   }
++
+    public boolean m_6542_(Player p_40016_) {
+       return this.f_39997_.m_7962_() == p_40016_;
++   }
++
++   @Override
++   public List<ItemStack> getContents() {
++      return List.of();
++   }
++
++   @Override
++   public void onOpen(CraftHumanEntity who) {
++
++   }
++
++   @Override
++   public void onClose(CraftHumanEntity who) {
++
++   }
++
++   @Override
++   public List<HumanEntity> getViewers() {
++      return List.of();
++   }
++
++   @Override
++   public InventoryHolder getOwner() {
++      return null;
++   }
++
++   @Override
++   public void setMaxStackSize(int size) {
++
++   }
++
++   @Override
++   public Location getLocation() {
++      return null;
+    }
+ 
+    public void m_6596_() {

@@ -1,0 +1,11 @@
+--- a/net/minecraft/world/level/LevelAccessor.java
++++ b/net/minecraft/world/level/LevelAccessor.java
+@@ -25,6 +_,8 @@
+ import net.minecraft.world.ticks.TickPriority;
+ 
+ public interface LevelAccessor extends CommonLevelAccessor, LevelTimeAccess {
++   net.minecraft.server.level.ServerLevel getMinecraftWorld(); // CraftBukkit
++
+    default long m_8044_() {
+       return this.m_6106_().m_6792_();
+    }

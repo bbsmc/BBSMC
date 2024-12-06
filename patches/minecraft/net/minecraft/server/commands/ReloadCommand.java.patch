@@ -1,0 +1,17 @@
+--- a/net/minecraft/server/commands/ReloadCommand.java
++++ b/net/minecraft/server/commands/ReloadCommand.java
+@@ -15,6 +_,14 @@
+ public class ReloadCommand {
+    private static final Logger f_138220_ = LogUtils.getLogger();
+ 
++   public static void reload(net.minecraft.server.MinecraftServer minecraftserver) {
++      net.minecraft.server.packs.repository.PackRepository resourcepackrepository = minecraftserver.m_129891_();
++      WorldData saveData = minecraftserver.m_129910_();
++      Collection<String> collection = resourcepackrepository.m_10523_();
++      Collection<String> collection1 = m_138222_(resourcepackrepository, saveData, collection);
++      minecraftserver.m_129861_(collection1);
++   }
++
+    public static void m_138235_(Collection<String> p_138236_, CommandSourceStack p_138237_) {
+       p_138237_.m_81377_().m_129861_(p_138236_).exceptionally((p_138234_) -> {
+          f_138220_.warn("Failed to execute reload", p_138234_);

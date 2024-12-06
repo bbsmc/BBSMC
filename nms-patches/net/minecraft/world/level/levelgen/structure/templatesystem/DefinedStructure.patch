@@ -16,12 +16,7 @@
 @@ -70,6 +76,11 @@
      private BaseBlockPosition size;
      private String author;
- 
-+    // CraftBukkit start - data containers
-+    private static final CraftPersistentDataTypeRegistry DATA_TYPE_REGISTRY = new CraftPersistentDataTypeRegistry();
-+    public CraftPersistentDataContainer persistentDataContainer = new CraftPersistentDataContainer(DATA_TYPE_REGISTRY);
-+    // CraftBukkit end
-+
+
      public DefinedStructure() {
          this.size = BaseBlockPosition.ZERO;
          this.author = "?";

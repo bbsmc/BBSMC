@@ -6,19 +6,6 @@
          this.selectNextMoveDirection(enumdirection_enumaxis);
 +        projectileSource = (org.bukkit.entity.LivingEntity) entityliving.getBukkitEntity(); // CraftBukkit
      }
- 
-+    // CraftBukkit start
-+    public Entity getTarget() {
-+        return this.finalTarget;
-+    }
-+
-+    public void setTarget(Entity e) {
-+        this.finalTarget = e;
-+        this.currentMoveDirection = EnumDirection.UP;
-+        this.selectNextMoveDirection(EnumDirection.EnumAxis.X);
-+    }
-+    // CraftBukkit end
-+
      @Override
      public SoundCategory getSoundSource() {
          return SoundCategory.HOSTILE;

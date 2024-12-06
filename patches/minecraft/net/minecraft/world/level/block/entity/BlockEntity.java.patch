@@ -1,7 +1,12 @@
 --- a/net/minecraft/world/level/block/entity/BlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/BlockEntity.java
-@@ -15,7 +_,7 @@
+@@ -13,9 +_,12 @@
+ import net.minecraft.world.item.ItemStack;
+ import net.minecraft.world.level.Level;
  import net.minecraft.world.level.block.state.BlockState;
++import org.bukkit.craftbukkit.persistence.CraftPersistentDataTypeRegistry;
++import org.bukkit.inventory.InventoryHolder;
++import org.bukkit.persistence.PersistentDataContainer;
  import org.slf4j.Logger;
  
 -public abstract class BlockEntity {
@@ -9,11 +14,23 @@
     private static final Logger f_58854_ = LogUtils.getLogger();
     private final BlockEntityType<?> f_58855_;
     @Nullable
-@@ -23,11 +_,14 @@
+@@ -23,11 +_,26 @@
     protected final BlockPos f_58858_;
     protected boolean f_58859_;
     private BlockState f_58856_;
 +   private CompoundTag customPersistentData;
++
++   // BBSMC start
++   private static final CraftPersistentDataTypeRegistry DATA_TYPE_REGISTRY = new CraftPersistentDataTypeRegistry();
++   public PersistentDataContainer persistentDataContainer;
++
++   public InventoryHolder getOwner() {
++      if (f_58857_ == null) return null;
++      org.bukkit.block.BlockState state = f_58857_.getWorld().getBlockAt(f_58858_.m_123341_(), f_58858_.m_123342_(), f_58858_.m_123343_()).getState();
++      if (state instanceof InventoryHolder) return (InventoryHolder) state;
++      return null;
++   }
++   // BBSMC end
  
     public BlockEntity(BlockEntityType<?> p_155228_, BlockPos p_155229_, BlockState p_155230_) {
 +      super(BlockEntity.class);

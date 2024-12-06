@@ -1,0 +1,25 @@
+--- a/net/minecraft/world/level/block/entity/ContainerOpenersCounter.java
++++ b/net/minecraft/world/level/block/entity/ContainerOpenersCounter.java
+@@ -21,6 +_,22 @@
+ 
+    protected abstract boolean m_142718_(Player p_155451_);
+ 
++   // BBSMC start
++   public boolean opened; // CraftBukkit
++
++   public void onAPIOpen(Level world, BlockPos blockposition, BlockState iblockdata) {
++      m_142292_(world, blockposition, iblockdata);
++   }
++
++   public void onAPIClose(Level world, BlockPos blockposition, BlockState iblockdata) {
++      m_142289_(world, blockposition, iblockdata);
++   }
++
++   public void openerAPICountChanged(Level world, BlockPos blockposition, BlockState iblockdata, int i, int j) {
++      m_142148_(world, blockposition, iblockdata, i, j);
++   }
++   // BBSMC end
++
+    public void m_155452_(Player p_155453_, Level p_155454_, BlockPos p_155455_, BlockState p_155456_) {
+       int i = this.f_155448_++;
+       if (i == 0) {

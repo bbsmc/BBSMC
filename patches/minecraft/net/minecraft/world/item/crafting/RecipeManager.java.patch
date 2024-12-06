@@ -1,7 +1,42 @@
 --- a/net/minecraft/world/item/crafting/RecipeManager.java
 +++ b/net/minecraft/world/item/crafting/RecipeManager.java
-@@ -37,9 +_,17 @@
-    private Map<RecipeType<?>, Map<ResourceLocation, Recipe<?>>> f_44007_ = ImmutableMap.of();
+@@ -10,15 +_,7 @@
+ import com.google.gson.JsonSyntaxException;
+ import com.mojang.datafixers.util.Pair;
+ import com.mojang.logging.LogUtils;
+-import java.util.Collection;
+-import java.util.Collections;
+-import java.util.Comparator;
+-import java.util.List;
+-import java.util.Map;
+-import java.util.Optional;
+-import java.util.stream.Collectors;
+-import java.util.stream.Stream;
+-import javax.annotation.Nullable;
++import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+ import net.minecraft.core.NonNullList;
+ import net.minecraft.core.Registry;
+ import net.minecraft.resources.ResourceLocation;
+@@ -31,53 +_,128 @@
+ import net.minecraft.world.level.Level;
+ import org.slf4j.Logger;
+ 
++import javax.annotation.Nullable;
++import java.util.Collection;
++import java.util.Collections;
++import java.util.Comparator;
++import java.util.HashMap;
++import java.util.List;
++import java.util.Map;
++import java.util.Optional;
++import java.util.stream.Collectors;
++import java.util.stream.Stream;
++
+ public class RecipeManager extends SimpleJsonResourceReloadListener {
+    private static final Gson f_44005_ = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
+    private static final Logger f_44006_ = LogUtils.getLogger();
+-   private Map<RecipeType<?>, Map<ResourceLocation, Recipe<?>>> f_44007_ = ImmutableMap.of();
++   public Map<RecipeType<?>, Map<ResourceLocation, Recipe<?>>> f_44007_ = ImmutableMap.of();
     private Map<ResourceLocation, Recipe<?>> f_199900_ = ImmutableMap.of();
     private boolean f_44008_;
 +   private final net.minecraftforge.common.crafting.conditions.ICondition.IContext context; //Forge: add context
@@ -15,17 +50,73 @@
 +   public RecipeManager(net.minecraftforge.common.crafting.conditions.ICondition.IContext context) {
        super(f_44005_, "recipes");
 +      this.context = context;
++   }
++
++   // BBSMC start
++   public void addRecipe(net.minecraft.world.item.crafting.Recipe<?> irecipe) {
++      if (this.f_44007_ instanceof ImmutableMap) {
++         this.f_44007_ = new HashMap<>(f_44007_);
++      }
++      if (this.f_199900_ instanceof ImmutableMap) {
++         this.f_199900_ = new HashMap<>(f_199900_);
++      }
++      Map<ResourceLocation, Recipe<?>> original = this.f_44007_.get(irecipe.m_6671_());
++
++      Object2ObjectLinkedOpenHashMap<ResourceLocation, Recipe<?>> map;
++      if (!(original instanceof Object2ObjectLinkedOpenHashMap)) {
++         Object2ObjectLinkedOpenHashMap<ResourceLocation, Recipe<?>> hashMap = new Object2ObjectLinkedOpenHashMap<>();
++         hashMap.putAll(original);
++         this.f_44007_.put(irecipe.m_6671_(), hashMap);
++         map = hashMap;
++      } else {
++         map = ((Object2ObjectLinkedOpenHashMap<ResourceLocation, Recipe<?>>) original);
++      }
++
++      if (this.f_199900_.containsKey(irecipe.m_6423_()) || map.containsKey(irecipe.m_6423_())) {
++         throw new IllegalStateException("Duplicate recipe ignored with ID " + irecipe.m_6423_());
++      } else {
++         map.putAndMoveToFirst(irecipe.m_6423_(), irecipe);
++         this.f_199900_.put(irecipe.m_6423_(), irecipe);
++      }
++   }
++
++   public boolean removeRecipe(ResourceLocation mcKey) {
++      for (var recipes : f_44007_.values()) {
++         recipes.remove(mcKey);
++      }
++      return f_199900_.remove(mcKey) != null;
++   }
++
++   public void clearRecipes() {
++      this.f_44007_ = new HashMap<>();
++
++      for (RecipeType<?> type : Registry.f_122864_) {
++         this.f_44007_.put(type, new Object2ObjectLinkedOpenHashMap<>());
++      }
++
++      this.f_199900_ = new HashMap<>();
     }
  
     protected void m_5787_(Map<ResourceLocation, JsonElement> p_44037_, ResourceManager p_44038_, ProfilerFiller p_44039_) {
-@@ -49,9 +_,18 @@
- 
+       this.f_44008_ = false;
+-      Map<RecipeType<?>, ImmutableMap.Builder<ResourceLocation, Recipe<?>>> map = Maps.newHashMap();
++      Map<RecipeType<?>, Object2ObjectLinkedOpenHashMap<ResourceLocation, Recipe<?>>> map = Maps.newHashMap();
++
++      for (RecipeType<?> recipeType : Registry.f_122864_) {
++         map.put(recipeType, new Object2ObjectLinkedOpenHashMap<>());
++      }
++
+       ImmutableMap.Builder<ResourceLocation, Recipe<?>> builder = ImmutableMap.builder();
+-
        for(Map.Entry<ResourceLocation, JsonElement> entry : p_44037_.entrySet()) {
           ResourceLocation resourcelocation = entry.getKey();
 +         if (resourcelocation.m_135815_().startsWith("_")) continue; //Forge: filter anything beginning with "_" as it's used for metadata.
  
           try {
 -            Recipe<?> recipe = m_44045_(resourcelocation, GsonHelper.m_13918_(entry.getValue(), "top element"));
+-            map.computeIfAbsent(recipe.m_6671_(), (p_44075_) -> {
+-               return ImmutableMap.builder();
+-            }).put(resourcelocation, recipe);
 +            if (entry.getValue().isJsonObject() && !net.minecraftforge.common.crafting.CraftingHelper.processConditions(entry.getValue().getAsJsonObject(), "conditions", this.context)) {
 +               f_44006_.debug("Skipping loading recipe {} as it's conditions were not met", resourcelocation);
 +               continue;
@@ -35,9 +126,45 @@
 +               f_44006_.info("Skipping loading recipe {} as it's serializer returned null", resourcelocation);
 +               continue;
 +            }
-             map.computeIfAbsent(recipe.m_6671_(), (p_44075_) -> {
-                return ImmutableMap.builder();
-             }).put(resourcelocation, recipe);
++            map.computeIfAbsent(recipe.m_6671_(), (p_44075_) -> new Object2ObjectLinkedOpenHashMap<>())
++                    .putAndMoveToFirst(resourcelocation, recipe);
+             builder.put(resourcelocation, recipe);
+          } catch (IllegalArgumentException | JsonParseException jsonparseexception) {
+             f_44006_.error("Parsing error loading recipe {}", resourcelocation, jsonparseexception);
+          }
+       }
+ 
+-      this.f_44007_ = map.entrySet().stream().collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, (p_44033_) -> {
+-         return p_44033_.getValue().build();
+-      }));
+-      this.f_199900_ = builder.build();
+-      f_44006_.info("Loaded {} recipes", (int)map.size());
+-   }
++      this.f_44007_ = (Map) map;
++      this.f_199900_ = Maps.newHashMap(builder.build());
++      f_44006_.info("Loaded {} recipes", map.size());
++   }
++
++   public <C extends Container, T extends Recipe<C>> Optional<T> m_44015_(RecipeType<T> p_44016_, C p_44017_, Level p_44018_) {
++      Optional<T> optional = this.m_44054_(p_44016_).values().stream().filter((p_220266_) -> p_220266_.m_5818_(p_44017_, p_44018_)).findFirst();
++      p_44017_.setCurrentRecipe(optional.orElse(null));
++      return optional;
++   }
++   // BBSMC end
+ 
+    public boolean m_151269_() {
+       return this.f_44008_;
+    }
+ 
+-   public <C extends Container, T extends Recipe<C>> Optional<T> m_44015_(RecipeType<T> p_44016_, C p_44017_, Level p_44018_) {
+-      return this.m_44054_(p_44016_).values().stream().filter((p_220266_) -> {
+-         return p_220266_.m_5818_(p_44017_, p_44018_);
+-      }).findFirst();
+-   }
+-
+    public <C extends Container, T extends Recipe<C>> Optional<Pair<ResourceLocation, T>> m_220248_(RecipeType<T> p_220249_, C p_220250_, Level p_220251_, @Nullable ResourceLocation p_220252_) {
+       Map<ResourceLocation, T> map = this.m_44054_(p_220249_);
+       if (p_220252_ != null) {
 @@ -141,11 +_,17 @@
        });
     }

@@ -1,0 +1,11 @@
+--- a/net/minecraft/world/item/trading/Merchant.java
++++ b/net/minecraft/world/item/trading/Merchant.java
+@@ -10,6 +_,8 @@
+ import net.minecraft.world.item.ItemStack;
+ 
+ public interface Merchant {
++   org.bukkit.craftbukkit.inventory.CraftMerchant getCraftMerchant(); // CraftBukkit
++
+    void m_7189_(@Nullable Player p_45307_);
+ 
+    @Nullable

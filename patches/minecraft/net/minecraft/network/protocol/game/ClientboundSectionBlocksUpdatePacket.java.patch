@@ -1,0 +1,17 @@
+--- a/net/minecraft/network/protocol/game/ClientboundSectionBlocksUpdatePacket.java
++++ b/net/minecraft/network/protocol/game/ClientboundSectionBlocksUpdatePacket.java
+@@ -30,7 +_,14 @@
+          this.f_132982_[j] = p_132988_.m_62982_(SectionPos.m_123204_(short1), SectionPos.m_123220_(short1), SectionPos.m_123227_(short1));
+          ++j;
+       }
++   }
+ 
++   // BBSMC - constructor
++   public ClientboundSectionBlocksUpdatePacket(SectionPos sectionposition, ShortSet shortset, BlockState[] states, boolean flag) {
++      this.f_132980_ = sectionposition;
++      this.f_132983_ = flag;
++      this.f_132981_ = shortset.toShortArray();
++      this.f_132982_ = states;
+    }
+ 
+    public ClientboundSectionBlocksUpdatePacket(FriendlyByteBuf p_179196_) {

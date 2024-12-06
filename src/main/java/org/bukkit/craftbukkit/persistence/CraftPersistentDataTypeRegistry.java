@@ -130,13 +130,13 @@ public final class CraftPersistentDataTypeRegistry {
             Primitive Arrays
          */
         if (Objects.equals(byte[].class, type)) {
-            return createAdapter(byte[].class, net.minecraft.nbt.ByteTagArray.class, array -> new net.minecraft.nbt.ByteTagArray(Arrays.copyOf(array, array.length)), n -> Arrays.copyOf(n.getAsByteArray(), n.size()));
+            return createAdapter(byte[].class, net.minecraft.nbt.ByteArrayTag.class, array -> new net.minecraft.nbt.ByteArrayTag(Arrays.copyOf(array, array.length)), n -> Arrays.copyOf(n.getAsByteArray(), n.size()));
         }
         if (Objects.equals(int[].class, type)) {
-            return createAdapter(int[].class, net.minecraft.nbt.IntTagArray.class, array -> new net.minecraft.nbt.IntTagArray(Arrays.copyOf(array, array.length)), n -> Arrays.copyOf(n.getAsIntArray(), n.size()));
+            return createAdapter(int[].class, net.minecraft.nbt.IntArrayTag.class, array -> new net.minecraft.nbt.IntArrayTag(Arrays.copyOf(array, array.length)), n -> Arrays.copyOf(n.getAsIntArray(), n.size()));
         }
         if (Objects.equals(long[].class, type)) {
-            return createAdapter(long[].class, net.minecraft.nbt.LongTagArray.class, array -> new net.minecraft.nbt.LongTagArray(Arrays.copyOf(array, array.length)), n -> Arrays.copyOf(n.getAsLongArray(), n.size()));
+            return createAdapter(long[].class, net.minecraft.nbt.LongArrayTag.class, array -> new net.minecraft.nbt.LongArrayTag(Arrays.copyOf(array, array.length)), n -> Arrays.copyOf(n.getAsLongArray(), n.size()));
         }
 
         /*

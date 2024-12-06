@@ -87,14 +87,6 @@
      }
  
      public static class ContainerOutput extends InventorySubcontainer implements IWorldInventory {
-@@ -339,6 +367,7 @@
-             this.state = iblockdata;
-             this.level = generatoraccess;
-             this.pos = blockposition;
-+            this.bukkitOwner = new CraftBlockInventoryHolder(generatoraccess, blockposition, this); // CraftBukkit
-         }
- 
-         @Override
 @@ -363,8 +392,15 @@
  
          @Override
@@ -112,23 +104,3 @@
 +            // CraftBukkit end
          }
      }
- 
-@@ -377,6 +413,7 @@
- 
-         public ContainerInput(IBlockData iblockdata, GeneratorAccess generatoraccess, BlockPosition blockposition) {
-             super(1);
-+            this.bukkitOwner = new CraftBlockInventoryHolder(generatoraccess, blockposition, this); // CraftBukkit
-             this.state = iblockdata;
-             this.level = generatoraccess;
-             this.pos = blockposition;
-@@ -419,8 +456,9 @@
- 
-     public static class ContainerEmpty extends InventorySubcontainer implements IWorldInventory {
- 
--        public ContainerEmpty() {
-+        public ContainerEmpty(GeneratorAccess generatoraccess, BlockPosition blockposition) { // CraftBukkit
-             super(0);
-+            this.bukkitOwner = new CraftBlockInventoryHolder(generatoraccess, blockposition, this); // CraftBukkit
-         }
- 
-         @Override

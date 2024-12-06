@@ -1,0 +1,22 @@
+--- a/net/minecraft/world/inventory/HorseInventoryMenu.java
++++ b/net/minecraft/world/inventory/HorseInventoryMenu.java
+@@ -7,6 +_,7 @@
+ import net.minecraft.world.entity.player.Player;
+ import net.minecraft.world.item.ItemStack;
+ import net.minecraft.world.item.Items;
++import org.bukkit.inventory.InventoryView;
+ 
+ public class HorseInventoryMenu extends AbstractContainerMenu {
+    private final Container f_39653_;
+@@ -67,6 +_,11 @@
+ 
+    private boolean m_150577_(AbstractHorse p_150578_) {
+       return p_150578_ instanceof AbstractChestedHorse && ((AbstractChestedHorse)p_150578_).m_30502_();
++   }
++
++   @Override
++   public InventoryView getBukkitView() {
++      return null;
+    }
+ 
+    public ItemStack m_7648_(Player p_39665_, int p_39666_) {

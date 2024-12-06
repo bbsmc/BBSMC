@@ -1,0 +1,55 @@
+--- a/net/minecraft/world/level/block/entity/BlastFurnaceBlockEntity.java
++++ b/net/minecraft/world/level/block/entity/BlastFurnaceBlockEntity.java
+@@ -8,6 +_,11 @@
+ import net.minecraft.world.item.ItemStack;
+ import net.minecraft.world.item.crafting.RecipeType;
+ import net.minecraft.world.level.block.state.BlockState;
++import org.bukkit.Location;
++import org.bukkit.craftbukkit.entity.CraftHumanEntity;
++import org.bukkit.entity.HumanEntity;
++
++import java.util.List;
+ 
+ public class BlastFurnaceBlockEntity extends AbstractFurnaceBlockEntity {
+    public BlastFurnaceBlockEntity(BlockPos p_155225_, BlockState p_155226_) {
+@@ -24,5 +_,40 @@
+ 
+    protected AbstractContainerMenu m_6555_(int p_58849_, Inventory p_58850_) {
+       return new BlastFurnaceMenu(p_58849_, p_58850_, this, this.f_58311_);
++   }
++
++   @Override
++   public int m_6893_() {
++      return 0;
++   }
++
++   @Override
++   public List<ItemStack> getContents() {
++      return List.of();
++   }
++
++   @Override
++   public void onOpen(CraftHumanEntity who) {
++
++   }
++
++   @Override
++   public void onClose(CraftHumanEntity who) {
++
++   }
++
++   @Override
++   public List<HumanEntity> getViewers() {
++      return List.of();
++   }
++
++   @Override
++   public void setMaxStackSize(int size) {
++
++   }
++
++   @Override
++   public Location getLocation() {
++      return null;
+    }
+ }

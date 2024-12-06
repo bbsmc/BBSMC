@@ -1,5 +1,32 @@
 --- a/net/minecraft/server/players/PlayerList.java
 +++ b/net/minecraft/server/players/PlayerList.java
+@@ -96,6 +_,8 @@
+ import net.minecraft.world.scores.Objective;
+ import net.minecraft.world.scores.PlayerTeam;
+ import net.minecraft.world.scores.Team;
++import org.bukkit.Location;
++import org.jetbrains.annotations.NotNull;
+ import org.slf4j.Logger;
+ 
+ public abstract class PlayerList {
+@@ -108,7 +_,7 @@
+    private static final int f_143987_ = 600;
+    private static final SimpleDateFormat f_11194_ = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+    private final MinecraftServer f_11195_;
+-   private final List<ServerPlayer> f_11196_ = Lists.newArrayList();
++   public final List<ServerPlayer> f_11196_ = Lists.newArrayList();
+    private final Map<UUID, ServerPlayer> f_11197_ = Maps.newHashMap();
+    private final UserBanList f_11198_ = new UserBanList(f_11189_);
+    private final IpBanList f_11199_ = new IpBanList(f_11190_);
+@@ -116,7 +_,7 @@
+    private final UserWhiteList f_11201_ = new UserWhiteList(f_11192_);
+    private final Map<UUID, ServerStatsCounter> f_11202_ = Maps.newHashMap();
+    private final Map<UUID, PlayerAdvancements> f_11203_ = Maps.newHashMap();
+-   private final PlayerDataStorage f_11204_;
++   public final PlayerDataStorage f_11204_;
+    private boolean f_11205_;
+    private final RegistryAccess.Frozen f_11206_;
+    protected final int f_11193_;
 @@ -125,6 +_,7 @@
     private boolean f_11209_;
     private static final boolean f_143988_ = false;
@@ -24,14 +51,18 @@
        servergamepacketlistenerimpl.m_9829_(new ClientboundUpdateRecipesPacket(this.f_11195_.m_129894_().m_44051_()));
        servergamepacketlistenerimpl.m_9829_(new ClientboundUpdateTagsPacket(TagNetworkSerialization.m_203950_(this.f_11206_)));
        this.m_11289_(p_11263_);
-@@ -240,6 +_,7 @@
+@@ -240,9 +_,10 @@
        }
  
        p_11263_.m_143429_();
 +      net.minecraftforge.event.ForgeEventFactory.firePlayerLoggedIn( p_11263_ );
     }
  
-    protected void m_11273_(ServerScoreboard p_11274_, ServerPlayer p_11275_) {
+-   protected void m_11273_(ServerScoreboard p_11274_, ServerPlayer p_11275_) {
++   public void m_11273_(ServerScoreboard p_11274_, ServerPlayer p_11275_) {
+       Set<Objective> set = Sets.newHashSet();
+ 
+       for(PlayerTeam playerteam : p_11274_.m_83491_()) {
 @@ -300,6 +_,7 @@
           compoundtag1 = compoundtag;
           p_11225_.m_20258_(compoundtag);
@@ -64,6 +95,30 @@
        if (flag2) {
           serverplayer.f_8906_.m_9829_(new ClientboundSoundPacket(SoundEvents.f_12377_, SoundSource.BLOCKS, (double)blockpos.m_123341_(), (double)blockpos.m_123342_(), (double)blockpos.m_123343_(), 1.0F, 1.0F, serverlevel1.m_213780_().m_188505_()));
        }
+@@ -483,6 +_,23 @@
+ 
+    }
+ 
++   // BBSMC start
++   public void broadcastAll(Packet<?> packet, @NotNull Player player) {
++      for (ServerPlayer serverPlayer : this.f_11196_) {
++         if (!serverPlayer.getBukkitEntity().canSee(player.getBukkitEntity())) {
++            continue;
++         }
++         serverPlayer.f_8906_.m_9829_(packet);
++      }
++   }
++
++   public void broadcastAll(Packet<?> packet, Level world) {
++      for (Player player : world.m_6907_()) {
++         ((ServerPlayer) player).f_8906_.m_9829_(packet);
++      }
++   }
++   // BBSMC end
++
+    public void m_11268_(Packet<?> p_11269_) {
+       for(ServerPlayer serverplayer : this.f_11196_) {
+          serverplayer.f_8906_.m_9829_(p_11269_);
 @@ -546,6 +_,7 @@
     }
  
@@ -120,3 +175,17 @@
        this.m_11268_(new ClientboundUpdateTagsPacket(TagNetworkSerialization.m_203950_(this.f_11206_)));
        ClientboundUpdateRecipesPacket clientboundupdaterecipespacket = new ClientboundUpdateRecipesPacket(this.f_11195_.m_129894_().m_44051_());
  
+@@ -867,5 +_,13 @@
+ 
+    public boolean m_11316_() {
+       return this.f_11209_;
++   }
++
++   public void respawn(ServerPlayer entity, ServerLevel toWorld, boolean b, Location to, boolean b1) {
++
++   }
++
++   public ServerStatsCounter getPlayerStats(UUID uniqueId, String name) {
++      return null;
+    }
+ }

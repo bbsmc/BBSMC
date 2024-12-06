@@ -24,21 +24,12 @@
      private BlockPosition restrictCenter;
      private float restrictRadius;
  
-+    public boolean aware = true; // CraftBukkit
-+
      protected EntityInsentient(EntityTypes<? extends EntityInsentient> entitytypes, World world) {
          super(entitytypes, world);
          this.handItems = NonNullList.withSize(2, ItemStack.EMPTY);
 @@ -146,6 +161,12 @@
  
      }
- 
-+    // CraftBukkit start
-+    public void setPersistenceRequired(boolean persistenceRequired) {
-+        this.persistenceRequired = persistenceRequired;
-+    }
-+    // CraftBukkit end
-+
      protected void registerGoals() {}
  
      public static AttributeProvider.Builder createMobAttributes() {
@@ -84,13 +75,6 @@
 @@ -364,6 +416,12 @@
          return null;
      }
- 
-+    // CraftBukkit start - Add delegate method
-+    public SoundEffect getAmbientSound0() {
-+        return getAmbientSound();
-+    }
-+    // CraftBukkit end
-+
      @Override
      public void addAdditionalSaveData(NBTTagCompound nbttagcompound) {
          super.addAdditionalSaveData(nbttagcompound);

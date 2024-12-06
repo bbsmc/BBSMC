@@ -1,5 +1,68 @@
 --- a/net/minecraft/world/inventory/AbstractContainerMenu.java
 +++ b/net/minecraft/world/inventory/AbstractContainerMenu.java
+@@ -19,6 +_,7 @@
+ import net.minecraft.ReportedException;
+ import net.minecraft.core.NonNullList;
+ import net.minecraft.core.Registry;
++import net.minecraft.network.chat.Component;
+ import net.minecraft.server.level.ServerPlayer;
+ import net.minecraft.util.Mth;
+ import net.minecraft.world.Container;
+@@ -40,11 +_,11 @@
+    public static final int f_150390_ = 1;
+    public static final int f_150391_ = 2;
+    public static final int f_150392_ = Integer.MAX_VALUE;
+-   private final NonNullList<ItemStack> f_38841_ = NonNullList.m_122779_();
+-   public final NonNullList<Slot> f_38839_ = NonNullList.m_122779_();
++   public NonNullList<ItemStack> f_38841_ = NonNullList.m_122779_();
++   public NonNullList<Slot> f_38839_ = NonNullList.m_122779_();
+    private final List<DataSlot> f_38842_ = Lists.newArrayList();
+    private ItemStack f_150393_ = ItemStack.f_41583_;
+-   private final NonNullList<ItemStack> f_150394_ = NonNullList.m_122779_();
++   public NonNullList<ItemStack> f_150394_ = NonNullList.m_122779_();
+    private final IntList f_150395_ = new IntArrayList();
+    private ItemStack f_150396_ = ItemStack.f_41583_;
+    private int f_182405_;
+@@ -59,6 +_,39 @@
+    private ContainerSynchronizer f_150397_;
+    private boolean f_150398_;
+ 
++   // BBSMC start
++   public boolean checkReachable = true;
++
++   public abstract org.bukkit.inventory.InventoryView getBukkitView();
++
++   public void transferTo(net.minecraft.world.inventory.AbstractContainerMenu other, org.bukkit.craftbukkit.entity.CraftHumanEntity player) {
++      org.bukkit.inventory.InventoryView source = this.getBukkitView(), destination = other.getBukkitView();
++      ((org.bukkit.craftbukkit.inventory.CraftInventory) source.getTopInventory()).getInventory().onClose(player);
++      ((org.bukkit.craftbukkit.inventory.CraftInventory) source.getBottomInventory()).getInventory().onClose(player);
++      ((org.bukkit.craftbukkit.inventory.CraftInventory) destination.getTopInventory()).getInventory().onOpen(player);
++      ((org.bukkit.craftbukkit.inventory.CraftInventory) destination.getBottomInventory()).getInventory().onOpen(player);
++   }
++
++   private net.minecraft.network.chat.Component title;
++
++   public final net.minecraft.network.chat.Component getTitle() {
++      com.google.common.base.Preconditions.checkState(this.title!= null, "Title not set");
++      return this.title;
++   }
++
++   public final void setTitle(net.minecraft.network.chat.Component title) {
++      com.google.common.base.Preconditions.checkState(this.title == null, "Title already set");
++      this.title = title;
++   }
++
++   public void broadcastCarriedItem() {
++      this.f_150396_ = this.m_142621_().m_41777_();
++      if (this.f_150397_!= null) {
++         this.f_150397_.m_142529_(this, this.f_150396_);
++      }
++   }
++   // BBSMC end
++
+    protected AbstractContainerMenu(@Nullable MenuType<?> p_38851_, int p_38852_) {
+       this.f_38843_ = p_38851_;
+       this.f_38840_ = p_38852_;
 @@ -211,9 +_,11 @@
     private void m_150407_(int p_150408_, ItemStack p_150409_, Supplier<ItemStack> p_150410_) {
        ItemStack itemstack = this.f_38841_.get(p_150408_);

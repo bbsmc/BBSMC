@@ -1,7 +1,30 @@
 --- a/net/minecraft/world/entity/LivingEntity.java
 +++ b/net/minecraft/world/entity/LivingEntity.java
-@@ -118,12 +_,14 @@
+@@ -9,12 +_,16 @@
+ import com.mojang.logging.LogUtils;
+ import com.mojang.serialization.DataResult;
+ import com.mojang.serialization.Dynamic;
++
++import java.util.ArrayList;
+ import java.util.Collection;
+ import java.util.ConcurrentModificationException;
++import java.util.HashSet;
+ import java.util.Iterator;
+ import java.util.List;
+ import java.util.Map;
+ import java.util.Optional;
++import java.util.Set;
+ import java.util.UUID;
+ import java.util.function.Predicate;
+ import javax.annotation.Nullable;
+@@ -116,14 +_,20 @@
+ import net.minecraft.world.phys.HitResult;
+ import net.minecraft.world.phys.Vec3;
  import net.minecraft.world.scores.PlayerTeam;
++import org.bukkit.craftbukkit.attribute.CraftAttributeMap;
++import org.bukkit.craftbukkit.event.CraftEventFactory;
++import org.bukkit.event.entity.ArrowBodyCountChangeEvent;
++import org.bukkit.event.entity.EntityPotionEffectEvent;
  import org.slf4j.Logger;
  
 -public abstract class LivingEntity extends Entity {
@@ -16,6 +39,146 @@
     public static final int f_147166_ = 2;
     public static final int f_147167_ = 4;
     public static final int f_147168_ = 98;
+@@ -143,18 +_,18 @@
+    protected static final int f_147177_ = 2;
+    protected static final int f_147163_ = 4;
+    protected static final EntityDataAccessor<Byte> f_20909_ = SynchedEntityData.m_135353_(LivingEntity.class, EntityDataSerializers.f_135027_);
+-   private static final EntityDataAccessor<Float> f_20961_ = SynchedEntityData.m_135353_(LivingEntity.class, EntityDataSerializers.f_135029_);
++   public static final EntityDataAccessor<Float> f_20961_ = SynchedEntityData.m_135353_(LivingEntity.class, EntityDataSerializers.f_135029_);
+    private static final EntityDataAccessor<Integer> f_20962_ = SynchedEntityData.m_135353_(LivingEntity.class, EntityDataSerializers.f_135028_);
+    private static final EntityDataAccessor<Boolean> f_20963_ = SynchedEntityData.m_135353_(LivingEntity.class, EntityDataSerializers.f_135035_);
+-   private static final EntityDataAccessor<Integer> f_20940_ = SynchedEntityData.m_135353_(LivingEntity.class, EntityDataSerializers.f_135028_);
++   public static final EntityDataAccessor<Integer> f_20940_ = SynchedEntityData.m_135353_(LivingEntity.class, EntityDataSerializers.f_135028_);
+    private static final EntityDataAccessor<Integer> f_20941_ = SynchedEntityData.m_135353_(LivingEntity.class, EntityDataSerializers.f_135028_);
+    private static final EntityDataAccessor<Optional<BlockPos>> f_20942_ = SynchedEntityData.m_135353_(LivingEntity.class, EntityDataSerializers.f_135039_);
+    protected static final float f_147164_ = 1.74F;
+    protected static final EntityDimensions f_20910_ = EntityDimensions.m_20398_(0.2F, 0.2F);
+    public static final float f_147165_ = 0.5F;
+    private final AttributeMap f_20943_;
+-   private final CombatTracker f_20944_ = new CombatTracker(this);
+-   private final Map<MobEffect, MobEffectInstance> f_20945_ = Maps.newHashMap();
++   protected CombatTracker f_20944_ = new CombatTracker(this);
++   public final Map<MobEffect, MobEffectInstance> f_20945_ = Maps.newHashMap();
+    private final NonNullList<ItemStack> f_20946_ = NonNullList.m_122780_(2, ItemStack.f_41583_);
+    private final NonNullList<ItemStack> f_20947_ = NonNullList.m_122780_(4, ItemStack.f_41583_);
+    public boolean f_20911_;
+@@ -173,7 +_,7 @@
+    public float f_20923_;
+    public float f_20924_;
+    public float f_20925_;
+-   public final int f_20926_ = 20;
++   public int f_20926_ = 20;
+    public final float f_20927_;
+    public final float f_20928_;
+    public float f_20883_;
+@@ -182,7 +_,7 @@
+    public float f_20886_;
+    public float f_20887_ = 0.02F;
+    @Nullable
+-   protected Player f_20888_;
++   public Player f_20888_;
+    protected int f_20889_;
+    protected boolean f_20890_;
+    protected int f_20891_;
+@@ -192,7 +_,7 @@
+    protected float f_20895_;
+    protected float f_20896_;
+    protected int f_20897_;
+-   protected float f_20898_;
++   public float f_20898_;
+    protected boolean f_20899_;
+    public float f_20900_;
+    public float f_20901_;
+@@ -205,7 +_,7 @@
+    protected double f_20908_;
+    protected double f_20933_;
+    protected int f_20934_;
+-   private boolean f_20948_ = true;
++   protected boolean f_20948_ = true;
+    @Nullable
+    private LivingEntity f_20949_;
+    private int f_20950_;
+@@ -228,10 +_,79 @@
+    protected Brain<?> f_20939_;
+    private boolean f_217034_;
+ 
++   // BBSMC start
++   public int expToDrop;
++   public boolean forceDrops;
++   public ArrayList<org.bukkit.inventory.ItemStack> drops = new ArrayList<org.bukkit.inventory.ItemStack>();
++   public final org.bukkit.craftbukkit.attribute.CraftAttributeMap craftAttributes;
++   public boolean collides = true;
++   public Set<UUID> collidableExemptions = new HashSet<>();
++   public boolean bukkitPickUpLoot;
++
++   @Override
++   public float getBukkitYaw() {
++      return m_6080_();
++   }
++
++   private boolean isTickingEffects = false;
++   private List<ProcessableEffect> effectsToProcess = Lists.newArrayList();
++
++   public int getExpReward() {
++      return 0;
++   }
++
++   private static class ProcessableEffect {
++
++      private MobEffect type;
++      private MobEffectInstance effect;
++      private final EntityPotionEffectEvent.Cause cause;
++
++      private ProcessableEffect(MobEffectInstance effect, EntityPotionEffectEvent.Cause cause) {
++         this.effect = effect;
++         this.cause = cause;
++      }
++
++      private ProcessableEffect(MobEffect type, EntityPotionEffectEvent.Cause cause) {
++         this.type = type;
++         this.cause = cause;
++      }
++   }
++
++   public net.minecraft.sounds.SoundEvent getHurtSound0(DamageSource damagesource) {
++      return m_7975_(damagesource);
++   }
++
++   public net.minecraft.sounds.SoundEvent getDeathSound0() {
++      return m_5592_();
++   }
++
++   public net.minecraft.sounds.SoundEvent getFallDamageSound0(int fallHeight) {
++      return m_5896_(fallHeight);
++   }
++
++   public net.minecraft.sounds.SoundEvent getDrinkingSound0(ItemStack itemstack) {
++      return m_7838_(itemstack);
++   }
++
++   public net.minecraft.sounds.SoundEvent getEatingSound0(ItemStack itemstack) {
++      return m_7866_(itemstack);
++   }
++
++   @Override
++   public boolean canCollideWithBukkit(Entity entity) {
++      return m_6094_() && this.collides!= this.collidableExemptions.contains(entity.m_20148_());
++   }
++
++   public void setItemSlot(EquipmentSlot enumitemslot, ItemStack itemstack, boolean silent) {
++      this.m_8061_(enumitemslot, itemstack);
++   }
++   // BBSMC end
++
+    protected LivingEntity(EntityType<? extends LivingEntity> p_20966_, Level p_20967_) {
+       super(p_20966_, p_20967_);
+       this.f_20943_ = new AttributeMap(DefaultAttributes.m_22297_(p_20966_));
+-      this.m_21153_(this.m_21233_());
++      this.craftAttributes = new CraftAttributeMap(f_20943_); // CraftBukkit
++      this.f_19804_.m_135381_(LivingEntity.f_20961_, (float) this.m_21051_(Attributes.f_22276_).m_22135_());
+       this.f_19850_ = true;
+       this.f_20928_ = (float)((Math.random() + 1.0D) * (double)0.01F);
+       this.m_20090_();
 @@ -274,7 +_,7 @@
     }
  
@@ -107,27 +270,98 @@
        return d0;
     }
  
-@@ -870,7 +_,9 @@
+@@ -862,6 +_,14 @@
+       this.f_19804_.m_135381_(f_20962_, 0);
+    }
+ 
++   // BBSMC start
++   public transient EntityPotionEffectEvent.Cause bbsmc$effectCause = EntityPotionEffectEvent.Cause.UNKNOWN;
++
++   public boolean removeAllEffects(EntityPotionEffectEvent.Cause cause) {
++      this.bbsmc$effectCause = cause;
++      return this.m_21219_();
++   }
++
+    public boolean m_21219_() {
+       if (this.f_19853_.f_46443_) {
+          return false;
+@@ -869,8 +_,16 @@
+          Iterator<MobEffectInstance> iterator = this.f_20945_.values().iterator();
  
           boolean flag;
++         // BBSMC start
++         EntityPotionEffectEvent.Cause cause = this.bbsmc$effectCause;
++         this.bbsmc$effectCause = EntityPotionEffectEvent.Cause.UNKNOWN;
           for(flag = false; iterator.hasNext(); flag = true) {
 -            this.m_7285_(iterator.next());
 +            MobEffectInstance effect = iterator.next();
 +            if(net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.living.MobEffectEvent.Remove(this, effect))) continue;
++            EntityPotionEffectEvent event = CraftEventFactory.callEntityPotionEffectChangeEvent(this, effect, null, cause, EntityPotionEffectEvent.Action.CLEARED);
++            if (event.isCancelled()) continue;
++            // BBSMC end
 +            this.m_7285_(effect);
              iterator.remove();
           }
  
-@@ -904,6 +_,7 @@
+@@ -895,20 +_,51 @@
+       return this.f_20945_.get(p_21125_);
+    }
+ 
++   // BBSMC start
+    public final boolean m_7292_(MobEffectInstance p_21165_) {
+-      return this.m_147207_(p_21165_, (Entity)null);
++      return this.addEffect(p_21165_, null, EntityPotionEffectEvent.Cause.UNKNOWN);
++   }
++
++   public boolean addEffect(MobEffectInstance effectInstance, EntityPotionEffectEvent.Cause cause) {
++      return this.addEffect(effectInstance, null, cause);
++   }
++
++   public boolean addEffect(MobEffectInstance effectInstance, @Nullable Entity entity, EntityPotionEffectEvent.Cause cause) {
++      this.bbsmc$effectCause = cause;
++      return this.m_147207_(effectInstance, entity);
+    }
+ 
+    public boolean m_147207_(MobEffectInstance p_147208_, @Nullable Entity p_147209_) {
++      var cause = this.bbsmc$effectCause;
++      this.bbsmc$effectCause = EntityPotionEffectEvent.Cause.UNKNOWN;
++
++      if (isTickingEffects) {
++         effectsToProcess.add(new ProcessableEffect(p_147208_, cause));
++         return true;
++      }
++
+       if (!this.m_7301_(p_147208_)) {
           return false;
        } else {
           MobEffectInstance mobeffectinstance = this.f_20945_.get(p_147208_.m_19544_());
 +         net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.living.MobEffectEvent.Added(this, mobeffectinstance, p_147208_, p_147209_));
++
++         boolean override = false;
++         if (mobeffectinstance != null) {
++            override = new MobEffectInstance(mobeffectinstance).m_19558_(p_147208_);
++         }
++
++         EntityPotionEffectEvent event = CraftEventFactory.callEntityPotionEffectChangeEvent(this, mobeffectinstance, p_147208_, cause, override);
++         if (event.isCancelled()) {
++            return false;
++         }
++
           if (mobeffectinstance == null) {
              this.f_20945_.put(p_147208_.m_19544_(), p_147208_);
              this.m_142540_(p_147208_, p_147209_);
-@@ -918,6 +_,9 @@
+             return true;
+-         } else if (mobeffectinstance.m_19558_(p_147208_)) {
++         } else if (event.isOverride()) {
++            mobeffectinstance.m_19558_(p_147208_);
+             this.m_141973_(mobeffectinstance, true, p_147209_);
+             return true;
+          } else {
+@@ -916,8 +_,12 @@
+          }
+       }
     }
++   // BBSMC end
  
     public boolean m_7301_(MobEffectInstance p_21197_) {
 +      net.minecraftforge.event.entity.living.MobEffectEvent.Applicable event = new net.minecraftforge.event.entity.living.MobEffectEvent.Applicable(this, p_21197_);
@@ -136,14 +370,53 @@
        if (this.m_6336_() == MobType.f_21641_) {
           MobEffect mobeffect = p_21197_.m_19544_();
           if (mobeffect == MobEffects.f_19605_ || mobeffect == MobEffects.f_19614_) {
-@@ -950,6 +_,7 @@
+@@ -945,12 +_,45 @@
     }
  
+    @Nullable
++   public MobEffectInstance c(@Nullable MobEffect p_21164_, EntityPotionEffectEvent.Cause cause) {
++      this.bbsmc$effectCause = cause;
++      return m_6234_(p_21164_);
++   }
++
++   @Nullable
+    public MobEffectInstance m_6234_(@Nullable MobEffect p_21164_) {
++      var cause = this.bbsmc$effectCause;
++      this.bbsmc$effectCause = EntityPotionEffectEvent.Cause.UNKNOWN;
++
++      if (isTickingEffects) {
++         effectsToProcess.add(new ProcessableEffect(p_21164_, cause));
++         return null;
++      }
++
++      net.minecraft.world.effect.MobEffectInstance effect = this.f_20945_.get(p_21164_);
++      if (effect == null) {
++         return null;
++      }
++
++      org.bukkit.event.entity.EntityPotionEffectEvent event = org.bukkit.craftbukkit.event.CraftEventFactory.callEntityPotionEffectChangeEvent(this, effect, null, cause);
++      if (event.isCancelled()) {
++         return null;
++      }
+       return this.f_20945_.remove(p_21164_);
+    }
+ 
++   public boolean removeEffect(MobEffect p_21196_, EntityPotionEffectEvent.Cause cause) {
++      this.bbsmc$effectCause = cause;
++      return m_21195_(p_21196_);
++   }
++
     public boolean m_21195_(MobEffect p_21196_) {
+-      MobEffectInstance mobeffectinstance = this.m_6234_(p_21196_);
 +      if (net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.living.MobEffectEvent.Remove(this, p_21196_))) return false;
-       MobEffectInstance mobeffectinstance = this.m_6234_(p_21196_);
++      // BBSMC start
++      var cause = this.bbsmc$effectCause;
++      this.bbsmc$effectCause = EntityPotionEffectEvent.Cause.UNKNOWN;
++      MobEffectInstance mobeffectinstance = this.c(p_21196_, cause);
++      // BBSMC end
        if (mobeffectinstance != null) {
           this.m_7285_(mobeffectinstance);
+          return true;
 @@ -986,6 +_,8 @@
     }
  
@@ -388,6 +661,34 @@
              this.m_7911_(this.m_6103_() - f2);
              this.m_146850_(GameEvent.f_223706_);
           }
+@@ -1588,9 +_,26 @@
+       return this.f_19804_.m_135370_(f_20940_);
+    }
+ 
++   // BBSMC start
++   private transient boolean bbsmc$setArrowFlag;
++
++   public final void setArrowCount(int p_21318_, boolean flag) {
++      this.bbsmc$setArrowFlag = flag;
++      m_21317_(p_21318_);
++   }
++
+    public final void m_21317_(int p_21318_) {
+-      this.f_19804_.m_135381_(f_20940_, p_21318_);
++      var flag = this.bbsmc$setArrowFlag;
++      this.bbsmc$setArrowFlag = false;
++
++      ArrowBodyCountChangeEvent event = CraftEventFactory.callArrowBodyCountChangeEvent(this, m_21234_(), p_21318_, flag);
++      if (event.isCancelled()) {
++         return;
++      }
++
++      this.f_19804_.m_135381_(f_20940_, event.getNewAmount());
+    }
++   // BBSMC end
+ 
+    public final int m_21235_() {
+       return this.f_19804_.m_135370_(f_20941_);
 @@ -1613,6 +_,8 @@
     }
  

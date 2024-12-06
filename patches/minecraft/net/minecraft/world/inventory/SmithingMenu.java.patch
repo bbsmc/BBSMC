@@ -1,0 +1,22 @@
+--- a/net/minecraft/world/inventory/SmithingMenu.java
++++ b/net/minecraft/world/inventory/SmithingMenu.java
+@@ -10,6 +_,7 @@
+ import net.minecraft.world.level.Level;
+ import net.minecraft.world.level.block.Blocks;
+ import net.minecraft.world.level.block.state.BlockState;
++import org.bukkit.inventory.InventoryView;
+ 
+ public class SmithingMenu extends ItemCombinerMenu {
+    private final Level f_40241_;
+@@ -68,6 +_,11 @@
+       return this.f_40243_.stream().anyMatch((p_40261_) -> {
+          return p_40261_.m_44535_(p_40255_);
+       });
++   }
++
++   @Override
++   public InventoryView getBukkitView() {
++      return null;
+    }
+ 
+    public boolean m_5882_(ItemStack p_40257_, Slot p_40258_) {

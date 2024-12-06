@@ -124,7 +124,7 @@ public class CraftMetaCompass extends CraftMetaItem implements CompassMeta {
         if (lodestoneWorld == null) {
             return null;
         }
-        Optional<ResourceKey<net.minecraft.world.level.World>> key = net.minecraft.world.level.Level.RESOURCE_KEY_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, lodestoneWorld).result();
+        Optional<ResourceKey<net.minecraft.world.level.Level>> key = net.minecraft.world.level.Level.RESOURCE_KEY_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, lodestoneWorld).result();
         net.minecraft.server.level.ServerLevel worldServer = key.isPresent() ? MinecraftServer.getServer().getLevel(key.get()) : null;
         World world = worldServer != null ? worldServer.getWorld() : null;
         return new Location(world, lodestoneX, lodestoneY, lodestoneZ); // world may be null here, if the referenced world is not loaded
@@ -136,7 +136,7 @@ public class CraftMetaCompass extends CraftMetaItem implements CompassMeta {
         if (lodestone == null) {
             this.lodestoneWorld = null;
         } else {
-            ResourceKey<net.minecraft.world.level.World> key = ((CraftWorld) lodestone.getWorld()).getHandle().dimension();
+            ResourceKey<net.minecraft.world.level.Level> key = ((CraftWorld) lodestone.getWorld()).getHandle().dimension();
             DataResult<net.minecraft.nbt.Tag> dataresult = net.minecraft.world.level.Level.RESOURCE_KEY_CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, key);
             this.lodestoneWorld = (net.minecraft.nbt.StringTag) dataresult.get().orThrow();
             this.lodestoneX = lodestone.getBlockX();

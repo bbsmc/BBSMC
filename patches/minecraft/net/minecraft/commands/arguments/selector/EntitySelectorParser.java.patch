@@ -1,15 +1,57 @@
 --- a/net/minecraft/commands/arguments/selector/EntitySelectorParser.java
 +++ b/net/minecraft/commands/arguments/selector/EntitySelectorParser.java
-@@ -461,6 +_,9 @@
+@@ -196,8 +_,19 @@
+       };
+    }
+ 
++   // BBSMC start
++   protected transient boolean bbsmc$overridePermission;
++
++   protected void parseSelector(boolean override) throws CommandSyntaxException {
++      this.bbsmc$overridePermission = override;
++      m_121281_();
++   }
++
+    protected void m_121281_() throws CommandSyntaxException {
+-      this.f_121189_ = true;
++      boolean override = this.bbsmc$overridePermission;
++      this.bbsmc$overridePermission = false;
++
++      this.f_121189_ = !override;
+       this.f_121176_ = this::m_121322_;
+       if (!this.f_121201_.canRead()) {
+          throw f_121193_.createWithContext(this.f_121201_);
+@@ -244,6 +_,7 @@
+ 
+       }
+    }
++   // BBSMC end
+ 
+    protected void m_121304_() throws CommandSyntaxException {
+       if (this.f_121201_.canRead()) {
+@@ -453,6 +_,10 @@
+    }
+ 
+    public EntitySelector m_121377_() throws CommandSyntaxException {
++      return parse(false);
++   }
++
++   public EntitySelector parse(boolean override) throws CommandSyntaxException {
+       this.f_121174_ = this.f_121201_.getCursor();
+       this.f_121176_ = this::m_121286_;
+       if (this.f_121201_.canRead() && this.f_121201_.peek() == '@') {
+@@ -461,7 +_,10 @@
           }
  
           this.f_121201_.skip();
+-         this.m_121281_();
 +         EntitySelector forgeSelector = net.minecraftforge.common.command.EntitySelectorManager.parseSelector(this);
 +         if (forgeSelector != null)
 +            return forgeSelector;
-          this.m_121281_();
++         this.parseSelector(override); // BBSMC
        } else {
           this.m_121304_();
+       }
 @@ -476,6 +_,7 @@
        p_121248_.suggest("@r", Component.m_237115_("argument.entity.selector.randomPlayer"));
        p_121248_.suggest("@s", Component.m_237115_("argument.entity.selector.self"));

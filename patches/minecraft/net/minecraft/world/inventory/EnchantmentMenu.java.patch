@@ -1,5 +1,13 @@
 --- a/net/minecraft/world/inventory/EnchantmentMenu.java
 +++ b/net/minecraft/world/inventory/EnchantmentMenu.java
+@@ -22,6 +_,7 @@
+ import net.minecraft.world.item.enchantment.EnchantmentInstance;
+ import net.minecraft.world.level.block.Blocks;
+ import net.minecraft.world.level.block.EnchantmentTableBlock;
++import org.bukkit.inventory.InventoryView;
+ 
+ public class EnchantmentMenu extends AbstractContainerMenu {
+    private final Container f_39449_ = new SimpleContainer(2) {
 @@ -55,7 +_,7 @@
        });
        this.m_38897_(new Slot(this.f_39449_, 1, 35, 47) {
@@ -37,6 +45,18 @@
                 }
  
                 for(int l = 0; l < 3; ++l) {
+@@ -129,6 +_,11 @@
+ 
+    }
+ 
++   @Override
++   public InventoryView getBukkitView() {
++      return null;
++   }
++
+    public boolean m_6366_(Player p_39465_, int p_39466_) {
+       if (p_39466_ >= 0 && p_39466_ < this.f_39446_.length) {
+          ItemStack itemstack = this.f_39449_.m_8020_(0);
 @@ -235,7 +_,7 @@
              if (!this.m_38903_(itemstack1, 2, 38, true)) {
                 return ItemStack.f_41583_;

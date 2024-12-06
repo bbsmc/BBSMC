@@ -1,0 +1,15 @@
+--- a/net/minecraft/server/players/StoredUserList.java
++++ b/net/minecraft/server/players/StoredUserList.java
+@@ -28,6 +_,12 @@
+    private final File f_11376_;
+    private final Map<String, V> f_11377_ = Maps.newHashMap();
+ 
++   // BBSMC start
++   public java.util.Collection<V> getValues() {
++      return this.f_11377_.values();
++   }
++   // BBSMC end
++
+    public StoredUserList(File p_11380_) {
+       this.f_11376_ = p_11380_;
+    }

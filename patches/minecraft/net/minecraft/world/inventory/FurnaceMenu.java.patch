@@ -1,0 +1,21 @@
+--- a/net/minecraft/world/inventory/FurnaceMenu.java
++++ b/net/minecraft/world/inventory/FurnaceMenu.java
+@@ -3,6 +_,7 @@
+ import net.minecraft.world.Container;
+ import net.minecraft.world.entity.player.Inventory;
+ import net.minecraft.world.item.crafting.RecipeType;
++import org.bukkit.inventory.InventoryView;
+ 
+ public class FurnaceMenu extends AbstractFurnaceMenu {
+    public FurnaceMenu(int p_39532_, Inventory p_39533_) {
+@@ -11,5 +_,10 @@
+ 
+    public FurnaceMenu(int p_39535_, Inventory p_39536_, Container p_39537_, ContainerData p_39538_) {
+       super(MenuType.f_39970_, RecipeType.f_44108_, RecipeBookType.FURNACE, p_39535_, p_39536_, p_39537_, p_39538_);
++   }
++
++   @Override
++   public InventoryView getBukkitView() {
++      return null;
+    }
+ }

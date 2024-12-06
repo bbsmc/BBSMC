@@ -26,9 +26,6 @@
 +        this.setPowered(true);
      }
  
-+    public void setPowered(boolean powered) {
-+        this.entityData.set(EntityCreeper.DATA_IS_POWERED, powered);
-+    }
 +    // CraftBukkit end
 +
      @Override

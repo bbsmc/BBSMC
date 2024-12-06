@@ -1,10 +1,25 @@
 --- a/net/minecraft/world/item/crafting/ShapedRecipe.java
 +++ b/net/minecraft/world/item/crafting/ShapedRecipe.java
-@@ -21,7 +_,20 @@
+@@ -10,6 +_,8 @@
+ import com.google.gson.JsonSyntaxException;
+ import java.util.Map;
+ import java.util.Set;
++
++import net.bbsmc.server.item.BBSMCComplexRecipe;
+ import net.minecraft.core.NonNullList;
+ import net.minecraft.core.Registry;
+ import net.minecraft.network.FriendlyByteBuf;
+@@ -20,8 +_,25 @@
+ import net.minecraft.world.item.ItemStack;
  import net.minecraft.world.item.Items;
  import net.minecraft.world.level.Level;
- 
+-
 -public class ShapedRecipe implements CraftingRecipe {
++import org.bukkit.craftbukkit.inventory.CraftItemStack;
++import org.bukkit.craftbukkit.inventory.CraftRecipe;
++import org.bukkit.craftbukkit.inventory.CraftShapedRecipe;
++import org.bukkit.inventory.RecipeChoice;
++
 +public class ShapedRecipe implements CraftingRecipe, net.minecraftforge.common.crafting.IShapedRecipe<CraftingContainer> {
 +   static int MAX_WIDTH = 3;
 +   static int MAX_HEIGHT = 3;
@@ -22,6 +37,77 @@
     final int f_44146_;
     final int f_44147_;
     final NonNullList<Ingredient> f_44148_;
+@@ -38,6 +_,70 @@
+       this.f_44149_ = p_44158_;
+    }
+ 
++   // BBSMC start
++   @Override
++   public org.bukkit.inventory.Recipe toBukkitRecipe() {
++      if (this.m_44220_() < 1 || this.m_44220_() > 3 || this.m_44221_() < 1 || this.m_44221_() > 3 || this.f_44149_.m_41619_()) {
++         return new BBSMCComplexRecipe(this);
++      }
++      CraftItemStack result = CraftItemStack.asCraftMirror(this.f_44149_);
++      CraftShapedRecipe recipe = new CraftShapedRecipe(result, this);
++      recipe.setGroup(this.f_44151_);
++
++      switch (this.m_44221_()) {
++         case 1:
++            switch (this.m_44220_()) {
++               case 1:
++                  recipe.shape("a");
++                  break;
++               case 2:
++                  recipe.shape("ab");
++                  break;
++               case 3:
++                  recipe.shape("abc");
++                  break;
++            }
++            break;
++         case 2:
++            switch (this.m_44220_()) {
++               case 1:
++                  recipe.shape("a", "b");
++                  break;
++               case 2:
++                  recipe.shape("ab", "cd");
++                  break;
++               case 3:
++                  recipe.shape("abc", "def");
++                  break;
++            }
++            break;
++         case 3:
++            switch (this.m_44220_()) {
++               case 1:
++                  recipe.shape("a", "b", "c");
++                  break;
++               case 2:
++                  recipe.shape("ab", "cd", "ef");
++                  break;
++               case 3:
++                  recipe.shape("abc", "def", "ghi");
++                  break;
++            }
++            break;
++      }
++      char c = 'a';
++      for (Ingredient list : this.f_44148_) {
++         RecipeChoice choice = CraftRecipe.toBukkit(list);
++         if (choice != null) {
++            recipe.setIngredient(c, choice);
++         }
++
++         c++;
++      }
++      return recipe;
++   }
++   // BBSMC end
++
+    public ResourceLocation m_6423_() {
+       return this.f_44150_;
+    }
 @@ -109,10 +_,20 @@
        return this.f_44146_;
     }

@@ -1,0 +1,21 @@
+--- a/net/minecraft/world/inventory/SmokerMenu.java
++++ b/net/minecraft/world/inventory/SmokerMenu.java
+@@ -3,6 +_,7 @@
+ import net.minecraft.world.Container;
+ import net.minecraft.world.entity.player.Inventory;
+ import net.minecraft.world.item.crafting.RecipeType;
++import org.bukkit.inventory.InventoryView;
+ 
+ public class SmokerMenu extends AbstractFurnaceMenu {
+    public SmokerMenu(int p_40274_, Inventory p_40275_) {
+@@ -11,5 +_,10 @@
+ 
+    public SmokerMenu(int p_40277_, Inventory p_40278_, Container p_40279_, ContainerData p_40280_) {
+       super(MenuType.f_39978_, RecipeType.f_44110_, RecipeBookType.SMOKER, p_40277_, p_40278_, p_40279_, p_40280_);
++   }
++
++   @Override
++   public InventoryView getBukkitView() {
++      return null;
+    }
+ }

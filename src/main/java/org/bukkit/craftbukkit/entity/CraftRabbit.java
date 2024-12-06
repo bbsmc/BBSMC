@@ -38,7 +38,7 @@ public class CraftRabbit extends CraftAnimals implements Rabbit {
         net.minecraft.world.entity.animal.Rabbit entity = getHandle();
         if (getRabbitType() == Type.THE_KILLER_BUNNY) {
             // Reset goals and target finders.
-            net.minecraft.world.level.Level world = ((Craftnet.minecraft.world.level.Level) this.getnet.minecraft.world.level.Level()).getHandle();
+            net.minecraft.world.level.Level world = ((CraftWorld) this.getWorld()).getHandle();
             entity.goalSelector = new net.minecraft.world.entity.ai.goal.GoalSelector(world.getProfilerSupplier());
             entity.targetSelector = new net.minecraft.world.entity.ai.goal.GoalSelector(world.getProfilerSupplier());
             entity.registerGoals();

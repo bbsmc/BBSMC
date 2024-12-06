@@ -332,7 +332,7 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
 
     @Override
     public boolean addPotionEffect(PotionEffect effect, boolean force) {
-        getHandle().addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffectInstanceList.byId(effect.getType().getId()), effect.getDuration(), effect.getAmplifier(), effect.isAmbient(), effect.hasParticles()), net.minecraft.world.entity.projectile.ThrownPotionEffectEvent.Cause.PLUGIN);
+        getHandle().addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffect.byId(effect.getType().getId()), effect.getDuration(), effect.getAmplifier(), effect.isAmbient(), effect.hasParticles()), EntityPotionEffectEvent.Cause.PLUGIN);
         return true;
     }
 
@@ -347,25 +347,25 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
 
     @Override
     public boolean hasPotionEffect(PotionEffectType type) {
-        return getHandle().hasEffect(net.minecraft.world.effect.MobEffectInstanceList.byId(type.getId()));
+        return getHandle().hasEffect(net.minecraft.world.effect.MobEffect.byId(type.getId()));
     }
 
     @Override
     public PotionEffect getPotionEffect(PotionEffectType type) {
-        net.minecraft.world.effect.MobEffectInstance handle = getHandle().getEffect(net.minecraft.world.effect.MobEffectInstanceList.byId(type.getId()));
-        return (handle == null) ? null : new PotionEffect(PotionEffectType.getById(net.minecraft.world.effect.MobEffectInstanceList.getId(handle.getEffect())), handle.getDuration(), handle.getAmplifier(), handle.isAmbient(), handle.isVisible());
+        net.minecraft.world.effect.MobEffectInstance handle = getHandle().getEffect(net.minecraft.world.effect.MobEffect.byId(type.getId()));
+        return (handle == null) ? null : new PotionEffect(PotionEffectType.getById(net.minecraft.world.effect.MobEffect.getId(handle.getEffect())), handle.getDuration(), handle.getAmplifier(), handle.isAmbient(), handle.isVisible());
     }
 
     @Override
     public void removePotionEffect(PotionEffectType type) {
-        getHandle().removeEffect(net.minecraft.world.effect.MobEffectInstanceList.byId(type.getId()), net.minecraft.world.entity.projectile.ThrownPotionEffectEvent.Cause.PLUGIN);
+        getHandle().removeEffect(net.minecraft.world.effect.MobEffect.byId(type.getId()), EntityPotionEffectEvent.Cause.PLUGIN);
     }
 
     @Override
     public Collection<PotionEffect> getActivePotionEffects() {
         List<PotionEffect> effects = new ArrayList<PotionEffect>();
         for (net.minecraft.world.effect.MobEffectInstance handle : getHandle().activeEffects.values()) {
-            effects.add(new PotionEffect(PotionEffectType.getById(net.minecraft.world.effect.MobEffectInstanceList.getId(handle.getEffect())), handle.getDuration(), handle.getAmplifier(), handle.isAmbient(), handle.isVisible()));
+            effects.add(new PotionEffect(PotionEffectType.getById(net.minecraft.world.effect.MobEffect.getId(handle.getEffect())), handle.getDuration(), handle.getAmplifier(), handle.isAmbient(), handle.isVisible()));
         }
         return effects;
     }
@@ -376,7 +376,7 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "deprecation"})
     public <T extends Projectile> T launchProjectile(Class<? extends T> projectile, Vector velocity) {
         Preconditions.checkState(!getHandle().generation, "Cannot launch projectile during world generation");
 
@@ -425,14 +425,14 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
             if (SmallFireball.class.isAssignableFrom(projectile)) {
                 launch = new net.minecraft.world.entity.projectile.SmallFireball(world, getHandle(), direction.getX(), direction.getY(), direction.getZ());
             } else if (WitherSkull.class.isAssignableFrom(projectile)) {
-                launch = new net.minecraft.world.entity.boss.wither.WitherBossSkull(world, getHandle(), direction.getX(), direction.getY(), direction.getZ());
+                launch = new net.minecraft.world.entity.projectile.WitherSkull(world, getHandle(), direction.getX(), direction.getY(), direction.getZ());
             } else if (DragonFireball.class.isAssignableFrom(projectile)) {
                 launch = new net.minecraft.world.entity.projectile.DragonFireball(world, getHandle(), direction.getX(), direction.getY(), direction.getZ());
             } else {
                 launch = new net.minecraft.world.entity.projectile.LargeFireball(world, getHandle(), direction.getX(), direction.getY(), direction.getZ(), 1);
             }
 
-            ((net.minecraft.world.entity.projectile.AbstractHurtingProjectile) launch).projectileSource = this;
+            launch.projectileSource = this;
             launch.moveTo(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
         } else if (LlamaSpit.class.isAssignableFrom(projectile)) {
             Location location = getEyeLocation();
@@ -458,7 +458,7 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
         Validate.notNull(launch, "Projectile not supported");
 
         if (velocity != null) {
-            ((T) launch.getBukkitEntity()).setVelocity(velocity);
+            launch.getBukkitEntity().setVelocity(velocity);
         }
 
         world.addFreshEntity(launch);

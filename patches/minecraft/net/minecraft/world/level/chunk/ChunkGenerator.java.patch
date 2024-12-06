@@ -1,0 +1,51 @@
+--- a/net/minecraft/world/level/chunk/ChunkGenerator.java
++++ b/net/minecraft/world/level/chunk/ChunkGenerator.java
+@@ -86,10 +_,10 @@
+ public abstract class ChunkGenerator {
+    private static final Logger f_211627_ = LogUtils.getLogger();
+    public static final Codec<ChunkGenerator> f_62136_ = Registry.f_122890_.m_194605_().dispatchStable(ChunkGenerator::m_6909_, Function.identity());
+-   protected final Registry<StructureSet> f_207955_;
++   public final Registry<StructureSet> f_207955_;
+    protected final BiomeSource f_62137_;
+    private final Supplier<List<FeatureSorter.StepFeatureData>> f_223020_;
+-   protected final Optional<HolderSet<StructureSet>> f_207956_;
++   public final Optional<HolderSet<StructureSet>> f_207956_;
+    private final Function<Holder<Biome>, BiomeGenerationSettings> f_223021_;
+    private final Map<Structure, List<StructurePlacement>> f_223022_ = new Object2ObjectOpenHashMap<>();
+    private final Map<ConcentricRingsStructurePlacement, CompletableFuture<List<ChunkPos>>> f_204350_ = new Object2ObjectArrayMap<>();
+@@ -356,6 +_,27 @@
+       }
+    }
+ 
++   // BBSMC start
++   public void applyBiomeDecoration(WorldGenLevel generatoraccessseed, net.minecraft.world.level.chunk.ChunkAccess ichunkaccess, net.minecraft.world.level.StructureManager structuremanager, boolean vanilla) {
++      if (vanilla) {
++         m_213609_(generatoraccessseed, ichunkaccess, structuremanager);
++      }
++
++      org.bukkit.World world = generatoraccessseed.getMinecraftWorld().getWorld();
++      if (!world.getPopulators().isEmpty()) {
++         org.bukkit.craftbukkit.generator.CraftLimitedRegion limitedRegion = new org.bukkit.craftbukkit.generator.CraftLimitedRegion(generatoraccessseed, ichunkaccess.m_7697_());
++         int x = ichunkaccess.m_7697_().f_45578_;
++         int z = ichunkaccess.m_7697_().f_45579_;
++         for (org.bukkit.generator.BlockPopulator populator : world.getPopulators()) {
++            WorldgenRandom seededrandom = new WorldgenRandom(new net.minecraft.world.level.levelgen.LegacyRandomSource(generatoraccessseed.m_7328_()));
++            seededrandom.m_64690_(generatoraccessseed.m_7328_(), x, z);
++            populator.populate(world, new org.bukkit.craftbukkit.util.RandomSourceWrapper.RandomWrapper(seededrandom), x, z, limitedRegion);
++         }
++         limitedRegion.saveEntities();
++         limitedRegion.breakLink();
++      }
++   }
++
+    public void m_213609_(WorldGenLevel p_223087_, ChunkAccess p_223088_, StructureManager p_223089_) {
+       ChunkPos chunkpos = p_223088_.m_7697_();
+       if (!SharedConstants.m_183707_(chunkpos)) {
+@@ -455,6 +_,7 @@
+          }
+       }
+    }
++   // BBSMC end
+ 
+    public boolean m_223141_(Holder<StructureSet> p_223142_, RandomState p_223143_, long p_223144_, int p_223145_, int p_223146_, int p_223147_) {
+       StructureSet structureset = p_223142_.m_203334_();

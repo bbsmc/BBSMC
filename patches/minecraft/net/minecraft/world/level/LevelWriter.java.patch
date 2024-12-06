@@ -1,0 +1,11 @@
+--- a/net/minecraft/world/level/LevelWriter.java
++++ b/net/minecraft/world/level/LevelWriter.java
+@@ -27,4 +_,8 @@
+    default boolean m_7967_(Entity p_46964_) {
+       return false;
+    }
++
++   default boolean addFreshEntity(net.minecraft.world.entity.Entity entity, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason reason) {
++      return false;
++   }
+ }

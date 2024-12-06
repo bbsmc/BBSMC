@@ -1,0 +1,15 @@
+--- a/net/minecraft/world/damagesource/IndirectEntityDamageSource.java
++++ b/net/minecraft/world/damagesource/IndirectEntityDamageSource.java
+@@ -15,6 +_,12 @@
+       this.f_19404_ = p_19408_;
+    }
+ 
++   // BBSMC start
++   public Entity getProximateDamageSource() {
++      return super.m_7639_();
++   }
++   // BBSMC end
++
+    @Nullable
+    public Entity m_7640_() {
+       return this.f_19391_;

@@ -1,5 +1,24 @@
 --- a/net/minecraft/world/entity/projectile/ShulkerBullet.java
 +++ b/net/minecraft/world/entity/projectile/ShulkerBullet.java
+@@ -41,6 +_,18 @@
+    @Nullable
+    private UUID f_37311_;
+ 
++   // BBSMC start
++   public Entity getTarget() {
++      return this.f_37312_;
++   }
++
++   public void setTarget(Entity e) {
++      this.f_37312_ = e;
++      this.f_37313_ = Direction.UP;
++      this.m_37348_(Direction.Axis.X);
++   }
++   // BBSMC end
++
+    public ShulkerBullet(EntityType<? extends ShulkerBullet> p_37319_, Level p_37320_) {
+       super(p_37319_, p_37320_);
+       this.f_19794_ = true;
 @@ -211,7 +_,7 @@
           }
  

@@ -163,7 +163,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
     public boolean setSpawnLocation(int x, int y, int z, float angle) {
         try {
             Location previousLocation = getSpawnLocation();
-            world.getLevelData().setSpawn(new net.minecraft.core.BlockPos(x, y, z), angle);
+            world.levelData.setSpawn(new net.minecraft.core.BlockPos(x, y, z), angle);
 
             // Notify anyone who's listening.
             SpawnChangeEvent event = new SpawnChangeEvent(this, previousLocation);
@@ -209,7 +209,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
     @Override
     public Chunk[] getLoadedChunks() {
         Long2ObjectLinkedOpenHashMap<net.minecraft.server.level.ChunkHolder> chunks = world.getChunkSource().chunkMap.visibleChunkMap;
-        return chunks.values().stream().map(net.minecraft.server.level.ChunkHolder::getFullChunkNow).filter(Objects::nonNull).map(net.minecraft.world.level.chunk.Chunk::getBukkitChunk).toArray(Chunk[]::new);
+        return chunks.values().stream().map(net.minecraft.server.level.ChunkHolder::getFullChunkNow).filter(Objects::nonNull).map(net.minecraft.world.level.chunk.LevelChunk::getBukkitChunk).toArray(Chunk[]::new);
     }
 
     @Override
@@ -982,7 +982,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
 
     @Override
     public void setDifficulty(Difficulty difficulty) {
-        this.getHandle().serverLevelData.setDifficulty(net.minecraft.world.Difficulty.byId(difficulty.getValue()));
+        this.getHandle().worldDataServer.setDifficulty(net.minecraft.world.Difficulty.byId(difficulty.getValue()));
     }
 
     @Override
@@ -1008,12 +1008,12 @@ public class CraftWorld extends CraftRegionAccessor implements World {
 
     @Override
     public int getWeatherDuration() {
-        return world.serverLevelData.getRainTime();
+        return world.worldDataServer.getRainTime();
     }
 
     @Override
     public void setWeatherDuration(int duration) {
-        world.serverLevelData.setRainTime(duration);
+        world.worldDataServer.setRainTime(duration);
     }
 
     @Override
@@ -1023,19 +1023,19 @@ public class CraftWorld extends CraftRegionAccessor implements World {
 
     @Override
     public void setThundering(boolean thundering) {
-        world.serverLevelData.setThundering(thundering);
+        world.worldDataServer.setThundering(thundering);
         setThunderDuration(0); // Reset weather duration (legacy behaviour)
         setClearWeatherDuration(0); // Reset clear weather duration (reset "/weather clear" commands)
     }
 
     @Override
     public int getThunderDuration() {
-        return world.serverLevelData.getThunderTime();
+        return world.worldDataServer.getThunderTime();
     }
 
     @Override
     public void setThunderDuration(int duration) {
-        world.serverLevelData.setThunderTime(duration);
+        world.worldDataServer.setThunderTime(duration);
     }
 
     @Override
@@ -1045,12 +1045,12 @@ public class CraftWorld extends CraftRegionAccessor implements World {
 
     @Override
     public void setClearWeatherDuration(int duration) {
-        world.serverLevelData.setClearWeatherTime(duration);
+        world.worldDataServer.setClearWeatherTime(duration);
     }
 
     @Override
     public int getClearWeatherDuration() {
-        return world.serverLevelData.getClearWeatherTime();
+        return world.worldDataServer.getClearWeatherTime();
     }
 
     @Override
@@ -1290,7 +1290,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
 
     @Override
     public boolean canGenerateStructures() {
-        return world.serverLevelData.worldGenSettings().generateStructures();
+        return world.worldDataServer.worldGenSettings().generateStructures();
     }
 
     @Override
@@ -1300,7 +1300,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
 
     @Override
     public void setHardcore(boolean hardcore) {
-        world.serverLevelData.settings.hardcore = hardcore;
+        world.worldDataServer.settings.hardcore = hardcore;
     }
 
     @Override

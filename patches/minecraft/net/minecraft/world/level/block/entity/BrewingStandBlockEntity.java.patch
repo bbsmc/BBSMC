@@ -1,5 +1,36 @@
 --- a/net/minecraft/world/level/block/entity/BrewingStandBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/BrewingStandBlockEntity.java
+@@ -1,6 +_,7 @@
+ package net.minecraft.world.level.block.entity;
+ 
+ import java.util.Arrays;
++import java.util.List;
+ import javax.annotation.Nullable;
+ import net.minecraft.core.BlockPos;
+ import net.minecraft.core.Direction;
+@@ -22,6 +_,9 @@
+ import net.minecraft.world.level.Level;
+ import net.minecraft.world.level.block.BrewingStandBlock;
+ import net.minecraft.world.level.block.state.BlockState;
++import org.bukkit.Location;
++import org.bukkit.craftbukkit.entity.CraftHumanEntity;
++import org.bukkit.entity.HumanEntity;
+ 
+ public class BrewingStandBlockEntity extends BaseContainerBlockEntity implements WorldlyContainer {
+    private static final int f_155280_ = 3;
+@@ -34,10 +_,10 @@
+    public static final int f_155278_ = 1;
+    public static final int f_155279_ = 2;
+    private NonNullList<ItemStack> f_58975_ = NonNullList.m_122780_(5, ItemStack.f_41583_);
+-   int f_58976_;
++   public int f_58976_;
+    private boolean[] f_58977_;
+    private Item f_58978_;
+-   int f_58979_;
++   public int f_58979_;
+    protected final ContainerData f_58971_ = new ContainerData() {
+       public int m_6413_(int p_59038_) {
+          switch (p_59038_) {
 @@ -147,6 +_,7 @@
  
     private static boolean m_155294_(NonNullList<ItemStack> p_155295_) {
@@ -37,7 +68,19 @@
  
        p_155293_.set(3, itemstack);
        p_155291_.m_46796_(1035, p_155292_, 0);
-@@ -228,11 +_,11 @@
+@@ -218,6 +_,11 @@
+ 
+    }
+ 
++   @Override
++   public int m_6893_() {
++      return 0;
++   }
++
+    public boolean m_6542_(Player p_59000_) {
+       if (this.f_58857_.m_7702_(this.f_58858_) != this) {
+          return false;
+@@ -228,12 +_,42 @@
  
     public boolean m_7013_(int p_59017_, ItemStack p_59018_) {
        if (p_59017_ == 3) {
@@ -49,8 +92,39 @@
 -         return (p_59018_.m_150930_(Items.f_42589_) || p_59018_.m_150930_(Items.f_42736_) || p_59018_.m_150930_(Items.f_42739_) || p_59018_.m_150930_(Items.f_42590_)) && this.m_8020_(p_59017_).m_41619_();
 +            return net.minecraftforge.common.brewing.BrewingRecipeRegistry.isValidInput(p_59018_) && this.m_8020_(p_59017_).m_41619_();
        }
++   }
++
++   @Override
++   public List<ItemStack> getContents() {
++      return List.of();
++   }
++
++   @Override
++   public void onOpen(CraftHumanEntity who) {
++
++   }
++
++   @Override
++   public void onClose(CraftHumanEntity who) {
++
++   }
++
++   @Override
++   public List<HumanEntity> getViewers() {
++      return List.of();
++   }
++
++   @Override
++   public void setMaxStackSize(int size) {
++
++   }
++
++   @Override
++   public Location getLocation() {
++      return null;
     }
  
+    public int[] m_7071_(Direction p_59010_) {
 @@ -258,5 +_,33 @@
  
     protected AbstractContainerMenu m_6555_(int p_58990_, Inventory p_58991_) {

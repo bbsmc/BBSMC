@@ -1,6 +1,7 @@
 package org.bukkit.craftbukkit.entity;
 
 import com.google.common.base.Preconditions;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.level.block.Blocks;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Rotation;
@@ -40,7 +41,7 @@ public class CraftItemFrame extends CraftHanging implements ItemFrame {
         super.update();
 
         // mark dirty, so that the client gets updated with item and rotation
-        for (net.minecraft.network.syncher.SynchedEntityData.Item<?> dataItem : getHandle().getEntityData().getAll()) {
+        for (SynchedEntityData.DataItem<?> dataItem : getHandle().getEntityData().getAll()) {
             getHandle().getEntityData().markDirty(dataItem.getAccessor());
         }
 

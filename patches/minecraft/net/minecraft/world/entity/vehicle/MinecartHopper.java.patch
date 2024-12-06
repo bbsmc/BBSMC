@@ -1,0 +1,67 @@
+--- a/net/minecraft/world/entity/vehicle/MinecartHopper.java
++++ b/net/minecraft/world/entity/vehicle/MinecartHopper.java
+@@ -10,12 +_,17 @@
+ import net.minecraft.world.inventory.AbstractContainerMenu;
+ import net.minecraft.world.inventory.HopperMenu;
+ import net.minecraft.world.item.Item;
++import net.minecraft.world.item.ItemStack;
+ import net.minecraft.world.item.Items;
+ import net.minecraft.world.level.Level;
+ import net.minecraft.world.level.block.Blocks;
+ import net.minecraft.world.level.block.entity.Hopper;
+ import net.minecraft.world.level.block.entity.HopperBlockEntity;
+ import net.minecraft.world.level.block.state.BlockState;
++import org.bukkit.Location;
++import org.bukkit.craftbukkit.entity.CraftHumanEntity;
++import org.bukkit.entity.HumanEntity;
++import org.bukkit.inventory.InventoryHolder;
+ 
+ public class MinecartHopper extends AbstractMinecartContainer implements Hopper {
+    public static final int f_150332_ = 4;
+@@ -45,6 +_,46 @@
+ 
+    public int m_6643_() {
+       return 5;
++   }
++
++   @Override
++   public int m_6893_() {
++      return 0;
++   }
++
++   @Override
++   public List<ItemStack> getContents() {
++      return List.of();
++   }
++
++   @Override
++   public void onOpen(CraftHumanEntity who) {
++
++   }
++
++   @Override
++   public void onClose(CraftHumanEntity who) {
++
++   }
++
++   @Override
++   public List<HumanEntity> getViewers() {
++      return List.of();
++   }
++
++   @Override
++   public InventoryHolder getOwner() {
++      return null;
++   }
++
++   @Override
++   public void setMaxStackSize(int size) {
++
++   }
++
++   @Override
++   public Location getLocation() {
++      return null;
+    }
+ 
+    public void m_6025_(int p_38596_, int p_38597_, int p_38598_, boolean p_38599_) {

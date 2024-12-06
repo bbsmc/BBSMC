@@ -1,0 +1,22 @@
+--- a/net/minecraft/world/entity/npc/WanderingTrader.java
++++ b/net/minecraft/world/entity/npc/WanderingTrader.java
+@@ -43,6 +_,7 @@
+ import net.minecraft.world.item.trading.MerchantOffers;
+ import net.minecraft.world.level.Level;
+ import net.minecraft.world.phys.Vec3;
++import org.bukkit.craftbukkit.inventory.CraftMerchant;
+ 
+ public class WanderingTrader extends AbstractVillager {
+    private static final int f_150044_ = 5;
+@@ -81,6 +_,11 @@
+ 
+    @Nullable
+    public AgeableMob m_142606_(ServerLevel p_150046_, AgeableMob p_150047_) {
++      return null;
++   }
++
++   @Override
++   public CraftMerchant getCraftMerchant() {
+       return null;
+    }
+ 

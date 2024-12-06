@@ -46,7 +46,7 @@ public final class CraftRaid implements Raid {
     public Location getLocation() {
         net.minecraft.core.BlockPos pos = handle.getCenter();
         net.minecraft.world.level.Level world = handle.getLevel();
-        return new Location(world.getnet.minecraft.world.level.Level(), pos.getX(), pos.getY(), pos.getZ());
+        return new Location(world.getWorld(), pos.getX(), pos.getY(), pos.getZ());
     }
 
     @Override
@@ -89,11 +89,6 @@ public final class CraftRaid implements Raid {
 
     @Override
     public List<Raider> getRaiders() {
-        return handle.getRaiders().stream().map(new Function<net.minecraft.world.entity.raid.Raider, Raider>() {
-            @Override
-            public Raider apply(net.minecraft.world.entity.raid.Raider entityRaider) {
-                return (Raider) entityRaider.getBukkitEntity();
-            }
-        }).collect(ImmutableList.toImmutableList());
+        return handle.getRaiders().stream().map(entityRaider -> (Raider) entityRaider.getBukkitEntity()).collect(ImmutableList.toImmutableList());
     }
 }

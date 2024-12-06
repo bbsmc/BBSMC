@@ -4,7 +4,6 @@
      private final List<TileEntityBeehive.HiveBee> stored = Lists.newArrayList();
      @Nullable
      public BlockPosition savedFlowerPos;
-+    public int maxBees = 3; // CraftBukkit - allow setting max amount of bees a hive can hold
  
      public TileEntityBeehive(BlockPosition blockposition, IBlockData iblockdata) {
          super(TileEntityTypes.BEEHIVE, blockposition, iblockdata);

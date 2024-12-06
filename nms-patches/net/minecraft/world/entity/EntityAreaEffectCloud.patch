@@ -16,23 +16,7 @@
 @@ -127,6 +133,22 @@
  
      }
- 
-+    // CraftBukkit start accessor methods
-+    public void refreshEffects() {
-+        if (!this.fixedColor) {
-+            this.getEntityData().set(EntityAreaEffectCloud.DATA_COLOR, PotionUtil.getColor((Collection) PotionUtil.getAllEffects(this.potion, this.effects)));
-+        }
-+    }
-+
-+    public String getPotionType() {
-+        return ((MinecraftKey) IRegistry.POTION.getKey(this.potion)).toString();
-+    }
-+
-+    public void setPotionType(String string) {
-+        setPotion(IRegistry.POTION.get(new MinecraftKey(string)));
-+    }
-+    // CraftBukkit end
-+
+     
      public int getColor() {
          return (Integer) this.getEntityData().get(EntityAreaEffectCloud.DATA_COLOR);
      }

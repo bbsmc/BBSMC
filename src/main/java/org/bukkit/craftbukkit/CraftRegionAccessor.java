@@ -172,7 +172,7 @@ public abstract class CraftRegionAccessor implements RegionAccessor {
     public abstract net.minecraft.world.level.WorldGenLevel getHandle();
 
     public boolean isNormalWorld() {
-        return getHandle() instanceof net.minecraft.server.level.WorldServer;
+        return getHandle() instanceof net.minecraft.server.level.ServerLevel;
     }
 
     @Override
@@ -193,7 +193,7 @@ public abstract class CraftRegionAccessor implements RegionAccessor {
     @Override
     public void setBiome(int x, int y, int z, Biome biome) {
         Preconditions.checkArgument(biome != Biome.CUSTOM, "Cannot set the biome to %s", biome);
-        Holder<net.minecraft.world.level.biome.Biome> biomeBase = CraftBlock.biomeTonet.minecraft.world.level.biome.Biome(getHandle().registryAccess().registryOrThrow(net.minecraft.core.Registry.BIOME_REGISTRY), biome);
+        Holder<net.minecraft.world.level.biome.Biome> biomeBase = CraftBlock.biomeToBiomeBase(getHandle().registryAccess().registryOrThrow(net.minecraft.core.Registry.BIOME_REGISTRY), biome);
         setBiome(x, y, z, biomeBase);
     }
 

@@ -1,5 +1,14 @@
 --- a/net/minecraft/client/Minecraft.java
 +++ b/net/minecraft/client/Minecraft.java
+@@ -59,6 +_,8 @@
+ import java.util.function.Supplier;
+ import java.util.stream.Stream;
+ import javax.annotation.Nullable;
++
++import net.bbsmc.server.BBSMcServer;
+ import net.minecraft.ChatFormatting;
+ import net.minecraft.CrashReport;
+ import net.minecraft.CrashReportCategory;
 @@ -244,7 +_,7 @@
  import org.slf4j.Logger;
  
@@ -367,6 +376,15 @@
     }
  
     private boolean m_91278_() {
+@@ -1926,6 +_,8 @@
+          SkullBlockEntity.m_222885_(services, this);
+          GameProfileCache.m_11004_(false);
+          this.f_91007_ = MinecraftServer.m_129872_((p_231361_) -> {
++            // BBSMC - compat IntegratedServer
++            BBSMcServer.getServerSetter().load(null, null, null);
+             return new IntegratedServer(p_231361_, this, p_231382_, p_231383_, p_231384_, services, (p_231447_) -> {
+                StoringChunkProgressListener storingchunkprogresslistener = new StoringChunkProgressListener(p_231447_ + 0);
+                this.f_90999_.set(storingchunkprogresslistener);
 @@ -1978,6 +_,7 @@
     }
  

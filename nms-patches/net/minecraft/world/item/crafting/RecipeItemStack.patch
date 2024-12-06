@@ -4,7 +4,6 @@
      public ItemStack[] itemStacks;
      @Nullable
      private IntList stackingIds;
-+    public boolean exact; // CraftBukkit
  
      public RecipeItemStack(Stream<? extends RecipeItemStack.Provider> stream) {
          this.values = (RecipeItemStack.Provider[]) stream.toArray((i) -> {

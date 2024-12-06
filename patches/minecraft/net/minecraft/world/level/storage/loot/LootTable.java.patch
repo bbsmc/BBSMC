@@ -43,7 +43,7 @@
        }
  
        for(int j = 0; j < this.f_79110_.length; ++j) {
-@@ -177,6 +_,48 @@
+@@ -177,6 +_,52 @@
        return new LootTable.Builder();
     }
  
@@ -87,7 +87,11 @@
 +         throw new RuntimeException("Attempted to add a duplicate pool to loot table: " + pool.getName());
 +      this.f_79109_.add(pool);
 +   }
-+   //======================== FORGE END ===============================================
++
++   public void fillInventory(Container handle, LootContext nmsContext, boolean b) {
++
++   }
++    //======================== FORGE END ===============================================
 +
     public static class Builder implements FunctionUserBuilder<LootTable.Builder> {
        private final List<LootPool> f_79156_ = Lists.newArrayList();

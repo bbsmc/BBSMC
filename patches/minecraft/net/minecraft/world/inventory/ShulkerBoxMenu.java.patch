@@ -1,0 +1,22 @@
+--- a/net/minecraft/world/inventory/ShulkerBoxMenu.java
++++ b/net/minecraft/world/inventory/ShulkerBoxMenu.java
+@@ -5,6 +_,7 @@
+ import net.minecraft.world.entity.player.Inventory;
+ import net.minecraft.world.entity.player.Player;
+ import net.minecraft.world.item.ItemStack;
++import org.bukkit.inventory.InventoryView;
+ 
+ public class ShulkerBoxMenu extends AbstractContainerMenu {
+    private static final int f_150640_ = 27;
+@@ -42,6 +_,11 @@
+ 
+    public boolean m_6875_(Player p_40195_) {
+       return this.f_40186_.m_6542_(p_40195_);
++   }
++
++   @Override
++   public InventoryView getBukkitView() {
++      return null;
+    }
+ 
+    public ItemStack m_7648_(Player p_40199_, int p_40200_) {

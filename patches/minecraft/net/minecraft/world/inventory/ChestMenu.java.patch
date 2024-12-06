@@ -1,0 +1,22 @@
+--- a/net/minecraft/world/inventory/ChestMenu.java
++++ b/net/minecraft/world/inventory/ChestMenu.java
+@@ -5,6 +_,7 @@
+ import net.minecraft.world.entity.player.Inventory;
+ import net.minecraft.world.entity.player.Player;
+ import net.minecraft.world.item.ItemStack;
++import org.bukkit.inventory.InventoryView;
+ 
+ public class ChestMenu extends AbstractContainerMenu {
+    private static final int f_150511_ = 9;
+@@ -75,6 +_,11 @@
+ 
+    public boolean m_6875_(Player p_39242_) {
+       return this.f_39221_.m_6542_(p_39242_);
++   }
++
++   @Override
++   public InventoryView getBukkitView() {
++      return null;
+    }
+ 
+    public ItemStack m_7648_(Player p_39253_, int p_39254_) {

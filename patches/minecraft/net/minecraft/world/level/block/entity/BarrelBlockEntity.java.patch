@@ -1,0 +1,82 @@
+--- a/net/minecraft/world/level/block/entity/BarrelBlockEntity.java
++++ b/net/minecraft/world/level/block/entity/BarrelBlockEntity.java
+@@ -18,10 +_,15 @@
+ import net.minecraft.world.level.Level;
+ import net.minecraft.world.level.block.BarrelBlock;
+ import net.minecraft.world.level.block.state.BlockState;
++import org.bukkit.Location;
++import org.bukkit.craftbukkit.entity.CraftHumanEntity;
++import org.bukkit.entity.HumanEntity;
++
++import java.util.List;
+ 
+ public class BarrelBlockEntity extends RandomizableContainerBlockEntity {
+    private NonNullList<ItemStack> f_58591_ = NonNullList.m_122780_(27, ItemStack.f_41583_);
+-   private ContainerOpenersCounter f_155050_ = new ContainerOpenersCounter() {
++   public ContainerOpenersCounter f_155050_ = new ContainerOpenersCounter() {
+       protected void m_142292_(Level p_155062_, BlockPos p_155063_, BlockState p_155064_) {
+          BarrelBlockEntity.this.m_58600_(p_155064_, SoundEvents.f_11725_);
+          BarrelBlockEntity.this.m_58606_(p_155064_, true);
+@@ -70,6 +_,11 @@
+       return 27;
+    }
+ 
++   @Override
++   public int m_6893_() {
++      return 0;
++   }
++
+    protected NonNullList<ItemStack> m_7086_() {
+       return this.f_58591_;
+    }
+@@ -100,6 +_,36 @@
+ 
+    }
+ 
++   @Override
++   public List<ItemStack> getContents() {
++      return List.of();
++   }
++
++   @Override
++   public void onOpen(CraftHumanEntity who) {
++
++   }
++
++   @Override
++   public void onClose(CraftHumanEntity who) {
++
++   }
++
++   @Override
++   public List<HumanEntity> getViewers() {
++      return List.of();
++   }
++
++   @Override
++   public void setMaxStackSize(int size) {
++
++   }
++
++   @Override
++   public Location getLocation() {
++      return null;
++   }
++
+    public void m_58619_() {
+       if (!this.f_58859_) {
+          this.f_155050_.m_155476_(this.m_58904_(), this.m_58899_(), this.m_58900_());
+@@ -107,11 +_,11 @@
+ 
+    }
+ 
+-   void m_58606_(BlockState p_58607_, boolean p_58608_) {
++   public void m_58606_(BlockState p_58607_, boolean p_58608_) {
+       this.f_58857_.m_7731_(this.m_58899_(), p_58607_.m_61124_(BarrelBlock.f_49043_, Boolean.valueOf(p_58608_)), 3);
+    }
+ 
+-   void m_58600_(BlockState p_58601_, SoundEvent p_58602_) {
++   public void m_58600_(BlockState p_58601_, SoundEvent p_58602_) {
+       Vec3i vec3i = p_58601_.m_61143_(BarrelBlock.f_49042_).m_122436_();
+       double d0 = (double)this.f_58858_.m_123341_() + 0.5D + (double)vec3i.m_123341_() / 2.0D;
+       double d1 = (double)this.f_58858_.m_123342_() + 0.5D + (double)vec3i.m_123342_() / 2.0D;

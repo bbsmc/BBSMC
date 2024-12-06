@@ -1,9 +1,78 @@
 --- a/net/minecraft/world/level/block/entity/ChestBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/ChestBlockEntity.java
-@@ -160,6 +_,45 @@
-       return ChestMenu.m_39237_(p_59082_, p_59083_, this);
+@@ -22,11 +_,16 @@
+ import net.minecraft.world.level.block.ChestBlock;
+ import net.minecraft.world.level.block.state.BlockState;
+ import net.minecraft.world.level.block.state.properties.ChestType;
++import org.bukkit.Location;
++import org.bukkit.craftbukkit.entity.CraftHumanEntity;
++import org.bukkit.entity.HumanEntity;
++
++import java.util.List;
+ 
+ public class ChestBlockEntity extends RandomizableContainerBlockEntity implements LidBlockEntity {
+    private static final int f_155323_ = 1;
+    private NonNullList<ItemStack> f_59073_ = NonNullList.m_122780_(27, ItemStack.f_41583_);
+-   private final ContainerOpenersCounter f_155324_ = new ContainerOpenersCounter() {
++   public final ContainerOpenersCounter f_155324_ = new ContainerOpenersCounter() {
+       protected void m_142292_(Level p_155357_, BlockPos p_155358_, BlockState p_155359_) {
+          ChestBlockEntity.m_155338_(p_155357_, p_155358_, p_155359_, SoundEvents.f_11749_);
+       }
+@@ -62,6 +_,11 @@
+       return 27;
     }
  
++   @Override
++   public int m_6893_() {
++      return 0;
++   }
++
+    protected Component m_6820_() {
+       return Component.m_237115_("container.chest");
+    }
+@@ -126,6 +_,36 @@
+ 
+    }
+ 
++   @Override
++   public List<ItemStack> getContents() {
++      return List.of();
++   }
++
++   @Override
++   public void onOpen(CraftHumanEntity who) {
++
++   }
++
++   @Override
++   public void onClose(CraftHumanEntity who) {
++
++   }
++
++   @Override
++   public List<HumanEntity> getViewers() {
++      return List.of();
++   }
++
++   @Override
++   public void setMaxStackSize(int size) {
++
++   }
++
++   @Override
++   public Location getLocation() {
++      return null;
++   }
++
+    protected NonNullList<ItemStack> m_7086_() {
+       return this.f_59073_;
+    }
+@@ -158,6 +_,45 @@
+ 
+    protected AbstractContainerMenu m_6555_(int p_59082_, Inventory p_59083_) {
+       return ChestMenu.m_39237_(p_59082_, p_59083_, this);
++   }
++
 +   private net.minecraftforge.common.util.LazyOptional<net.minecraftforge.items.IItemHandlerModifiable> chestHandler;
 +   @Override
 +   public void m_155250_(BlockState p_155251_) {
@@ -41,8 +110,6 @@
 +         chestHandler.invalidate();
 +         chestHandler = null;
 +      }
-+   }
-+
+    }
+ 
     public void m_155350_() {
-       if (!this.f_58859_) {
-          this.f_155324_.m_155476_(this.m_58904_(), this.m_58899_(), this.m_58900_());

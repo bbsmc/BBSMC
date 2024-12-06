@@ -34,40 +34,6 @@
          return map;
      }
  
-+    // CraftBukkit start - add fields and methods
-+    private int maxStack = MAX_STACK;
-+    public List<HumanEntity> transaction = new java.util.ArrayList<HumanEntity>();
-+
-+    public List<ItemStack> getContents() {
-+        return this.items;
-+    }
-+
-+    public void onOpen(CraftHumanEntity who) {
-+        transaction.add(who);
-+    }
-+
-+    public void onClose(CraftHumanEntity who) {
-+        transaction.remove(who);
-+    }
-+
-+    public List<HumanEntity> getViewers() {
-+        return transaction;
-+    }
-+
-+    @Override
-+    public int getMaxStackSize() {
-+        return maxStack;
-+    }
-+
-+    public void setMaxStackSize(int size) {
-+        maxStack = size;
-+    }
-+
-+    public Object2IntOpenHashMap<MinecraftKey> getRecipesUsed() {
-+        return this.recipesUsed; // PAIL private -> public
-+    }
-+    // CraftBukkit end
-+
      private static boolean isNeverAFurnaceFuel(Item item) {
          return item.builtInRegistryHolder().is(TagsItem.NON_FLAMMABLE_WOOD);
      }

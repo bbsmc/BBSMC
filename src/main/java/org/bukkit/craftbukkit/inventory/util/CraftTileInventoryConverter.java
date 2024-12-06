@@ -37,7 +37,7 @@ public abstract class CraftTileInventoryConverter implements CraftInventoryCreat
 
         @Override
         public net.minecraft.world.Container getTileEntity() {
-            net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity furnace = new net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntityFurnace(net.minecraft.core.BlockPos.ZERO, Blocks.FURNACE.defaultBlockState()); // TODO: customize this if required
+            net.minecraft.world.level.block.entity.FurnaceBlockEntity furnace = new net.minecraft.world.level.block.entity.FurnaceBlockEntity(net.minecraft.core.BlockPos.ZERO, Blocks.FURNACE.defaultBlockState()); // TODO: customize this if required
             return furnace;
         }
 

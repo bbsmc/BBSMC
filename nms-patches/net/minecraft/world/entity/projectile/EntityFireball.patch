@@ -11,8 +11,6 @@
      public double xPower;
      public double yPower;
      public double zPower;
-+    public float bukkitYield = 1; // CraftBukkit
-+    public boolean isIncendiary = true; // CraftBukkit
  
      protected EntityFireball(EntityTypes<? extends EntityFireball> entitytypes, World world) {
          super(entitytypes, world);

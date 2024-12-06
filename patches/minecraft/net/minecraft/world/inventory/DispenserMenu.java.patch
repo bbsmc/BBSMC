@@ -1,0 +1,22 @@
+--- a/net/minecraft/world/inventory/DispenserMenu.java
++++ b/net/minecraft/world/inventory/DispenserMenu.java
+@@ -5,6 +_,7 @@
+ import net.minecraft.world.entity.player.Inventory;
+ import net.minecraft.world.entity.player.Player;
+ import net.minecraft.world.item.ItemStack;
++import org.bukkit.inventory.InventoryView;
+ 
+ public class DispenserMenu extends AbstractContainerMenu {
+    private static final int f_150557_ = 9;
+@@ -44,6 +_,11 @@
+ 
+    public boolean m_6875_(Player p_39440_) {
+       return this.f_39431_.m_6542_(p_39440_);
++   }
++
++   @Override
++   public InventoryView getBukkitView() {
++      return null;
+    }
+ 
+    public ItemStack m_7648_(Player p_39444_, int p_39445_) {

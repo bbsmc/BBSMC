@@ -1,0 +1,493 @@
+--- a/net/minecraft/world/level/block/entity/LecternBlockEntity.java
++++ b/net/minecraft/world/level/block/entity/LecternBlockEntity.java
+@@ -1,6 +_,7 @@
+ package net.minecraft.world.level.block.entity;
+ 
+ import javax.annotation.Nullable;
++
+ import net.minecraft.commands.CommandSource;
+ import net.minecraft.commands.CommandSourceStack;
+ import net.minecraft.core.BlockPos;
+@@ -23,200 +_,287 @@
+ import net.minecraft.world.level.block.state.BlockState;
+ import net.minecraft.world.phys.Vec2;
+ import net.minecraft.world.phys.Vec3;
+-
+-public class LecternBlockEntity extends BlockEntity implements Clearable, MenuProvider {
+-   public static final int f_155617_ = 0;
+-   public static final int f_155618_ = 1;
+-   public static final int f_155619_ = 0;
+-   public static final int f_155620_ = 1;
+-   private final Container f_59525_ = new Container() {
+-      public int m_6643_() {
+-         return 1;
+-      }
+-
+-      public boolean m_7983_() {
+-         return LecternBlockEntity.this.f_59527_.m_41619_();
+-      }
+-
+-      public ItemStack m_8020_(int p_59580_) {
+-         return p_59580_ == 0 ? LecternBlockEntity.this.f_59527_ : ItemStack.f_41583_;
+-      }
+-
+-      public ItemStack m_7407_(int p_59582_, int p_59583_) {
+-         if (p_59582_ == 0) {
+-            ItemStack itemstack = LecternBlockEntity.this.f_59527_.m_41620_(p_59583_);
+-            if (LecternBlockEntity.this.f_59527_.m_41619_()) {
+-               LecternBlockEntity.this.m_59570_();
+-            }
+-
+-            return itemstack;
+-         } else {
+-            return ItemStack.f_41583_;
+-         }
+-      }
+-
+-      public ItemStack m_8016_(int p_59590_) {
+-         if (p_59590_ == 0) {
+-            ItemStack itemstack = LecternBlockEntity.this.f_59527_;
+-            LecternBlockEntity.this.f_59527_ = ItemStack.f_41583_;
+-            LecternBlockEntity.this.m_59570_();
+-            return itemstack;
+-         } else {
+-            return ItemStack.f_41583_;
+-         }
+-      }
+-
+-      public void m_6836_(int p_59585_, ItemStack p_59586_) {
+-      }
+-
+-      public int m_6893_() {
+-         return 1;
+-      }
+-
+-      public void m_6596_() {
+-         LecternBlockEntity.this.m_6596_();
+-      }
+-
+-      public boolean m_6542_(Player p_59588_) {
+-         if (LecternBlockEntity.this.f_58857_.m_7702_(LecternBlockEntity.this.f_58858_) != LecternBlockEntity.this) {
++import org.bukkit.block.Lectern;
++import org.bukkit.command.CommandSender;
++import org.bukkit.entity.HumanEntity;
++import org.bukkit.inventory.InventoryHolder;
++
++public class LecternBlockEntity extends BlockEntity implements Clearable, MenuProvider, CommandSource {
++    public static final int f_155617_ = 0;
++    public static final int f_155618_ = 1;
++    public static final int f_155619_ = 0;
++    public static final int f_155620_ = 1;
++    // CraftBukkit start - add fields and methods
++    public final net.minecraft.world.Container f_59525_ = new LecternInventory();
++
++    @Override
++    public void m_213846_(Component p_230797_) {
++
++    }
++
++    @Override
++    public boolean m_6999_() {
++        return false;
++    }
++
++    @Override
++    public boolean m_7028_() {
++        return false;
++    }
++
++    @Override
++    public boolean m_6102_() {
++        return false;
++    }
++
++    @Override
++    public CommandSender getBukkitSender(CommandSourceStack wrapper) {
++        return wrapper.m_81373_() != null ? wrapper.m_81373_().getBukkitSender(wrapper) : new org.bukkit.craftbukkit.command.CraftBlockCommandSender(wrapper, this);
++    }
++
++    public class LecternInventory implements net.minecraft.world.Container {
++
++        public java.util.List<HumanEntity> transaction = new java.util.ArrayList<>();
++        private int maxStack = 1;
++
++        @Override
++        public java.util.List<net.minecraft.world.item.ItemStack> getContents() {
++            return java.util.Arrays.asList(f_59527_);
++        }
++
++        @Override
++        public void onOpen(org.bukkit.craftbukkit.entity.CraftHumanEntity who) {
++            transaction.add(who);
++        }
++
++        @Override
++        public void onClose(org.bukkit.craftbukkit.entity.CraftHumanEntity who) {
++            transaction.remove(who);
++        }
++
++        @Override
++        public java.util.List<HumanEntity> getViewers() {
++            return transaction;
++        }
++
++        @Override
++        public void setMaxStackSize(int i) {
++            maxStack = i;
++        }
++
++        @Override
++        public org.bukkit.Location getLocation() {
++            return new org.bukkit.Location(f_58857_.getWorld(), f_58858_.m_123341_(), f_58858_.m_123342_(), f_58858_.m_123343_());
++        }
++
++        @Override
++        public InventoryHolder getOwner() {
++            return LecternBlockEntity.this.getOwner();
++        }
++
++        public net.minecraft.world.level.block.entity.LecternBlockEntity getLectern() {
++            return LecternBlockEntity.this;
++        }
++
++        public int m_6643_() {
++            return 1;
++        }
++
++        public boolean m_7983_() {
++            return LecternBlockEntity.this.f_59527_.m_41619_();
++        }
++
++        public ItemStack m_8020_(int p_59580_) {
++            return p_59580_ == 0 ? LecternBlockEntity.this.f_59527_ : ItemStack.f_41583_;
++        }
++
++        public ItemStack m_7407_(int p_59582_, int p_59583_) {
++            if (p_59582_ == 0) {
++                ItemStack itemstack = LecternBlockEntity.this.f_59527_.m_41620_(p_59583_);
++                if (LecternBlockEntity.this.f_59527_.m_41619_()) {
++                    LecternBlockEntity.this.m_59570_();
++                }
++
++                return itemstack;
++            } else {
++                return ItemStack.f_41583_;
++            }
++        }
++
++        public ItemStack m_8016_(int p_59590_) {
++            if (p_59590_ == 0) {
++                ItemStack itemstack = LecternBlockEntity.this.f_59527_;
++                LecternBlockEntity.this.f_59527_ = ItemStack.f_41583_;
++                LecternBlockEntity.this.m_59570_();
++                return itemstack;
++            } else {
++                return ItemStack.f_41583_;
++            }
++        }
++
++        public void m_6836_(int p_59585_, ItemStack p_59586_) {
++            // BBSMC start
++            if (p_59585_ == 0) {
++                net.minecraft.world.level.block.entity.LecternBlockEntity.this.m_59536_(p_59586_);
++                if (net.minecraft.world.level.block.entity.LecternBlockEntity.this.m_58904_()!= null) {
++                    net.minecraft.world.level.block.LecternBlock.m_54497_(net.minecraft.world.level.block.entity.LecternBlockEntity.this.m_58904_(), net.minecraft.world.level.block.entity.LecternBlockEntity.this.m_58899_(), net.minecraft.world.level.block.entity.LecternBlockEntity.this.m_58900_(), net.minecraft.world.level.block.entity.LecternBlockEntity.this.m_59567_());
++                }
++            }
++            // BBSMC end
++        }
++
++        public int m_6893_() {
++            return maxStack;
++        }
++
++        public void m_6596_() {
++            LecternBlockEntity.this.m_6596_();
++        }
++
++        public boolean m_6542_(Player p_59588_) {
++            if (LecternBlockEntity.this.f_58857_.m_7702_(LecternBlockEntity.this.f_58858_) != LecternBlockEntity.this) {
++                return false;
++            } else {
++                return p_59588_.m_20275_((double) LecternBlockEntity.this.f_58858_.m_123341_() + 0.5D, (double) LecternBlockEntity.this.f_58858_.m_123342_() + 0.5D, (double) LecternBlockEntity.this.f_58858_.m_123343_() + 0.5D) > 64.0D ? false : LecternBlockEntity.this.m_59567_();
++            }
++        }
++
++        public boolean m_7013_(int p_59592_, ItemStack p_59593_) {
+             return false;
+-         } else {
+-            return p_59588_.m_20275_((double)LecternBlockEntity.this.f_58858_.m_123341_() + 0.5D, (double)LecternBlockEntity.this.f_58858_.m_123342_() + 0.5D, (double)LecternBlockEntity.this.f_58858_.m_123343_() + 0.5D) > 64.0D ? false : LecternBlockEntity.this.m_59567_();
+-         }
+-      }
+-
+-      public boolean m_7013_(int p_59592_, ItemStack p_59593_) {
+-         return false;
+-      }
+-
+-      public void m_6211_() {
+-      }
+-   };
+-   private final ContainerData f_59526_ = new ContainerData() {
+-      public int m_6413_(int p_59600_) {
+-         return p_59600_ == 0 ? LecternBlockEntity.this.f_59528_ : 0;
+-      }
+-
+-      public void m_8050_(int p_59602_, int p_59603_) {
+-         if (p_59602_ == 0) {
+-            LecternBlockEntity.this.m_59532_(p_59603_);
+-         }
+-
+-      }
+-
+-      public int m_6499_() {
+-         return 1;
+-      }
+-   };
+-   ItemStack f_59527_ = ItemStack.f_41583_;
+-   int f_59528_;
+-   private int f_59529_;
+-
+-   public LecternBlockEntity(BlockPos p_155622_, BlockState p_155623_) {
+-      super(BlockEntityType.f_58908_, p_155622_, p_155623_);
+-   }
+-
+-   public ItemStack m_59566_() {
+-      return this.f_59527_;
+-   }
+-
+-   public boolean m_59567_() {
+-      return this.f_59527_.m_150930_(Items.f_42614_) || this.f_59527_.m_150930_(Items.f_42615_);
+-   }
+-
+-   public void m_59536_(ItemStack p_59537_) {
+-      this.m_59538_(p_59537_, (Player)null);
+-   }
+-
+-   void m_59570_() {
+-      this.f_59528_ = 0;
+-      this.f_59529_ = 0;
+-      LecternBlock.m_54497_(this.m_58904_(), this.m_58899_(), this.m_58900_(), false);
+-   }
+-
+-   public void m_59538_(ItemStack p_59539_, @Nullable Player p_59540_) {
+-      this.f_59527_ = this.m_59554_(p_59539_, p_59540_);
+-      this.f_59528_ = 0;
+-      this.f_59529_ = WrittenBookItem.m_43477_(this.f_59527_);
+-      this.m_6596_();
+-   }
+-
+-   void m_59532_(int p_59533_) {
+-      int i = Mth.m_14045_(p_59533_, 0, this.f_59529_ - 1);
+-      if (i != this.f_59528_) {
+-         this.f_59528_ = i;
+-         this.m_6596_();
+-         LecternBlock.m_54488_(this.m_58904_(), this.m_58899_(), this.m_58900_());
+-      }
+-
+-   }
+-
+-   public int m_59568_() {
+-      return this.f_59528_;
+-   }
+-
+-   public int m_59569_() {
+-      float f = this.f_59529_ > 1 ? (float)this.m_59568_() / ((float)this.f_59529_ - 1.0F) : 1.0F;
+-      return Mth.m_14143_(f * 14.0F) + (this.m_59567_() ? 1 : 0);
+-   }
+-
+-   private ItemStack m_59554_(ItemStack p_59555_, @Nullable Player p_59556_) {
+-      if (this.f_58857_ instanceof ServerLevel && p_59555_.m_150930_(Items.f_42615_)) {
+-         WrittenBookItem.m_43461_(p_59555_, this.m_59534_(p_59556_), p_59556_);
+-      }
+-
+-      return p_59555_;
+-   }
+-
+-   private CommandSourceStack m_59534_(@Nullable Player p_59535_) {
+-      String s;
+-      Component component;
+-      if (p_59535_ == null) {
+-         s = "Lectern";
+-         component = Component.m_237113_("Lectern");
+-      } else {
+-         s = p_59535_.m_7755_().getString();
+-         component = p_59535_.m_5446_();
+-      }
+-
+-      Vec3 vec3 = Vec3.m_82512_(this.f_58858_);
+-      return new CommandSourceStack(CommandSource.f_80164_, vec3, Vec2.f_82462_, (ServerLevel)this.f_58857_, 2, s, component, this.f_58857_.m_7654_(), p_59535_);
+-   }
+-
+-   public boolean m_6326_() {
+-      return true;
+-   }
+-
+-   public void m_142466_(CompoundTag p_155625_) {
+-      super.m_142466_(p_155625_);
+-      if (p_155625_.m_128425_("Book", 10)) {
+-         this.f_59527_ = this.m_59554_(ItemStack.m_41712_(p_155625_.m_128469_("Book")), (Player)null);
+-      } else {
+-         this.f_59527_ = ItemStack.f_41583_;
+-      }
+-
+-      this.f_59529_ = WrittenBookItem.m_43477_(this.f_59527_);
+-      this.f_59528_ = Mth.m_14045_(p_155625_.m_128451_("Page"), 0, this.f_59529_ - 1);
+-   }
+-
+-   protected void m_183515_(CompoundTag p_187509_) {
+-      super.m_183515_(p_187509_);
+-      if (!this.m_59566_().m_41619_()) {
+-         p_187509_.m_128365_("Book", this.m_59566_().m_41739_(new CompoundTag()));
+-         p_187509_.m_128405_("Page", this.f_59528_);
+-      }
+-
+-   }
+-
+-   public void m_6211_() {
+-      this.m_59536_(ItemStack.f_41583_);
+-   }
+-
+-   public AbstractContainerMenu m_7208_(int p_59562_, Inventory p_59563_, Player p_59564_) {
+-      return new LecternMenu(p_59562_, this.f_59525_, this.f_59526_);
+-   }
+-
+-   public Component m_5446_() {
+-      return Component.m_237115_("container.lectern");
+-   }
++        }
++
++        public void m_6211_() {
++        }
++    }
++
++    ;
++    private final ContainerData f_59526_ = new ContainerData() {
++        public int m_6413_(int p_59600_) {
++            return p_59600_ == 0 ? LecternBlockEntity.this.f_59528_ : 0;
++        }
++
++        public void m_8050_(int p_59602_, int p_59603_) {
++            if (p_59602_ == 0) {
++                LecternBlockEntity.this.m_59532_(p_59603_);
++            }
++
++        }
++
++        public int m_6499_() {
++            return 1;
++        }
++    };
++    ItemStack f_59527_ = ItemStack.f_41583_;
++    int f_59528_;
++    private int f_59529_;
++
++    public LecternBlockEntity(BlockPos p_155622_, BlockState p_155623_) {
++        super(BlockEntityType.f_58908_, p_155622_, p_155623_);
++    }
++
++    public ItemStack m_59566_() {
++        return this.f_59527_;
++    }
++
++    public boolean m_59567_() {
++        return this.f_59527_.m_150930_(Items.f_42614_) || this.f_59527_.m_150930_(Items.f_42615_);
++    }
++
++    public void m_59536_(ItemStack p_59537_) {
++        this.m_59538_(p_59537_, (Player) null);
++    }
++
++    void m_59570_() {
++        this.f_59528_ = 0;
++        this.f_59529_ = 0;
++        LecternBlock.m_54497_(this.m_58904_(), this.m_58899_(), this.m_58900_(), false);
++    }
++
++    public void m_59538_(ItemStack p_59539_, @Nullable Player p_59540_) {
++        this.f_59527_ = this.m_59554_(p_59539_, p_59540_);
++        this.f_59528_ = 0;
++        this.f_59529_ = WrittenBookItem.m_43477_(this.f_59527_);
++        this.m_6596_();
++    }
++
++    public void m_59532_(int p_59533_) {
++        int i = Mth.m_14045_(p_59533_, 0, this.f_59529_ - 1);
++        if (i != this.f_59528_) {
++            this.f_59528_ = i;
++            this.m_6596_();
++            if (this.f_58857_ != null) {
++                LecternBlock.m_54488_(this.m_58904_(), this.m_58899_(), this.m_58900_());
++            }
++        }
++
++    }
++
++    public int m_59568_() {
++        return this.f_59528_;
++    }
++
++    public int m_59569_() {
++        float f = this.f_59529_ > 1 ? (float) this.m_59568_() / ((float) this.f_59529_ - 1.0F) : 1.0F;
++        return Mth.m_14143_(f * 14.0F) + (this.m_59567_() ? 1 : 0);
++    }
++
++    private ItemStack m_59554_(ItemStack p_59555_, @Nullable Player p_59556_) {
++        if (this.f_58857_ instanceof ServerLevel && p_59555_.m_150930_(Items.f_42615_)) {
++            WrittenBookItem.m_43461_(p_59555_, this.m_59534_(p_59556_), p_59556_);
++        }
++
++        return p_59555_;
++    }
++
++    private CommandSourceStack m_59534_(@Nullable Player p_59535_) {
++        String s;
++        Component component;
++        if (p_59535_ == null) {
++            s = "Lectern";
++            component = Component.m_237113_("Lectern");
++        } else {
++            s = p_59535_.m_7755_().getString();
++            component = p_59535_.m_5446_();
++        }
++
++        Vec3 vec3 = Vec3.m_82512_(this.f_58858_);
++        return new CommandSourceStack(this, vec3, Vec2.f_82462_, (ServerLevel) this.f_58857_, 2, s, component, this.f_58857_.m_7654_(), p_59535_);
++    }
++
++    public boolean m_6326_() {
++        return true;
++    }
++
++    public void m_142466_(CompoundTag p_155625_) {
++        super.m_142466_(p_155625_);
++        if (p_155625_.m_128425_("Book", 10)) {
++            this.f_59527_ = this.m_59554_(ItemStack.m_41712_(p_155625_.m_128469_("Book")), (Player) null);
++        } else {
++            this.f_59527_ = ItemStack.f_41583_;
++        }
++
++        this.f_59529_ = WrittenBookItem.m_43477_(this.f_59527_);
++        this.f_59528_ = Mth.m_14045_(p_155625_.m_128451_("Page"), 0, this.f_59529_ - 1);
++    }
++
++    protected void m_183515_(CompoundTag p_187509_) {
++        super.m_183515_(p_187509_);
++        if (!this.m_59566_().m_41619_()) {
++            p_187509_.m_128365_("Book", this.m_59566_().m_41739_(new CompoundTag()));
++            p_187509_.m_128405_("Page", this.f_59528_);
++        }
++
++    }
++
++    public void m_6211_() {
++        this.m_59536_(ItemStack.f_41583_);
++    }
++
++    public AbstractContainerMenu m_7208_(int p_59562_, Inventory p_59563_, Player p_59564_) {
++        return new LecternMenu(p_59562_, this.f_59525_, this.f_59526_, p_59563_);
++    }
++
++    public Component m_5446_() {
++        return Component.m_237115_("container.lectern");
++    }
+ }

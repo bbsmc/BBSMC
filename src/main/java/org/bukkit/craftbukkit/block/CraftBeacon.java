@@ -49,7 +49,7 @@ public class CraftBeacon extends CraftBlockEntityState<net.minecraft.world.level
 
     @Override
     public void setPrimaryEffect(PotionEffectType effect) {
-        this.getSnapshot().primaryPower = (effect != null) ? net.minecraft.world.effect.MobEffectInstance.byId(effect.getId()) : null;
+        this.getSnapshot().primaryPower = (effect != null) ? net.minecraft.world.effect.MobEffect.byId(effect.getId()) : null;
     }
 
     @Override
@@ -59,7 +59,7 @@ public class CraftBeacon extends CraftBlockEntityState<net.minecraft.world.level
 
     @Override
     public void setSecondaryEffect(PotionEffectType effect) {
-        this.getSnapshot().secondaryPower = (effect != null) ? net.minecraft.world.effect.MobEffectInstance.byId(effect.getId()) : null;
+        this.getSnapshot().secondaryPower = (effect != null) ? net.minecraft.world.effect.MobEffect.byId(effect.getId()) : null;
     }
 
     @Override

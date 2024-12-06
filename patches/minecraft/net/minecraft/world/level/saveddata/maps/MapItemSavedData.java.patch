@@ -1,0 +1,69 @@
+--- a/net/minecraft/world/level/saveddata/maps/MapItemSavedData.java
++++ b/net/minecraft/world/level/saveddata/maps/MapItemSavedData.java
+@@ -27,6 +_,9 @@
+ import net.minecraft.world.level.LevelAccessor;
+ import net.minecraft.world.level.dimension.DimensionType;
+ import net.minecraft.world.level.saveddata.SavedData;
++import org.bukkit.Bukkit;
++import org.bukkit.craftbukkit.CraftServer;
++import org.bukkit.craftbukkit.map.CraftMapView;
+ import org.slf4j.Logger;
+ 
+ public class MapItemSavedData extends SavedData {
+@@ -35,21 +_,28 @@
+    private static final int f_164766_ = 64;
+    public static final int f_164764_ = 4;
+    public static final int f_181307_ = 256;
+-   public final int f_77885_;
+-   public final int f_77886_;
+-   public final ResourceKey<Level> f_77887_;
+-   private final boolean f_77888_;
+-   private final boolean f_77889_;
+-   public final byte f_77890_;
++   public int f_77885_;
++   public int f_77886_;
++   public ResourceKey<Level> f_77887_;
++   public boolean f_77888_;
++   public boolean f_77889_;
++   public byte f_77890_;
+    public byte[] f_77891_ = new byte[16384];
+-   public final boolean f_77892_;
++   public boolean f_77892_;
+    private final List<MapItemSavedData.HoldingPlayer> f_77893_ = Lists.newArrayList();
+    private final Map<Player, MapItemSavedData.HoldingPlayer> f_77896_ = Maps.newHashMap();
+    private final Map<String, MapBanner> f_77897_ = Maps.newHashMap();
+-   final Map<String, MapDecoration> f_77894_ = Maps.newLinkedHashMap();
++   public final Map<String, MapDecoration> f_77894_ = Maps.newLinkedHashMap();
+    private final Map<String, MapFrame> f_77898_ = Maps.newHashMap();
+    private int f_181308_;
+ 
++   // BBSMC start
++   public final org.bukkit.craftbukkit.map.CraftMapView mapView;
++   private org.bukkit.craftbukkit.CraftServer server;
++   private java.util.UUID uniqueId = null;
++   public String id;
++   // BBSMC end
++
+    private MapItemSavedData(int p_164768_, int p_164769_, byte p_164770_, boolean p_164771_, boolean p_164772_, boolean p_164773_, ResourceKey<Level> p_164774_) {
+       this.f_77890_ = p_164770_;
+       this.f_77885_ = p_164768_;
+@@ -59,6 +_,10 @@
+       this.f_77889_ = p_164772_;
+       this.f_77892_ = p_164773_;
+       this.m_77762_();
++      // BBSMC start
++      this.mapView = new CraftMapView(this);
++      this.server = (CraftServer) Bukkit.getServer();
++      // BBSMC end
+    }
+ 
+    public static MapItemSavedData m_164780_(double p_164781_, double p_164782_, byte p_164783_, boolean p_164784_, boolean p_164785_, ResourceKey<Level> p_164786_) {
+@@ -308,7 +_,7 @@
+       return mapitemsaveddata$holdingplayer == null ? null : mapitemsaveddata$holdingplayer.m_164815_(p_164797_);
+    }
+ 
+-   private void m_164789_(int p_164790_, int p_164791_) {
++   public void m_164789_(int p_164790_, int p_164791_) {
+       this.m_77762_();
+ 
+       for(MapItemSavedData.HoldingPlayer mapitemsaveddata$holdingplayer : this.f_77893_) {

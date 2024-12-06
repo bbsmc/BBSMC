@@ -1,6 +1,24 @@
 --- a/net/minecraft/world/item/crafting/ShapelessRecipe.java
 +++ b/net/minecraft/world/item/crafting/ShapelessRecipe.java
-@@ -18,12 +_,14 @@
+@@ -4,6 +_,7 @@
+ import com.google.gson.JsonObject;
+ import com.google.gson.JsonParseException;
+ import it.unimi.dsi.fastutil.ints.IntList;
++import net.bbsmc.server.item.BBSMCComplexRecipe;
+ import net.minecraft.core.NonNullList;
+ import net.minecraft.network.FriendlyByteBuf;
+ import net.minecraft.resources.ResourceLocation;
+@@ -12,19 +_,41 @@
+ import net.minecraft.world.inventory.CraftingContainer;
+ import net.minecraft.world.item.ItemStack;
+ import net.minecraft.world.level.Level;
++import org.bukkit.craftbukkit.inventory.CraftItemStack;
++import org.bukkit.craftbukkit.inventory.CraftRecipe;
++import org.bukkit.craftbukkit.inventory.CraftShapelessRecipe;
++import org.bukkit.inventory.Recipe;
+ 
+ public class ShapelessRecipe implements CraftingRecipe {
+    private final ResourceLocation f_44241_;
     final String f_44242_;
     final ItemStack f_44243_;
     final NonNullList<Ingredient> f_44244_;
@@ -11,10 +29,28 @@
        this.f_44242_ = p_44247_;
        this.f_44243_ = p_44248_;
        this.f_44244_ = p_44249_;
+-   }
 +      this.isSimple = p_44249_.stream().allMatch(Ingredient::isSimple);
-    }
++   }
++
++   // BBSMC start
++   @Override
++   public Recipe toBukkitRecipe() {
++      if (this.f_44243_.m_41619_()) {
++         return new BBSMCComplexRecipe(this);
++      }
++      CraftItemStack result = CraftItemStack.asCraftMirror(this.f_44243_);
++      CraftShapelessRecipe recipe = new CraftShapelessRecipe(result, this);
++      recipe.setGroup(this.f_44242_);
++      for (Ingredient list : this.f_44244_) {
++         recipe.addIngredient(CraftRecipe.toBukkit(list));
++      }
++      return recipe;
++   }
++   // BBSMC end
  
     public ResourceLocation m_6423_() {
+       return this.f_44241_;
 @@ -48,17 +_,20 @@
  
     public boolean m_5818_(CraftingContainer p_44262_, Level p_44263_) {

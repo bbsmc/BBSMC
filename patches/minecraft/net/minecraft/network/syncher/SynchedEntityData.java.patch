@@ -1,5 +1,13 @@
 --- a/net/minecraft/network/syncher/SynchedEntityData.java
 +++ b/net/minecraft/network/syncher/SynchedEntityData.java
+@@ -19,6 +_,7 @@
+ import net.minecraft.ReportedException;
+ import net.minecraft.network.FriendlyByteBuf;
+ import net.minecraft.world.entity.Entity;
++import net.minecraft.world.item.ItemStack;
+ import org.apache.commons.lang3.ObjectUtils;
+ import org.slf4j.Logger;
+ 
 @@ -38,11 +_,13 @@
     }
  
@@ -16,3 +24,17 @@
              }
           } catch (ClassNotFoundException classnotfoundexception) {
           }
+@@ -262,7 +_,12 @@
+       this.f_135346_.readLock().unlock();
+    }
+ 
+-   public static class DataItem<T> {
++   public <T> void markDirty(EntityDataAccessor<T> dataIdFireworksItem) {
++      this.m_135379_(dataIdFireworksItem).m_135401_(true);
++      this.f_135348_ = true;
++   }
++
++    public static class DataItem<T> {
+       final EntityDataAccessor<T> f_135390_;
+       T f_135391_;
+       private boolean f_135392_;

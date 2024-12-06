@@ -13,7 +13,6 @@
      private float mouthAnimO;
      protected boolean canGallop = true;
      protected int gallopSoundCounter;
-+    public int maxDomestication = 100; // CraftBukkit - store max domestication value
  
      protected EntityHorseAbstract(EntityTypes<? extends EntityHorseAbstract> entitytypes, World world) {
          super(entitytypes, world);

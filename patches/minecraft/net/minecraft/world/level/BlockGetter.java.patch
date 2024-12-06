@@ -1,6 +1,10 @@
 --- a/net/minecraft/world/level/BlockGetter.java
 +++ b/net/minecraft/world/level/BlockGetter.java
-@@ -18,7 +_,7 @@
+@@ -15,10 +_,11 @@
+ import net.minecraft.world.level.material.FluidState;
+ import net.minecraft.world.phys.AABB;
+ import net.minecraft.world.phys.BlockHitResult;
++import net.minecraft.world.phys.HitResult;
  import net.minecraft.world.phys.Vec3;
  import net.minecraft.world.phys.shapes.VoxelShape;
  
@@ -18,3 +22,13 @@
     }
  
     default int m_7469_() {
+@@ -159,5 +_,9 @@
+             return p_151366_.apply(p_151364_);
+          }
+       }
++   }
++
++   default HitResult clip(ClipContext clipContext, BlockPos position) {
++      return null;
+    }
+ }

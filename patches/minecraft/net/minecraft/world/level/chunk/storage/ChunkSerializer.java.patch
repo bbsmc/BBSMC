@@ -1,5 +1,43 @@
 --- a/net/minecraft/world/level/chunk/storage/ChunkSerializer.java
 +++ b/net/minecraft/world/level/chunk/storage/ChunkSerializer.java
+@@ -61,7 +_,7 @@
+ import org.slf4j.Logger;
+ 
+ public class ChunkSerializer {
+-   private static final Codec<PalettedContainer<BlockState>> f_188227_ = PalettedContainer.m_238371_(Block.f_49791_, BlockState.f_61039_, PalettedContainer.Strategy.f_188137_, Blocks.f_50016_.m_49966_());
++   public static final Codec<PalettedContainer<BlockState>> f_188227_ = PalettedContainer.m_238371_(Block.f_49791_, BlockState.f_61039_, PalettedContainer.Strategy.f_188137_, Blocks.f_50016_.m_49966_());
+    private static final Logger f_63449_ = LogUtils.getLogger();
+    private static final String f_156511_ = "UpgradeData";
+    private static final String f_188228_ = "block_ticks";
+@@ -74,6 +_,10 @@
+    public static final String f_223446_ = "BlockLight";
+    public static final String f_223447_ = "SkyLight";
+ 
++   private static Codec<PalettedContainer<Holder<Biome>>> makeBiomeCodecRW(Registry<Biome> iregistry) {
++      return PalettedContainer.m_238371_(iregistry.m_206115_(), iregistry.m_206110_(), PalettedContainer.Strategy.f_188138_, iregistry.m_206081_(Biomes.f_48202_));
++   }
++
+    public static ProtoChunk m_188230_(ServerLevel p_188231_, PoiManager p_188232_, ChunkPos p_188233_, CompoundTag p_188234_) {
+       ChunkPos chunkpos = new ChunkPos(p_188234_.m_128451_("xPos"), p_188234_.m_128451_("zPos"));
+       if (!Objects.equals(p_188233_, chunkpos)) {
+@@ -89,7 +_,7 @@
+       ChunkSource chunksource = p_188231_.m_7726_();
+       LevelLightEngine levellightengine = chunksource.m_7827_();
+       Registry<Biome> registry = p_188231_.m_5962_().m_175515_(Registry.f_122885_);
+-      Codec<PalettedContainerRO<Holder<Biome>>> codec = m_188260_(registry);
++      Codec<PalettedContainer<Holder<Biome>>> codec = makeBiomeCodecRW(registry);
+       boolean flag2 = false;
+ 
+       for(int j = 0; j < listtag.size(); ++j) {
+@@ -106,7 +_,7 @@
+                palettedcontainer = new PalettedContainer<>(Block.f_49791_, Blocks.f_50016_.m_49966_(), PalettedContainer.Strategy.f_188137_);
+             }
+ 
+-            PalettedContainerRO<Holder<Biome>> palettedcontainerro;
++            PalettedContainer<Holder<Biome>> palettedcontainerro;
+             if (compoundtag.m_128425_("biomes", 10)) {
+                palettedcontainerro = codec.parse(NbtOps.f_128958_, compoundtag.m_128469_("biomes")).promotePartial((p_188274_) -> {
+                   m_188239_(p_188233_, k, p_188274_);
 @@ -156,6 +_,7 @@
              return Registry.f_122822_.m_6612_(ResourceLocation.m_135820_(p_188285_));
           }, p_188233_);

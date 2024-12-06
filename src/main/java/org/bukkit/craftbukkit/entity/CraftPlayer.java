@@ -40,8 +40,10 @@ import net.minecraft.network.protocol.game.ClientboundSetBorderWarningDistancePa
 import net.minecraft.network.protocol.game.ClientboundSetSubtitleTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket;
+import net.minecraft.server.level.ChunkMap;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import org.apache.commons.lang.Validate;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
@@ -253,7 +255,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         getHandle().listName = name.equals(getName()) ? null : CraftChatMessage.fromStringOrNull(name);
         for (net.minecraft.server.level.ServerPlayer player : (List<net.minecraft.server.level.ServerPlayer>) server.getHandle().players) {
             if (player.getBukkitEntity().canSee(this)) {
-                player.connection.send(new net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket(net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket.EnumPlayerInfoAction.UPDATE_DISPLAY_NAME, getHandle()));
+                player.connection.send(new net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket(net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket.Action.UPDATE_DISPLAY_NAME, getHandle()));
             }
         }
     }
@@ -764,7 +766,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
             }
         }
 
-        net.minecraft.network.protocol.game.ClientboundMapItemDataPacket packet = new net.minecraft.network.protocol.game.ClientboundMapItemDataPacket(map.getId(), map.getScale().getValue(), map.isLocked(), icons, new net.minecraft.world.level.saveddata.maps.MapItemSavedData.b(0, 0, 128, 128, data.buffer));
+        net.minecraft.network.protocol.game.ClientboundMapItemDataPacket packet = new net.minecraft.network.protocol.game.ClientboundMapItemDataPacket(map.getId(), map.getScale().getValue(), map.isLocked(), icons, new MapItemSavedData.MapPatch(0, 0, 128, 128, data.buffer));
         getHandle().connection.send(packet);
     }
 
@@ -824,7 +826,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
 
         // Close any foreign inventory
         if (getHandle().containerMenu != getHandle().inventoryMenu) {
-            getHandle().closenet.minecraft.world.inventory.AbstractContainerMenu();
+            getHandle().closeContainer();
         }
 
         // Check if the fromWorld and toWorld are the same.
@@ -1210,18 +1212,17 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         hiddenEntities.put(entity.getUniqueId(), hidingPlugins);
 
         // Remove this entity from the hidden player's EntityTrackerEntry
-        net.minecraft.server.level.ChunkTracker tracker = ((net.minecraft.server.level.ServerLevel) getHandle().level).getChunkSource().chunkMap;
+        ChunkMap tracker = ((net.minecraft.server.level.ServerLevel) getHandle().level).getChunkSource().chunkMap;
         Entity other = ((CraftEntity) entity).getHandle();
-        net.minecraft.server.level.ChunkTracker.EntityTracker entry = tracker.entityMap.get(other.getId());
+        ChunkMap.TrackedEntity entry = tracker.entityMap.get(other.getId());
         if (entry != null) {
             entry.removePlayer(getHandle());
         }
 
         // Remove the hidden entity from this player user list, if they're on it
-        if (other instanceof net.minecraft.server.level.ServerPlayer) {
-            net.minecraft.server.level.ServerPlayer otherPlayer = (net.minecraft.server.level.ServerPlayer) other;
+        if (other instanceof net.minecraft.server.level.ServerPlayer otherPlayer) {
             if (otherPlayer.sentListPacket) {
-                getHandle().connection.send(new net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket(net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket.EnumPlayerInfoAction.REMOVE_PLAYER, otherPlayer));
+                getHandle().connection.send(new net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket(net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket.Action.REMOVE_PLAYER, otherPlayer));
             }
         }
 
@@ -1262,15 +1263,15 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         }
         hiddenEntities.remove(entity.getUniqueId());
 
-        net.minecraft.server.level.ChunkTracker tracker = ((net.minecraft.server.level.ServerLevel) getHandle().level).getChunkSource().chunkMap;
+        net.minecraft.server.level.ChunkMap tracker = ((net.minecraft.server.level.ServerLevel) getHandle().level).getChunkSource().chunkMap;
         Entity other = ((CraftEntity) entity).getHandle();
 
         if (other instanceof net.minecraft.server.level.ServerPlayer) {
             net.minecraft.server.level.ServerPlayer otherPlayer = (net.minecraft.server.level.ServerPlayer) other;
-            getHandle().connection.send(new net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket(net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket.EnumPlayerInfoAction.ADD_PLAYER, otherPlayer));
+            getHandle().connection.send(new net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket(net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket.Action.ADD_PLAYER, otherPlayer));
         }
 
-        net.minecraft.server.level.ChunkTracker.EntityTracker entry = tracker.entityMap.get(other.getId());
+        ChunkMap.TrackedEntity entry = tracker.entityMap.get(other.getId());
         if (entry != null && !entry.seenBy.contains(getHandle().connection)) {
             entry.updatePlayer(getHandle());
         }

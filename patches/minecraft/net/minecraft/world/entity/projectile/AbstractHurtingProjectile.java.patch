@@ -1,5 +1,17 @@
 --- a/net/minecraft/world/entity/projectile/AbstractHurtingProjectile.java
 +++ b/net/minecraft/world/entity/projectile/AbstractHurtingProjectile.java
+@@ -19,6 +_,11 @@
+    public double f_36814_;
+    public double f_36815_;
+ 
++   // BBSMC start
++   public float bukkitYield = 1; // CraftBukkit
++   public boolean isIncendiary = true; // CraftBukkit
++   // BBSMC end
++
+    protected AbstractHurtingProjectile(EntityType<? extends AbstractHurtingProjectile> p_36833_, Level p_36834_) {
+       super(p_36833_, p_36834_);
+    }
 @@ -64,7 +_,7 @@
           }
  
@@ -9,3 +21,14 @@
              this.m_6532_(hitresult);
           }
  
+@@ -178,6 +_,10 @@
+          this.f_36814_ = d1 / d3 * 0.1D;
+          this.f_36815_ = d2 / d3 * 0.1D;
+       }
++
++   }
++
++   public void setDirection(double x, double y, double z) {
+ 
+    }
+ }

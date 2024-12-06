@@ -1,5 +1,43 @@
 --- a/net/minecraft/world/item/crafting/UpgradeRecipe.java
 +++ b/net/minecraft/world/item/crafting/UpgradeRecipe.java
+@@ -2,6 +_,8 @@
+ 
+ import com.google.gson.JsonObject;
+ import java.util.stream.Stream;
++
++import net.bbsmc.server.item.BBSMCComplexRecipe;
+ import net.minecraft.nbt.CompoundTag;
+ import net.minecraft.network.FriendlyByteBuf;
+ import net.minecraft.resources.ResourceLocation;
+@@ -10,6 +_,10 @@
+ import net.minecraft.world.item.ItemStack;
+ import net.minecraft.world.level.Level;
+ import net.minecraft.world.level.block.Blocks;
++import org.bukkit.craftbukkit.inventory.CraftItemStack;
++import org.bukkit.craftbukkit.inventory.CraftRecipe;
++import org.bukkit.craftbukkit.inventory.CraftSmithingRecipe;
++import org.bukkit.craftbukkit.util.CraftNamespacedKey;
+ 
+ public class UpgradeRecipe implements Recipe<Container> {
+    final Ingredient f_44518_;
+@@ -24,6 +_,17 @@
+       this.f_44520_ = p_44526_;
+    }
+ 
++   // BBSMC start
++   @Override
++   public org.bukkit.inventory.Recipe toBukkitRecipe() {
++      if (this.f_44520_.m_41619_()) {
++         return new BBSMCComplexRecipe(this);
++      }
++      CraftItemStack result = CraftItemStack.asCraftMirror(this.f_44520_);
++      return new CraftSmithingRecipe(CraftNamespacedKey.fromMinecraft(this.f_44521_), result, CraftRecipe.toBukkit(this.f_44518_), CraftRecipe.toBukkit(this.f_44519_));
++   }
++   // BBSMC end
++
+    public boolean m_5818_(Container p_44533_, Level p_44534_) {
+       return this.f_44518_.test(p_44533_.m_8020_(0)) && this.f_44519_.test(p_44533_.m_8020_(1));
+    }
 @@ -68,7 +_,7 @@
  
     public boolean m_142505_() {

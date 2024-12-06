@@ -138,127 +138,6 @@
  
          if (this.effectsDirty) {
              if (!this.level.isClientSide) {
-@@ -927,7 +1030,13 @@
-         this.entityData.set(EntityLiving.DATA_EFFECT_COLOR_ID, 0);
-     }
- 
-+    // CraftBukkit start
-     public boolean removeAllEffects() {
-+        return removeAllEffects(org.bukkit.event.entity.EntityPotionEffectEvent.Cause.UNKNOWN);
-+    }
-+
-+    public boolean removeAllEffects(EntityPotionEffectEvent.Cause cause) {
-+        // CraftBukkit end
-         if (this.level.isClientSide) {
-             return false;
-         } else {
-@@ -936,7 +1045,14 @@
-             boolean flag;
- 
-             for (flag = false; iterator.hasNext(); flag = true) {
--                this.onEffectRemoved((MobEffect) iterator.next());
-+                // CraftBukkit start
-+                MobEffect effect = (MobEffect) iterator.next();
-+                EntityPotionEffectEvent event = CraftEventFactory.callEntityPotionEffectChangeEvent(this, effect, null, cause, EntityPotionEffectEvent.Action.CLEARED);
-+                if (event.isCancelled()) {
-+                    continue;
-+                }
-+                this.onEffectRemoved(effect);
-+                // CraftBukkit end
-                 iterator.remove();
-             }
- 
-@@ -965,18 +1081,48 @@
-         return this.addEffect(mobeffect, (Entity) null);
-     }
- 
-+    // CraftBukkit start
-+    public boolean addEffect(MobEffect mobeffect, EntityPotionEffectEvent.Cause cause) {
-+        return this.addEffect(mobeffect, (Entity) null, cause);
-+    }
-+
-     public boolean addEffect(MobEffect mobeffect, @Nullable Entity entity) {
-+        return this.addEffect(mobeffect, entity, org.bukkit.event.entity.EntityPotionEffectEvent.Cause.UNKNOWN);
-+    }
-+
-+    public boolean addEffect(MobEffect mobeffect, @Nullable Entity entity, EntityPotionEffectEvent.Cause cause) {
-+        if (isTickingEffects) {
-+            effectsToProcess.add(new ProcessableEffect(mobeffect, cause));
-+            return true;
-+        }
-+        // CraftBukkit end
-+
-         if (!this.canBeAffected(mobeffect)) {
-             return false;
-         } else {
-             MobEffect mobeffect1 = (MobEffect) this.activeEffects.get(mobeffect.getEffect());
- 
-+            // CraftBukkit start
-+            boolean override = false;
-+            if (mobeffect1 != null) {
-+                override = new MobEffect(mobeffect1).update(mobeffect);
-+            }
-+
-+            EntityPotionEffectEvent event = CraftEventFactory.callEntityPotionEffectChangeEvent(this, mobeffect1, mobeffect, cause, override);
-+            if (event.isCancelled()) {
-+                return false;
-+            }
-+            // CraftBukkit end
-+
-             if (mobeffect1 == null) {
-                 this.activeEffects.put(mobeffect.getEffect(), mobeffect);
-                 this.onEffectAdded(mobeffect, entity);
-                 return true;
--            } else if (mobeffect1.update(mobeffect)) {
-+                // CraftBukkit start
-+            } else if (event.isOverride()) {
-+                mobeffect1.update(mobeffect);
-                 this.onEffectUpdated(mobeffect1, true, entity);
-+                // CraftBukkit end
-                 return true;
-             } else {
-                 return false;
-@@ -1013,13 +1159,39 @@
-         return this.getMobType() == EnumMonsterType.UNDEAD;
-     }
- 
-+    // CraftBukkit start
-     @Nullable
-     public MobEffect removeEffectNoUpdate(@Nullable MobEffectList mobeffectlist) {
-+        return c(mobeffectlist, org.bukkit.event.entity.EntityPotionEffectEvent.Cause.UNKNOWN);
-+    }
-+
-+    @Nullable
-+    public MobEffect c(@Nullable MobEffectList mobeffectlist, EntityPotionEffectEvent.Cause cause) {
-+        if (isTickingEffects) {
-+            effectsToProcess.add(new ProcessableEffect(mobeffectlist, cause));
-+            return null;
-+        }
-+
-+        MobEffect effect = this.activeEffects.get(mobeffectlist);
-+        if (effect == null) {
-+            return null;
-+        }
-+
-+        EntityPotionEffectEvent event = CraftEventFactory.callEntityPotionEffectChangeEvent(this, effect, null, cause);
-+        if (event.isCancelled()) {
-+            return null;
-+        }
-+
-         return (MobEffect) this.activeEffects.remove(mobeffectlist);
-     }
- 
-     public boolean removeEffect(MobEffectList mobeffectlist) {
--        MobEffect mobeffect = this.removeEffectNoUpdate(mobeffectlist);
-+        return removeEffect(mobeffectlist, org.bukkit.event.entity.EntityPotionEffectEvent.Cause.UNKNOWN);
-+    }
-+
-+    public boolean removeEffect(MobEffectList mobeffectlist, EntityPotionEffectEvent.Cause cause) {
-+        MobEffect mobeffect = this.c(mobeffectlist, cause);
-+        // CraftBukkit end
- 
-         if (mobeffect != null) {
-             this.onEffectRemoved(mobeffect);
 @@ -1056,20 +1228,55 @@
  
      }
@@ -746,35 +625,13 @@
      public CombatTracker getCombatTracker() {
 @@ -1699,9 +2139,19 @@
      }
- 
-     public final void setArrowCount(int i) {
--        this.entityData.set(EntityLiving.DATA_ARROW_COUNT_ID, i);
-+        // CraftBukkit start
-+        setArrowCount(i, false);
-     }
- 
-+    public final void setArrowCount(int i, boolean flag) {
-+        ArrowBodyCountChangeEvent event = CraftEventFactory.callArrowBodyCountChangeEvent(this, getArrowCount(), i, flag);
-+        if (event.isCancelled()) {
-+            return;
-+        }
-+        this.entityData.set(EntityLiving.DATA_ARROW_COUNT_ID, event.getNewAmount());
-+    }
-+    // CraftBukkit end
-+
      public final int getStingerCount() {
          return (Integer) this.entityData.get(EntityLiving.DATA_STINGER_COUNT_ID);
      }
 @@ -1996,6 +2446,12 @@
  
      public abstract ItemStack getItemBySlot(EnumItemSlot enumitemslot);
- 
-+    // CraftBukkit start
-+    public void setItemSlot(EnumItemSlot enumitemslot, ItemStack itemstack, boolean silent) {
-+        this.setItemSlot(enumitemslot, itemstack);
-+    }
-+    // CraftBukkit end
-+
+
      @Override
      public abstract void setItemSlot(EnumItemSlot enumitemslot, ItemStack itemstack);
  

@@ -1,5 +1,25 @@
 --- a/net/minecraft/world/inventory/BeaconMenu.java
 +++ b/net/minecraft/world/inventory/BeaconMenu.java
+@@ -10,6 +_,7 @@
+ import net.minecraft.world.item.ItemStack;
+ import net.minecraft.world.level.Level;
+ import net.minecraft.world.level.block.Blocks;
++import org.bukkit.inventory.InventoryView;
+ 
+ public class BeaconMenu extends AbstractContainerMenu {
+    private static final int f_150481_ = 0;
+@@ -79,6 +_,11 @@
+       this.m_38946_();
+    }
+ 
++   @Override
++   public InventoryView getBukkitView() {
++      return null;
++   }
++
+    public ItemStack m_7648_(Player p_39051_, int p_39052_) {
+       ItemStack itemstack = ItemStack.f_41583_;
+       Slot slot = this.f_38839_.get(p_39052_);
 @@ -91,10 +_,8 @@
              }
  

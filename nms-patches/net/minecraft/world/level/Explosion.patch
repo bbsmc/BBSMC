@@ -20,7 +20,6 @@
      private final ExplosionDamageCalculator damageCalculator;
      private final ObjectArrayList<BlockPosition> toBlow;
      private final Map<EntityHuman, Vec3D> hitPlayers;
-+    public boolean wasCanceled = false; // CraftBukkit - add field
  
      public Explosion(World world, @Nullable Entity entity, double d0, double d1, double d2, float f) {
          this(world, entity, d0, d1, d2, f, false, Explosion.Effect.DESTROY);

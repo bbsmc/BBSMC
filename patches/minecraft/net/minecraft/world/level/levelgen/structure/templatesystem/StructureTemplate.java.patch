@@ -1,5 +1,24 @@
 --- a/net/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplate.java
 +++ b/net/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplate.java
+@@ -64,11 +_,16 @@
+    public static final String f_163798_ = "nbt";
+    public static final String f_163799_ = "size";
+    static final int f_163800_ = 16;
+-   private final List<StructureTemplate.Palette> f_74482_ = Lists.newArrayList();
+-   private final List<StructureTemplate.StructureEntityInfo> f_74483_ = Lists.newArrayList();
++   public final List<StructureTemplate.Palette> f_74482_ = Lists.newArrayList();
++   public final List<StructureTemplate.StructureEntityInfo> f_74483_ = Lists.newArrayList();
+    private Vec3i f_74484_ = Vec3i.f_123288_;
+    private String f_74485_ = "?";
+ 
++   // BBSMC start
++   private static final org.bukkit.craftbukkit.persistence.CraftPersistentDataTypeRegistry DATA_TYPE_REGISTRY = new org.bukkit.craftbukkit.persistence.CraftPersistentDataTypeRegistry();
++   public org.bukkit.craftbukkit.persistence.CraftPersistentDataContainer persistentDataContainer = new org.bukkit.craftbukkit.persistence.CraftPersistentDataContainer(DATA_TYPE_REGISTRY);
++   // BBSMC end
++
+    public Vec3i m_163801_() {
+       return this.f_74484_;
+    }
 @@ -201,6 +_,10 @@
        return m_74593_(p_74565_, p_74564_.m_74401_(), p_74564_.m_74404_(), p_74564_.m_74407_());
     }

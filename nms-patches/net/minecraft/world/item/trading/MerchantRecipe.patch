@@ -13,22 +13,6 @@
      public int demand;
      public float priceMultiplier;
      public int xp;
-+    // CraftBukkit start
-+    private CraftMerchantRecipe bukkitHandle;
-+
-+    public CraftMerchantRecipe asBukkit() {
-+        return (bukkitHandle == null) ? bukkitHandle = new CraftMerchantRecipe(this) : bukkitHandle;
-+    }
-+
-+    public MerchantRecipe(ItemStack itemstack, ItemStack itemstack1, ItemStack itemstack2, int uses, int maxUses, int experience, float priceMultiplier, CraftMerchantRecipe bukkit) {
-+        this(itemstack, itemstack1, itemstack2, uses, maxUses, experience, priceMultiplier, 0, bukkit);
-+    }
-+
-+    public MerchantRecipe(ItemStack itemstack, ItemStack itemstack1, ItemStack itemstack2, int uses, int maxUses, int experience, float priceMultiplier, int demand, CraftMerchantRecipe bukkit) {
-+        this(itemstack, itemstack1, itemstack2, uses, maxUses, experience, priceMultiplier, demand);
-+        this.bukkitHandle = bukkit;
-+    }
-+    // CraftBukkit end
  
      public MerchantRecipe(NBTTagCompound nbttagcompound) {
          this.rewardExp = true;

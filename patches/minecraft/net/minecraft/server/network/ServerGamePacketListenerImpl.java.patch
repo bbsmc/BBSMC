@@ -1,6 +1,12 @@
 --- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -183,6 +_,12 @@
+@@ -178,11 +_,18 @@
+ import net.minecraft.world.phys.shapes.Shapes;
+ import net.minecraft.world.phys.shapes.VoxelShape;
+ import org.apache.commons.lang3.StringUtils;
++import org.bukkit.Location;
+ import org.slf4j.Logger;
+ 
  public class ServerGamePacketListenerImpl implements ServerPlayerConnection, TickablePacketListener, ServerGamePacketListener {
     static final Logger f_9744_ = LogUtils.getLogger();
     private static final int f_143608_ = 15000;
@@ -113,3 +119,25 @@
     }
  
     public void m_7477_(ServerboundChangeDifficultyPacket p_9839_) {
+@@ -1775,6 +_,21 @@
+ 
+    public ServerPlayer m_142253_() {
+       return this.f_9743_;
++   }
++
++   public void teleport(Location to) {
++      
++   }
++
++   public boolean isDisconnected() {
++      return false;
++   }
++
++   public void chat(String msg, PlayerChatMessage system, boolean b) {
++   }
++
++   public void disconnect(String s) {
++
+    }
+ 
+    @FunctionalInterface

@@ -48,7 +48,7 @@ public class CraftBlockProjectileSource implements BlockProjectileSource {
         // Copied from net.minecraft.world.level.block.DispenserBlock.dispense()
         net.minecraft.core.BlockSourceImpl isourceblock = new net.minecraft.core.BlockSourceImpl((net.minecraft.server.level.ServerLevel) dispenserBlock.getLevel(), dispenserBlock.getBlockPos());
         // Copied from DispenseBehaviorProjectile
-        net.minecraft.core.PositionImpl iposition = net.minecraft.world.level.block.DispenserBlock.getDispensePosition(isourceblock);
+        net.minecraft.core.Position iposition = net.minecraft.world.level.block.DispenserBlock.getDispensePosition(isourceblock);
         net.minecraft.core.Direction enumdirection = (net.minecraft.core.Direction) isourceblock.getBlockState().getValue(net.minecraft.world.level.block.DispenserBlock.FACING);
         net.minecraft.world.level.Level world = dispenserBlock.getLevel();
         net.minecraft.world.entity.Entity launch = null;
@@ -79,7 +79,7 @@ public class CraftBlockProjectileSource implements BlockProjectileSource {
             } else {
                 launch = new net.minecraft.world.entity.projectile.Arrow(world, iposition.x(), iposition.y(), iposition.z());
             }
-            ((net.minecraft.world.entity.projectile.AbstractArrow) launch).pickup = net.minecraft.world.entity.projectile.AbstractArrow.PickupStatus.ALLOWED;
+            ((net.minecraft.world.entity.projectile.AbstractArrow) launch).pickup = net.minecraft.world.entity.projectile.AbstractArrow.Pickup.ALLOWED;
             ((net.minecraft.world.entity.projectile.AbstractArrow) launch).projectileSource = this;
         } else if (Fireball.class.isAssignableFrom(projectile)) {
             double d0 = iposition.x() + (double) ((float) enumdirection.getStepX() * 0.3F);

@@ -1,6 +1,14 @@
 --- a/net/minecraft/world/item/BoneMealItem.java
 +++ b/net/minecraft/world/item/BoneMealItem.java
-@@ -33,7 +_,7 @@
+@@ -29,11 +_,15 @@
+       super(p_40626_);
+    }
+ 
++   public static InteractionResult applyBonemeal(UseOnContext context) {
++      return null;
++   }
++
+    public InteractionResult m_6225_(UseOnContext p_40637_) {
        Level level = p_40637_.m_43725_();
        BlockPos blockpos = p_40637_.m_8083_();
        BlockPos blockpos1 = blockpos.m_121945_(p_40637_.m_43719_());

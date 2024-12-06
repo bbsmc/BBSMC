@@ -1,9 +1,77 @@
 --- a/net/minecraft/world/entity/vehicle/ChestBoat.java
 +++ b/net/minecraft/world/entity/vehicle/ChestBoat.java
-@@ -187,4 +_,26 @@
+@@ -22,6 +_,12 @@
+ import net.minecraft.world.item.Items;
+ import net.minecraft.world.level.Level;
+ import net.minecraft.world.level.gameevent.GameEvent;
++import org.bukkit.Location;
++import org.bukkit.craftbukkit.entity.CraftHumanEntity;
++import org.bukkit.entity.HumanEntity;
++import org.bukkit.inventory.InventoryHolder;
++
++import java.util.List;
+ 
+ public class ChestBoat extends Boat implements HasCustomInventoryScreen, ContainerEntity {
+    private static final int f_219867_ = 27;
+@@ -138,6 +_,11 @@
+       this.m_219940_(p_219885_, p_219886_);
+    }
+ 
++   @Override
++   public int m_6893_() {
++      return 0;
++   }
++
+    public SlotAccess m_141942_(int p_219918_) {
+       return this.m_219951_(p_219918_);
+    }
+@@ -149,6 +_,41 @@
+       return this.m_219954_(p_219896_);
+    }
+ 
++   @Override
++   public List<ItemStack> getContents() {
++      return List.of();
++   }
++
++   @Override
++   public void onOpen(CraftHumanEntity who) {
++
++   }
++
++   @Override
++   public void onClose(CraftHumanEntity who) {
++
++   }
++
++   @Override
++   public List<HumanEntity> getViewers() {
++      return List.of();
++   }
++
++   @Override
++   public InventoryHolder getOwner() {
++      return null;
++   }
++
++   @Override
++   public void setMaxStackSize(int size) {
++
++   }
++
++   @Override
++   public Location getLocation() {
++      return null;
++   }
++
+    @Nullable
+    public AbstractContainerMenu m_7208_(int p_219910_, Inventory p_219911_, Player p_219912_) {
+       if (this.f_219865_ != null && p_219912_.m_5833_()) {
+@@ -186,5 +_,27 @@
+ 
     public void m_213775_() {
        this.f_219864_ = NonNullList.m_122780_(this.m_6643_(), ItemStack.f_41583_);
-    }
++   }
 +
 +   // Forge Start
 +   private net.minecraftforge.common.util.LazyOptional<?> itemHandler = net.minecraftforge.common.util.LazyOptional.of(() -> new net.minecraftforge.items.wrapper.InvWrapper(this));
@@ -25,5 +93,5 @@
 +   public void reviveCaps() {
 +      super.reviveCaps();
 +      itemHandler = net.minecraftforge.common.util.LazyOptional.of(() -> new net.minecraftforge.items.wrapper.InvWrapper(this));
-+   }
+    }
  }

@@ -1,0 +1,68 @@
+--- a/net/minecraft/world/entity/vehicle/MinecartChest.java
++++ b/net/minecraft/world/entity/vehicle/MinecartChest.java
+@@ -6,11 +_,18 @@
+ import net.minecraft.world.inventory.AbstractContainerMenu;
+ import net.minecraft.world.inventory.ChestMenu;
+ import net.minecraft.world.item.Item;
++import net.minecraft.world.item.ItemStack;
+ import net.minecraft.world.item.Items;
+ import net.minecraft.world.level.Level;
+ import net.minecraft.world.level.block.Blocks;
+ import net.minecraft.world.level.block.ChestBlock;
+ import net.minecraft.world.level.block.state.BlockState;
++import org.bukkit.Location;
++import org.bukkit.craftbukkit.entity.CraftHumanEntity;
++import org.bukkit.entity.HumanEntity;
++import org.bukkit.inventory.InventoryHolder;
++
++import java.util.List;
+ 
+ public class MinecartChest extends AbstractMinecartContainer {
+    public MinecartChest(EntityType<? extends MinecartChest> p_38487_, Level p_38488_) {
+@@ -27,6 +_,46 @@
+ 
+    public int m_6643_() {
+       return 27;
++   }
++
++   @Override
++   public int m_6893_() {
++      return 0;
++   }
++
++   @Override
++   public List<ItemStack> getContents() {
++      return List.of();
++   }
++
++   @Override
++   public void onOpen(CraftHumanEntity who) {
++
++   }
++
++   @Override
++   public void onClose(CraftHumanEntity who) {
++
++   }
++
++   @Override
++   public List<HumanEntity> getViewers() {
++      return List.of();
++   }
++
++   @Override
++   public InventoryHolder getOwner() {
++      return null;
++   }
++
++   @Override
++   public void setMaxStackSize(int size) {
++
++   }
++
++   @Override
++   public Location getLocation() {
++      return null;
+    }
+ 
+    public AbstractMinecart.Type m_6064_() {
