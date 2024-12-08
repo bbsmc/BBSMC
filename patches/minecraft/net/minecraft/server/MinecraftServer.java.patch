@@ -1,18 +1,45 @@
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -10,6 +_,7 @@
+@@ -10,41 +_,12 @@
  import com.mojang.authlib.minecraft.MinecraftSessionService;
  import com.mojang.datafixers.DataFixer;
  import com.mojang.logging.LogUtils;
 +import com.mojang.serialization.DynamicOps;
  import it.unimi.dsi.fastutil.longs.LongIterator;
- import java.awt.image.BufferedImage;
- import java.io.ByteArrayOutputStream;
-@@ -45,6 +_,11 @@
- import java.util.function.Function;
- import javax.annotation.Nullable;
- import javax.imageio.ImageIO;
-+
+-import java.awt.image.BufferedImage;
+-import java.io.ByteArrayOutputStream;
+-import java.io.File;
+-import java.io.IOException;
+-import java.io.Writer;
+-import java.lang.management.ManagementFactory;
+-import java.lang.management.ThreadInfo;
+-import java.lang.management.ThreadMXBean;
+-import java.net.Proxy;
+-import java.nio.charset.StandardCharsets;
+-import java.nio.file.Files;
+-import java.nio.file.Path;
+-import java.security.KeyPair;
+-import java.util.Arrays;
+-import java.util.Base64;
+-import java.util.Collection;
+-import java.util.Collections;
+-import java.util.Comparator;
+-import java.util.Iterator;
+-import java.util.List;
+-import java.util.Locale;
+-import java.util.Map;
+-import java.util.Objects;
+-import java.util.Optional;
+-import java.util.Set;
+-import java.util.concurrent.CompletableFuture;
+-import java.util.concurrent.Executor;
+-import java.util.concurrent.RejectedExecutionException;
+-import java.util.concurrent.atomic.AtomicReference;
+-import java.util.function.BooleanSupplier;
+-import java.util.function.Consumer;
+-import java.util.function.Function;
+-import javax.annotation.Nullable;
+-import javax.imageio.ImageIO;
 +import jline.console.ConsoleReader;
 +import joptsimple.OptionSet;
 +import net.bbsmc.server.BBSMcServer;
@@ -20,16 +47,15 @@
  import net.minecraft.CrashReport;
  import net.minecraft.ReportedException;
  import net.minecraft.SharedConstants;
-@@ -58,6 +_,8 @@
+@@ -58,6 +_,7 @@
  import net.minecraft.core.RegistryAccess;
  import net.minecraft.data.worldgen.features.MiscOverworldFeatures;
  import net.minecraft.gametest.framework.GameTestTicker;
-+import net.minecraft.nbt.CompoundTag;
 +import net.minecraft.nbt.Tag;
  import net.minecraft.network.chat.ChatDecorator;
  import net.minecraft.network.chat.ChatType;
  import net.minecraft.network.chat.Component;
-@@ -151,7 +_,13 @@
+@@ -151,9 +_,55 @@
  import net.minecraft.world.level.storage.loot.PredicateManager;
  import net.minecraft.world.phys.Vec2;
  import net.minecraft.world.phys.Vec3;
@@ -37,12 +63,54 @@
  import org.apache.commons.lang3.Validate;
 +import org.bukkit.Bukkit;
 +import org.bukkit.craftbukkit.CraftServer;
++import org.bukkit.craftbukkit.Main;
 +import org.bukkit.craftbukkit.scoreboard.CraftScoreboardManager;
++import org.bukkit.craftbukkit.util.CraftChatMessage;
++import org.bukkit.craftbukkit.util.LazyPlayerSet;
++import org.bukkit.event.player.AsyncPlayerChatPreviewEvent;
 +import org.bukkit.event.world.WorldInitEvent;
 +import org.bukkit.event.world.WorldLoadEvent;
  import org.slf4j.Logger;
  
++import javax.annotation.Nullable;
++import javax.imageio.ImageIO;
++import java.awt.image.BufferedImage;
++import java.io.ByteArrayOutputStream;
++import java.io.File;
++import java.io.IOException;
++import java.io.Writer;
++import java.lang.management.ManagementFactory;
++import java.lang.management.ThreadInfo;
++import java.lang.management.ThreadMXBean;
++import java.net.Proxy;
++import java.nio.charset.StandardCharsets;
++import java.nio.file.Files;
++import java.nio.file.Path;
++import java.security.KeyPair;
++import java.util.Arrays;
++import java.util.Base64;
++import java.util.Collection;
++import java.util.Collections;
++import java.util.Comparator;
++import java.util.Iterator;
++import java.util.List;
++import java.util.Locale;
++import java.util.Map;
++import java.util.Objects;
++import java.util.Optional;
++import java.util.Random;
++import java.util.Set;
++import java.util.concurrent.CompletableFuture;
++import java.util.concurrent.Executor;
++import java.util.concurrent.RejectedExecutionException;
++import java.util.concurrent.atomic.AtomicReference;
++import java.util.function.BooleanSupplier;
++import java.util.function.Consumer;
++import java.util.function.Function;
++
  public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTask> implements CommandSource, AutoCloseable {
+    private static final Logger f_129750_ = LogUtils.getLogger();
+    public static final String f_195495_ = "vanilla";
 @@ -172,8 +_,8 @@
     public static final LevelSettings f_129743_ = new LevelSettings("Demo World", GameType.SURVIVAL, false, Difficulty.NORMAL, false, new GameRules(), DataPackConfig.f_45842_);
     private static final long f_177871_ = 50L;
@@ -126,7 +194,7 @@
 +
 +   @Deprecated
 +   public static net.minecraft.server.MinecraftServer getServer() {
-+      return (org.bukkit.Bukkit.getServer() instanceof org.bukkit.craftbukkit.CraftServer)? ((org.bukkit.craftbukkit.CraftServer) org.bukkit.Bukkit.getServer()).getServer() : null;
++      return (org.bukkit.Bukkit.getServer() instanceof org.bukkit.craftbukkit.CraftServer) ? ((org.bukkit.craftbukkit.CraftServer) org.bukkit.Bukkit.getServer()).getServer() : null;
 +   }
 +
 +   public final java.util.concurrent.ExecutorService chatExecutor = java.util.concurrent.Executors.newCachedThreadPool(
@@ -159,6 +227,35 @@
        this.f_129746_ = p_236726_.f_206894_();
        this.f_129749_ = p_236726_.f_206895_();
        if (!this.f_129749_.m_5961_().m_204655_().m_142003_(LevelStem.f_63971_)) {
+@@ -280,6 +_,28 @@
+          this.f_236720_ = new StructureTemplateManager(p_236726_.f_206892_(), p_236724_, p_236728_);
+          this.f_129725_ = p_236723_;
+          this.f_129738_ = Util.m_183991_();
++
++         this.vanillaCommandDispatcher = p_236726_.f_206893_().f_206847_; // CraftBukkit
++         if (System.console() == null && System.getProperty("jline.terminal") == null) {
++            System.setProperty("jline.terminal", "jline.UnsupportedTerminal");
++            org.bukkit.craftbukkit.Main.useJline = false;
++         }
++         try {
++            reader = new ConsoleReader(System.in, System.out);
++            reader.setExpandEvents(false); // Avoid parsing exceptions for uncommonly used event designators
++         } catch (Throwable e) {
++            try {
++               // Try again with jline disabled for Windows users without C++ 2008 Redistributable
++               System.setProperty("jline.terminal", "jline.UnsupportedTerminal");
++               System.setProperty("user.language", "en");
++               Main.useJline = false;
++               reader = new ConsoleReader(System.in, System.out);
++               reader.setExpandEvents(false);
++            } catch (IOException ex) {
++               f_129750_.warn(null, ex);
++            }
++         }
++         Runtime.getRuntime().addShutdownHook(new org.bukkit.craftbukkit.util.ServerShutdownThread(this));
+       }
+    }
+ 
 @@ -317,6 +_,116 @@
     protected void m_7044_() {
     }
@@ -303,15 +400,31 @@
           }
        }
  
-@@ -377,6 +_,7 @@
+@@ -377,7 +_,23 @@
           p_177898_.m_7250_(BlockPos.f_121853_.m_6630_(80), 0.0F);
        } else {
           ServerChunkCache serverchunkcache = p_177897_.m_7726_();
 +         if (net.minecraftforge.event.ForgeEventFactory.onCreateWorldSpawn(p_177897_, p_177898_)) return;
           ChunkPos chunkpos = new ChunkPos(serverchunkcache.m_214994_().m_224579_().m_183230_());
++         // CraftBukkit start
++         if (p_177897_.generator != null) {
++            Random rand = new Random(p_177897_.m_7328_());
++            org.bukkit.Location spawn = p_177897_.generator.getFixedSpawnLocation(p_177897_.getWorld(), rand);
++
++            if (spawn != null) {
++               if (spawn.getWorld() != p_177897_.getWorld()) {
++                  throw new IllegalStateException("Cannot set spawn point for " + p_177898_.m_5462_() + " to be in another world (" + spawn.getWorld().getName() + ")");
++               } else {
++                  p_177898_.m_7250_(new BlockPos(spawn.getBlockX(), spawn.getBlockY(), spawn.getBlockZ()), spawn.getYaw());
++                  return;
++               }
++            }
++         }
++         // CraftBukkit end
           int i = serverchunkcache.m_8481_().m_142051_(p_177897_);
           if (i < p_177897_.m_141937_()) {
-@@ -457,6 +_,7 @@
+             BlockPos blockpos = chunkpos.m_45615_();
+@@ -457,14 +_,14 @@
                 ChunkPos chunkpos = new ChunkPos(i);
                 serverlevel1.m_7726_().m_6692_(chunkpos, true);
              }
@@ -319,15 +432,67 @@
           }
        }
  
-@@ -527,6 +_,8 @@
+-      this.f_129726_ = Util.m_137550_() + 10L;
+-      this.m_130012_();
++      this.executeModerately(); // BBSMC
+       p_129941_.m_7646_();
+       serverchunkcache.m_7827_().m_9310_(5);
+-      this.m_129962_();
++      serverlevel.m_46703_(this.m_7004_(), this.m_6998_());
+    }
+ 
+    public GameType m_130008_() {
+@@ -498,6 +_,15 @@
+       serverleveldata.m_7831_(serverlevel2.m_6857_().m_61970_());
+       this.f_129749_.m_5917_(this.m_129901_().m_136307_());
+       this.f_129744_.m_78290_(this.m_206579_(), this.f_129749_, this.m_6846_().m_6960_());
++      // BBSMC start - save bukkit world
++      for (ServerLevel world : this.f_129762_.values()) {
++         if (world.convertable != this.f_129744_) {
++            world.worldDataServer.m_7831_(world.m_6857_().m_61970_());
++            world.worldDataServer.m_5917_(this.m_129901_().m_136307_());
++            world.convertable.m_78287_(this.f_129746_, world.worldDataServer);
++         }
++      }
++      // BBSMC end
+       if (p_129887_) {
+          for(ServerLevel serverlevel1 : this.m_129785_()) {
+             f_129750_.info("ThreadedAnvilChunkStorage ({}): All chunks are saved", (Object)serverlevel1.m_7726_().f_8325_.m_182285_());
+@@ -527,11 +_,26 @@
     }
  
     public void m_7041_() {
 +      if (m_130010_() && m_6982_()) net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.GameShuttingDownEvent());
 +
++      // CraftBukkit start - prevent double stopping on multiple threads
++      synchronized(stopLock) {
++         if (hasStopped) return;
++         hasStopped = true;
++      }
++      // CraftBukkit end
++
        if (this.f_177872_.m_142763_()) {
           this.m_236737_();
        }
+ 
+       f_129750_.info("Stopping server");
++      // CraftBukkit start
++      if (this.server != null) {
++         this.server.disablePlugins();
++      }
++      // CraftBukkit end
++
+       if (this.m_129919_() != null) {
+          this.m_129919_().m_9718_();
+       }
+@@ -541,6 +_,7 @@
+          f_129750_.info("Saving players");
+          this.f_129763_.m_11302_();
+          this.f_129763_.m_11313_();
++         try { Thread.sleep(100); } catch (InterruptedException ex) {} // CraftBukkit - SPIGOT-625 - give server at least a chance to send packets
+       }
+ 
+       f_129750_.info("Saving worlds");
 @@ -571,6 +_,7 @@
        for(ServerLevel serverlevel2 : this.m_129785_()) {
           if (serverlevel2 != null) {
@@ -344,6 +509,28 @@
           this.f_129726_ = Util.m_137550_();
           this.f_129757_.m_134908_(Component.m_237113_(this.f_129709_));
           this.f_129757_.m_134912_(new ServerStatus.Version(SharedConstants.m_183709_().getName(), SharedConstants.m_183709_().getProtocolVersion()));
+@@ -628,9 +_,11 @@
+ 
+          while(this.f_129764_) {
+             long i = Util.m_137550_() - this.f_129726_;
+-            if (i > 2000L && this.f_129726_ - this.f_129718_ >= 15000L) {
++            if (i > 5000L && this.f_129726_ - this.f_129718_ >= 30000L) { // BBSMC
+                long j = i / 50L;
+-               f_129750_.warn("Can't keep up! Is the server overloaded? Running {}ms or {} ticks behind", i, j);
++               if (server.getWarnOnOverload()) {
++                  f_129750_.warn("Can't keep up! Is the server overloaded? Running {}ms or {} ticks behind", i, j);
++               }
+                this.f_129726_ += j * 50L;
+                this.f_129718_ = this.f_129726_;
+             }
+@@ -640,6 +_,7 @@
+                this.f_177876_ = new MinecraftServer.TimeProfiler(Util.m_137569_(), this.f_129766_);
+             }
+ 
++            MinecraftServer.currentTick = (int) (System.currentTimeMillis() / 50); // CraftBukkit
+             this.f_129726_ += 50L;
+             this.m_177945_();
+             this.f_129754_.m_6180_("tick");
 @@ -653,6 +_,8 @@
              this.f_129717_ = true;
              JvmProfiler.f_185340_.m_183597_(this.f_129737_);
@@ -369,6 +556,15 @@
              this.m_6988_();
           }
  
+@@ -706,7 +_,7 @@
+    }
+ 
+    private boolean m_129960_() {
+-      return this.m_18767_() || Util.m_137550_() < (this.f_129728_ ? this.f_129727_ : this.f_129726_);
++      return this.forceTicks || this.m_18767_() || this.m_18767_() || Util.m_137550_() < (this.f_129728_ ? this.f_129727_ : this.f_129726_);
+    }
+ 
+    protected void m_130012_() {
 @@ -789,6 +_,7 @@
  
     public void m_5705_(BooleanSupplier p_129871_) {
@@ -377,15 +573,19 @@
        ++this.f_129766_;
        this.m_5703_(p_129871_);
        if (i - this.f_129724_ >= 5000000000L) {
-@@ -810,6 +_,7 @@
+@@ -810,9 +_,10 @@
              Collections.shuffle(Arrays.asList(agameprofile));
              this.f_129757_.m_134914_().m_134924_(agameprofile);
           }
 +         this.f_129757_.invalidateJson();
        }
  
-       if (this.f_129766_ % 6000 == 0) {
-@@ -826,6 +_,7 @@
+-      if (this.f_129766_ % 6000 == 0) {
++      if (autosavePeriod > 0 && this.f_129766_ % autosavePeriod == 0) { // BBSMC
+          f_129750_.debug("Autosave started");
+          this.f_129754_.m_6180_("save");
+          this.m_195514_(true, false, false);
+@@ -826,24 +_,34 @@
        long i1 = Util.m_137569_();
        this.f_129735_.m_13755_(i1 - i);
        this.f_129754_.m_7238_();
@@ -393,18 +593,35 @@
     }
  
     public void m_5703_(BooleanSupplier p_129954_) {
-@@ -833,7 +_,8 @@
++      this.server.getScheduler().mainThreadHeartbeat(this.f_129766_); // CraftBukkit
+       this.f_129754_.m_6180_("commandFunctions");
        this.m_129890_().m_136128_();
        this.f_129754_.m_6182_("levels");
  
 -      for(ServerLevel serverlevel : this.m_129785_()) {
+-         this.f_129754_.m_6521_(() -> {
+-            return serverlevel + " " + serverlevel.m_46472_().m_135782_();
+-         });
+-         if (this.f_129766_ % 20 == 0) {
+-            this.f_129754_.m_6180_("timeSync");
+-            this.f_129763_.m_11270_(new ClientboundSetTimePacket(serverlevel.m_46467_(), serverlevel.m_46468_(), serverlevel.m_46469_().m_46207_(GameRules.f_46140_)), serverlevel.m_46472_());
+-            this.f_129754_.m_7238_();
++      // CraftBukkit start
++      // Run tasks that are waiting on processing
++      while (!processQueue.isEmpty()) {
++         processQueue.remove().run();
++      }
++
++      // Send time updates to everyone, it will get the right time from the world the player is in.
++      if (this.f_129766_ % 20 == 0) {
++         for (ServerPlayer serverPlayer : this.m_6846_().f_11196_) {
++            serverPlayer.f_8906_.m_9829_(new ClientboundSetTimePacket(serverPlayer.f_19853_.m_46467_(), serverPlayer.getPlayerTime(), serverPlayer.f_19853_.m_46469_().m_46207_(GameRules.f_46140_))); // Add support for per player time
+          }
++      }
++
 +      for(ServerLevel serverlevel : this.getWorldArray()) {
 +         long tickStart = Util.m_137569_();
-          this.f_129754_.m_6521_(() -> {
-             return serverlevel + " " + serverlevel.m_46472_().m_135782_();
-          });
-@@ -844,6 +_,7 @@
-          }
++         this.f_129754_.m_6521_(() -> serverlevel + " " + serverlevel.m_46472_().m_135782_());
  
           this.f_129754_.m_6180_("tick");
 +         net.minecraftforge.event.ForgeEventFactory.onPreLevelTick(serverlevel, p_129954_);
@@ -449,6 +666,14 @@
     }
  
     public boolean m_129918_() {
+@@ -1280,6 +_,7 @@
+       }).thenAcceptAsync((p_212919_) -> {
+          this.f_129740_.close();
+          this.f_129740_ = p_212919_;
++         this.server.syncCommands(); // SPIGOT-5884: Lost on reload
+          this.f_129730_.m_10509_(p_129862_);
+          this.f_129749_.m_6645_(m_129817_(this.f_129730_));
+          this.f_129740_.f_206585_.m_206868_(this.m_206579_());
 @@ -1287,6 +_,7 @@
           this.m_6846_().m_11315_();
           this.f_129734_.m_136120_(this.f_129740_.f_206585_.m_206860_());
@@ -505,14 +730,43 @@
     public void m_142116_(Path p_177911_) throws IOException {
     }
  
-@@ -1708,6 +_,10 @@
- 
-    public WorldData m_129910_() {
+@@ -1710,6 +_,10 @@
        return this.f_129749_;
-+   }
-+
-+   public MinecraftServer.ReloadableResources getServerResources() {
-+       return f_129740_;
     }
  
++   public MinecraftServer.ReloadableResources getServerResources() {
++       return f_129740_;
++   }
++
     public RegistryAccess.Frozen m_206579_() {
+       return this.f_129746_;
+    }
+@@ -1767,8 +_,27 @@
+ 
+    }
+ 
++   @SuppressWarnings("deprecation")
+    public ChatDecorator m_236742_() {
+-      return ChatDecorator.f_236947_;
++      return (entityplayer, ichatbasecomponent) -> {
++         // SPIGOT-7127: Console /say and similar
++         if (entityplayer == null) {
++            return CompletableFuture.completedFuture(ichatbasecomponent);
++         }
++
++         return CompletableFuture.supplyAsync(() -> {
++            AsyncPlayerChatPreviewEvent event = new AsyncPlayerChatPreviewEvent(true, entityplayer.getBukkitEntity(), CraftChatMessage.fromComponent(ichatbasecomponent), new LazyPlayerSet(this));
++            String originalFormat = event.getFormat(), originalMessage = event.getMessage();
++            this.server.getPluginManager().callEvent(event);
++
++            if (originalFormat.equals(event.getFormat()) && originalMessage.equals(event.getMessage()) && event.getPlayer().getName().equalsIgnoreCase(event.getPlayer().getDisplayName())) {
++               return ichatbasecomponent;
++            }
++
++            return CraftChatMessage.fromStringOrNull(String.format(event.getFormat(), event.getPlayer().getDisplayName(), event.getMessage()));
++         }, chatExecutor);
++      };
++      // CraftBukkit end
+    }
+ 
+    public static record ReloadableResources(CloseableResourceManager f_206584_, ReloadableServerResources f_206585_) implements AutoCloseable {

@@ -48,16 +48,7 @@
 @@ -131,13 +151,23 @@
      private static final boolean ALLOW_LOGOUTIVATOR = false;
      private int sendAllPlayerInfoIn;
- 
-+    // CraftBukkit start
-+    private CraftServer cserver;
-+
      public PlayerList(MinecraftServer minecraftserver, IRegistryCustom.Dimension iregistrycustom_dimension, WorldNBTStorage worldnbtstorage, int i) {
-+        this.cserver = minecraftserver.server = new CraftServer((DedicatedServer) minecraftserver, this);
-+        minecraftserver.console = org.bukkit.craftbukkit.command.ColouredConsoleSender.getInstance();
-+        minecraftserver.reader.addCompleter(new org.bukkit.craftbukkit.command.ConsoleCommandCompleter(minecraftserver.server));
-+        // CraftBukkit end
-+
          this.bans = new GameProfileBanList(PlayerList.USERBANLIST_FILE);
          this.ipBans = new IpBanList(PlayerList.IPBANLIST_FILE);
          this.ops = new OpList(PlayerList.OPLIST_FILE);

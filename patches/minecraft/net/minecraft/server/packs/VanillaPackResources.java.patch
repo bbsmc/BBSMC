@@ -1,5 +1,14 @@
 --- a/net/minecraft/server/packs/VanillaPackResources.java
 +++ b/net/minecraft/server/packs/VanillaPackResources.java
+@@ -55,7 +_,7 @@
+                   URI uri = url.toURI();
+                   String s1 = uri.getScheme();
+                   if (!"jar".equals(s1) && !"file".equals(s1)) {
+-                     f_10315_.warn("Assets URL '{}' uses unexpected schema", (Object)uri);
++                     f_10315_.debug("Assets URL '{}' uses unexpected schema", (Object)uri);
+                   }
+ 
+                   Path path = m_182297_(uri);
 @@ -148,6 +_,9 @@
        try {
           Path path = f_182296_.get(p_215346_);

@@ -283,7 +283,7 @@ def sharedDeps = {
     installer("net.sf.jopt-simple:jopt-simple:5.0.4")
     installer("io.izzel:tools:1.3.0")
 
-    implementation("jline:jline:2.12.1")
+    installer("jline:jline:2.12.1")
     installer("commons-lang:commons-lang:2.6-bbsmc")
 
     implementation "org.eclipse.aether:aether-api:${aether_version}"
