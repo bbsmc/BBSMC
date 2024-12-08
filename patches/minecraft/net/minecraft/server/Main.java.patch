@@ -173,7 +173,14 @@
                       PrimaryLevelData primaryleveldata = new PrimaryLevelData(levelsettings, worldgensettings, Lifecycle.stable());
                       return Pair.of(primaryleveldata, registryaccess$writable.m_203557_());
                    }
-@@ -178,22 +_,34 @@
+@@ -172,28 +_,34 @@
+          dedicatedserversettings.m_139777_().m_180927_(registryaccess$frozen);
+          WorldData worlddata = worldstem.f_206895_();
+          if (optionset.has(optionspec4)) {
+-            m_195488_(levelstoragesource$levelstorageaccess, DataFixers.m_14512_(), optionset.has(optionspec5), () -> {
+-               return true;
+-            }, worlddata.m_5961_());
++            m_195488_(levelstoragesource$levelstorageaccess, DataFixers.m_14512_(), optionset.has(optionspec5), () -> true, worlddata.m_5961_());
           }
  
           levelstoragesource$levelstorageaccess.m_78287_(registryaccess$frozen, worlddata);
@@ -194,12 +201,10 @@
              dedicatedserver1.m_129801_(optionset.valueOf(optionspec11));
              dedicatedserver1.m_129975_(optionset.has(optionspec2));
              dedicatedserver1.m_129948_(optionset.valueOf(optionspec12));
-             boolean flag1 = !optionset.has(optionspec) && !optionset.valuesOf(optionspec14).contains("nogui");
+-            boolean flag1 = !optionset.has(optionspec) && !optionset.valuesOf(optionspec14).contains("nogui");
 -            if (flag1 && !GraphicsEnvironment.isHeadless()) {
 -               dedicatedserver1.m_139667_();
-+            if (dedicatedserver1 instanceof DedicatedServer dedicatedServer && flag1 && !GraphicsEnvironment.isHeadless()) {
-+               dedicatedServer.m_139667_();
-             }
+-            }
  
              return dedicatedserver1;
           });
