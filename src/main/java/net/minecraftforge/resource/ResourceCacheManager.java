@@ -531,9 +531,10 @@ public class ResourceCacheManager
                 throw new RuntimeException("Failed to load Force Resource Cache Configuration from %s".formatted(CONFIG_PATH), e);
             }
             if (!configSpec.isCorrect(configData)) {
-                LOGGER.warn("Configuration file {} is not correct. Correcting", CONFIG_PATH);
+                // BBSMC - warn -> debug
+                LOGGER.debug("Configuration file {} is not correct. Correcting", CONFIG_PATH);
                 configSpec.correct(configData, (action, path, incorrectValue, correctedValue) ->
-                        LOGGER.warn("Incorrect key {} was corrected from {} to {}", path, incorrectValue, correctedValue));
+                        LOGGER.debug("Incorrect key {} was corrected from {} to {}", path, incorrectValue, correctedValue));
             }
 
             configData.save();

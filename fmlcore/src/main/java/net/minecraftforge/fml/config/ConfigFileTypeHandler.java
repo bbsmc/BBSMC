@@ -132,7 +132,8 @@ public class ConfigFileTypeHandler {
                     this.commentedFileConfig.load();
                     if(!this.modConfig.getSpec().isCorrect(commentedFileConfig))
                     {
-                        LOGGER.warn(CONFIG, "Configuration file {} is not correct. Correcting", commentedFileConfig.getFile().getAbsolutePath());
+                        // BBSMC - warn -> debug
+                        LOGGER.debug(CONFIG, "Configuration file {} is not correct. Correcting", commentedFileConfig.getFile().getAbsolutePath());
                         ConfigFileTypeHandler.backUpConfig(commentedFileConfig);
                         this.modConfig.getSpec().correct(commentedFileConfig);
                         commentedFileConfig.save();

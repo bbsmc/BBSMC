@@ -84,10 +84,11 @@ public class ForgeConfigSpec extends UnmodifiableConfigWrapper<UnmodifiableConfi
         this.childConfig = config;
         if (config != null && !isCorrect(config)) {
             String configName = config instanceof FileConfig ? ((FileConfig) config).getNioPath().toString() : config.toString();
-            LOGGER.warn(CORE, "Configuration file {} is not correct. Correcting", configName);
+            // BBSMC - warn -> debug
+            LOGGER.debug(CORE, "Configuration file {} is not correct. Correcting", configName);
             correct(config,
                     (action, path, incorrectValue, correctedValue) ->
-                            LOGGER.warn(CORE, "Incorrect key {} was corrected from {} to its default, {}. {}", DOT_JOINER.join( path ), incorrectValue, correctedValue, incorrectValue == correctedValue ? "This seems to be an error." : ""),
+                            LOGGER.debug(CORE, "Incorrect key {} was corrected from {} to its default, {}. {}", DOT_JOINER.join( path ), incorrectValue, correctedValue, incorrectValue == correctedValue ? "This seems to be an error." : ""),
                     (action, path, incorrectValue, correctedValue) ->
                             LOGGER.debug(CORE, "The comment on key {} does not match the spec. This may create a backup.", DOT_JOINER.join( path )));
 

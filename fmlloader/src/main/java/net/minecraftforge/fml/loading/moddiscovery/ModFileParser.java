@@ -36,7 +36,8 @@ public class ModFileParser {
         LOGGER.debug(LogMarkers.LOADING,"Considering mod file candidate {}", modFile.getFilePath());
         final Path modsjson = modFile.findResource("META-INF", "mods.toml");
         if (!Files.exists(modsjson)) {
-            LOGGER.warn(LogMarkers.LOADING, "Mod file {} is missing mods.toml file", modFile.getFilePath());
+            // BBSMC - warn -> debug
+            LOGGER.debug(LogMarkers.LOADING, "Mod file {} is missing mods.toml file", modFile.getFilePath());
             return null;
         }
 

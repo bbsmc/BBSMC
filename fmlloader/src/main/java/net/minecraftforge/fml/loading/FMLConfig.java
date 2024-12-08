@@ -27,7 +27,7 @@ public class FMLConfig
     static {
         configSpec.define("splashscreen", Boolean.TRUE);
         configSpec.define("maxThreads", -1);
-        configSpec.define("versionCheck", Boolean.TRUE);
+        configSpec.define("versionCheck", Boolean.FALSE);
         configSpec.define("defaultConfigPath",  "defaultconfigs");
         configSpec.define("disableOptimizedDFU", Boolean.TRUE);
     }
@@ -50,9 +50,10 @@ public class FMLConfig
             throw new RuntimeException("Failed to load FML config from " + configFile.toString(), e);
         }
         if (!configSpec.isCorrect(configData)) {
-            LOGGER.warn(CORE, "Configuration file {} is not correct. Correcting", configFile);
+            // BBSMC - warn -> debug
+            LOGGER.debug(CORE, "Configuration file {} is not correct. Correcting", configFile);
             configSpec.correct(configData, (action, path, incorrectValue, correctedValue) ->
-                    LOGGER.warn(CORE, "Incorrect key {} was corrected from {} to {}", path, incorrectValue, correctedValue));
+                    LOGGER.debug(CORE, "Incorrect key {} was corrected from {} to {}", path, incorrectValue, correctedValue));
         }
         configData.save();
     }
