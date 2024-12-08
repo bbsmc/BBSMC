@@ -55,7 +55,7 @@
  import net.minecraft.world.level.storage.ServerLevelData;
  import net.minecraft.world.phys.AABB;
  import net.minecraft.world.phys.Vec3;
-@@ -147,1440 +_,1657 @@
+@@ -147,1440 +_,1655 @@
  import net.minecraft.world.phys.shapes.Shapes;
  import net.minecraft.world.phys.shapes.VoxelShape;
  import net.minecraft.world.ticks.LevelTicks;
@@ -1088,8 +1088,6 @@
 +        this.f_8549_ = p_215002_;
 +        ChunkGenerator chunkgenerator = p_215004_.m_63990_();
 +        // BBSMC start
-+        this.worldDataServer.setWorld(this);
-+
 +        if (bukkitBiomeProvider != null) {
 +            BiomeSource worldChunkManager = new CustomWorldChunkManager(getWorld(), bukkitBiomeProvider, f_8548_.f_129746_.m_175515_(Registry.f_122885_));
 +            if (chunkgenerator instanceof NoiseBasedChunkGenerator cga) {
@@ -1141,6 +1139,7 @@
 +        // BBSMC start
 +        this.world = new CraftWorld(this, this.bukkitChunkGenerator, this.bukkitBiomeProvider, this.bukkitEnvironment);
 +        this.getCraftServer().addWorld(this.world);
++        this.worldDataServer.setWorld(this);
 +        // BBSMC end
 +    }
 +
@@ -1159,8 +1158,6 @@
 +        this.f_8549_ = p_215002_;
 +        ChunkGenerator chunkgenerator = p_215004_.m_63990_();
 +        // BBSMC start
-+        this.worldDataServer.setWorld(this);
-+
 +        if (biomeProvider != null) {
 +            BiomeSource worldChunkManager = new CustomWorldChunkManager(getWorld(), biomeProvider, f_8548_.f_129746_.m_175515_(Registry.f_122885_));
 +            if (chunkgenerator instanceof NoiseBasedChunkGenerator cga) {
@@ -1212,6 +1209,7 @@
 +        // BBSMC start
 +        this.world = new CraftWorld(this, gen, biomeProvider, env);
 +        this.getCraftServer().addWorld(this.world);
++        this.worldDataServer.setWorld(this);
 +        // BBSMC end
 +    }
 +

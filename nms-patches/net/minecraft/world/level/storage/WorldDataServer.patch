@@ -54,9 +54,6 @@
 @@ -211,6 +234,8 @@
              nbttagcompound.putUUID("WanderingTraderId", this.wanderingTraderId);
          }
- 
-+        nbttagcompound.putString("Bukkit.Version", Bukkit.getName() + "/" + Bukkit.getVersion() + "/" + Bukkit.getBukkitVersion()); // CraftBukkit
-+        world.getWorld().storeBukkitValues(nbttagcompound); // CraftBukkit - add pdc
      }
  
      @Override

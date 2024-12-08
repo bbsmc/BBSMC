@@ -13,6 +13,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
+
+import net.bbsmc.server.BBSMcServer;
 import org.bukkit.Warning.WarningState;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.block.data.BlockData;
@@ -89,7 +91,7 @@ public final class Bukkit {
         }
 
         Bukkit.server = server;
-        server.getLogger().info("This server is running " + getName() + " version " + getVersion() + " (Implementing API version " + getBukkitVersion() + ")");
+        BBSMcServer.log.info("This server is running {} version {} (Implementing API version {})", getName(), getVersion(), getBukkitVersion());
     }
 
     /**

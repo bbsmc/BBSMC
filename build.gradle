@@ -28,6 +28,8 @@ plugins {
 
 Util.init() //Init all our extension methods!
 
+def gitVersion = 'git rev-parse --short HEAD'.execute().text.trim()
+
 ext {
     JAR_SIGNER = null
     MAPPING_CHANNEL = 'official'
@@ -1130,6 +1132,14 @@ project(':forge') {
                 'Implementation-Title':     'FML Launcher',
                 'Implementation-Version':   SPEC_VERSION,
                 'Implementation-Vendor':    'Forge'
+            ] as LinkedHashMap,
+            'org/bukkit/craftbukkit/v1_18_R2/': [
+                'Specification-Title'   : MCP_VERSION,
+                'Specification-Vendor'  : 'SpigotMC',
+                'Specification-Version':  '1.19.2',
+                'Implementation-Title'  : 'Spigot',
+                'Implementation-Version': '1.19.2-' + gitVersion,
+                'Implementation-Vendor' : 'SpigotMC'
             ] as LinkedHashMap
         ]
     }
