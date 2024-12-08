@@ -78,6 +78,9 @@ public class Util {
 					url = "https://hub.spigotmc.org/nexus/content/groups/public/${path}"
 					if (!checkExists(url)) {
 						url = "https://maven.izzel.io/releases/${path}"
+						if (!checkExists(url)) {
+							url = "https://cdn.bbsmc.net/raw/servercore/${path}"
+						}
 					}
 				}
 				// BBSMC end

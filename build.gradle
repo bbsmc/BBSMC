@@ -152,6 +152,10 @@ subprojects {
             name("IzzelAliz")
             url("https://maven.izzel.io/releases")
         }
+        maven {
+            name("BBSMC")
+            url("https://cdn.bbsmc.net/raw/servercore/")
+        }
     }
 
     java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -280,7 +284,7 @@ def sharedDeps = {
     installer("io.izzel:tools:1.3.0")
 
     implementation("jline:jline:2.12.1")
-    installer("commons-lang:commons-lang:2.6")
+    installer("commons-lang:commons-lang:2.6-bbsmc")
 
     implementation "org.eclipse.aether:aether-api:${aether_version}"
     implementation "org.eclipse.aether:aether-impl:${aether_version}"
@@ -660,7 +664,7 @@ project(':fmlonly') {
     }
 
     task installerJson(type: InstallerJson, dependsOn: 'signUniversalJar') {
-        icon = rootProject.file('icon.ico')
+        icon = rootProject.file('/forge/icon.ico')
         packedDependencies = PACKED_DEPS
 
         doFirst {
@@ -1298,7 +1302,7 @@ project(':forge') {
             BIN_PATCHER = BINPATCH_TOOL.substring(0, BINPATCH_TOOL.length() - 1 - BINPATCH_TOOL.split(':')[3].length())
         }
         input.from applyClientBinPatches.output, applyServerBinPatches.output, genClientBinPatches.toolJar, launcherJson.output
-        icon = rootProject.file('icon.ico')
+        icon = rootProject.file('/forge/icon.ico')
         packedDependencies = PACKED_DEPS
 
         doFirst {
